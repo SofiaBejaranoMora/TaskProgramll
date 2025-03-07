@@ -1,5 +1,6 @@
-package cr.ac.una.taskprogramll;
+package cr.ac.una.taskprogramll.controller;
 
+import cr.ac.una.taskprogramll.App;
 import java.io.IOException;
 import javafx.fxml.FXML;
 
