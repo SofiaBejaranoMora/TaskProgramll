@@ -8,6 +8,14 @@ public class Sport {
     private String name;
     private String nameBallImage;
 
+    public Sport() {
+    }
+    
+    public Sport(String name, String nameBallImage) {
+        this.name = name;
+        this.nameBallImage = nameBallImage;
+    }
+
     public String getName() {
         return name;
     }

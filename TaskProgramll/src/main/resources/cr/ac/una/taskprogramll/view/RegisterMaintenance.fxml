@@ -37,7 +37,7 @@
                            <children>
                               <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="30.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <TextField fx:id="TxtLftName" promptText="Nombre" />
+                                    <TextField fx:id="txtLftName" promptText="Nombre" />
                                     <ComboBox fx:id="cmbLftTeam" onAction="#OnActionCmbLftTeam" prefWidth="150.0" promptText="Equipo" />
                                  </children>
                               </VBox>

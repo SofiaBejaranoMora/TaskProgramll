@@ -11,6 +11,9 @@ public class Team {
     private int wins;
     private boolean isQualified;
 
+    public Team() {
+    }
+
     public String getName() {
         return name;
     }

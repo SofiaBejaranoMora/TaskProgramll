@@ -4,7 +4,14 @@
  */
 package cr.ac.una.taskprogramll.controller;
 
+import cr.ac.una.taskprogramll.model.FileManager;
+import cr.ac.una.taskprogramll.model.Sport;
+import cr.ac.una.taskprogramll.model.Team;
+import java.io.File;
 import java.net.URL;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,6 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
@@ -24,8 +32,14 @@ import javafx.scene.image.ImageView;
  */
 public class RegisterMaintenanceController implements Initializable {
 
+    private Sport newSport = null;
+    private List<Sport> sportList = new ArrayList<>();
+    private List<Team> teamList = new ArrayList<>();
+    private FileManager fileManeger = new FileManager();
+    private File file;
+
     @FXML
-    private TextField TxtLftName;
+    private TextField txtLftName;
 
     @FXML
     private Button btnLftAccept;
@@ -50,7 +64,7 @@ public class RegisterMaintenanceController implements Initializable {
 
     @FXML
     private Label labLftHead;
-    
+
     @FXML
     private ImageView mgvImage;
 
@@ -62,7 +76,27 @@ public class RegisterMaintenanceController implements Initializable {
 
     @FXML
     void OnActionBtnLftAccept(ActionEvent event) {
+        String nameImage = null;
+        String name = null;
+        if ((!txtLftName.getText().trim().isEmpty())/*&&(mgvImage.getImage() != null)*/) {
+            if ((RadioButton) grpFiltro.getSelectedToggle() == rbtnLftSport) {
+                // nameImage=Paths.get(mgvImage.getImage().getUrl()).getFileName().toString();
+                name = txtLftName.getText();
+                if (!CheckedExistsSport(name)) {
+                    newSport = new Sport(name, "  ");
+                    sportList.add(newSport);
+                    fileManeger.serialization(sportList, "Sport");
 
+                }//Cuando el profe de los mensajes debo colocar un else y un mensaje de que ese equipo ya existe
+                else {
+                    labLftHead.setText("no se puede");
+                }
+            } else {
+
+            }
+            newSport = null;
+            ClearLeftPanel();
+        }
     }
 
     @FXML
@@ -87,7 +121,7 @@ public class RegisterMaintenanceController implements Initializable {
 
     @FXML
     void OnActionCmbLftTeam(ActionEvent event) {
-        
+
     }
 
     @FXML
@@ -99,9 +133,8 @@ public class RegisterMaintenanceController implements Initializable {
     void OnActionRbtnLftSport(ActionEvent event) {
         EnabledTeam(false);
     }
-    
-    
-    public void EnabledTeam (Boolean enabled){
+
+    public void EnabledTeam(Boolean enabled) {
         cmbLftTeam.setDisable(!enabled);
         cmbLftTeam.setVisible(enabled);
         cmbLftTeam.setManaged(enabled);
@@ -109,28 +142,47 @@ public class RegisterMaintenanceController implements Initializable {
         btnLftPhoto.setManaged(enabled);
         btnLftPhoto.setVisible(enabled);
     }
-    
-    public void EnabledMaintenance (Boolean enabled){
-         btnLftDelete.setDisable(!enabled);
-         btnLftDelete.setManaged(enabled);
-         btnLftDelete.setVisible(enabled);
-     }
-    
-    public void ClearLeftPanel(){
-        TxtLftName.clear();
+
+    public void EnabledMaintenance(Boolean enabled) {
+        btnLftDelete.setDisable(!enabled);
+        btnLftDelete.setManaged(enabled);
+        btnLftDelete.setVisible(enabled);
+    }
+
+    public void ClearLeftPanel() {
+        // falta indicar el radion button con el que se inicia
+        //tambien siempre iniciar en combox
+        txtLftName.clear();
         cmbLftTeam.setValue(null);
         cmbLftTeam.getSelectionModel().clearSelection();
         mgvImage.setImage(null);
     }
-    
-    
-    
+
+    public void InitialConditionsLefPanel() {
+        file = new File("Sport.txt");
+        if (file.exists()) {
+            sportList = fileManeger.deserialization("Sport", Sport.class);
+        }
+
+    }
+
+    public Boolean CheckedExistsSport(String name) {
+        for (Sport sport : sportList) {
+            if (sport.getName().toUpperCase().replaceAll("\\s+", "").equals(name.toUpperCase().replaceAll("\\s+", ""))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       rbtnLftSport.setSelected(true);
-       OnActionRbtnLftSport(null); //la accion del button
-       EnabledMaintenance(false);
-               
-    }    
-    
+        rbtnLftSport.setSelected(true);
+        InitialConditionsLefPanel();
+        OnActionRbtnLftSport(null); //la accion del button
+        EnabledMaintenance(false);
+        //mgvImage.setImage( new Image("D:\\Git\\TaskProgramll\\TaskProgramll\\src\\main\\resources\\cr\\ac\\una\\taskprogramll\\resources\\balon.jpg"));
+
+    }
+
 }
