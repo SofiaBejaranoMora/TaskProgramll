@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.ImageView;
 
 /**
  * FXML Controller class
@@ -42,16 +43,19 @@ public class RegisterMaintenanceController implements Initializable {
     private Button btnLftPhoto;
 
     @FXML
-    private ComboBox<?> cmbLftEquipment;
+    private ComboBox<String> cmbLftTeam;
 
     @FXML
     private ToggleGroup grpFiltro;
 
     @FXML
     private Label labLftHead;
+    
+    @FXML
+    private ImageView mgvImage;
 
     @FXML
-    private RadioButton rbtnLftEquipment;
+    private RadioButton rbtnLftTeam;
 
     @FXML
     private RadioButton rbtnLftSport;
@@ -63,7 +67,7 @@ public class RegisterMaintenanceController implements Initializable {
 
     @FXML
     void OnActionBtnLftCancel(ActionEvent event) {
-
+        ClearLeftPanel();
     }
 
     @FXML
@@ -82,31 +86,51 @@ public class RegisterMaintenanceController implements Initializable {
     }
 
     @FXML
-    void OnActionCmbLftEquipment(ActionEvent event) {
-
+    void OnActionCmbLftTeam(ActionEvent event) {
+        
     }
 
     @FXML
-    void OnActionRbtnLftEquipment(ActionEvent event) {
-        EnabledEquipment(true);
+    void OnActionRbtnLftTeam(ActionEvent event) {
+        EnabledTeam(true);
     }
 
     @FXML
     void OnActionRbtnLftSport(ActionEvent event) {
-        EnabledEquipment(false);
+        EnabledTeam(false);
     }
     
-    public void EnabledEquipment (Boolean enabled){
-        cmbLftEquipment.setDisable(!enabled);
-        cmbLftEquipment.setVisible(enabled);
+    
+    public void EnabledTeam (Boolean enabled){
+        cmbLftTeam.setDisable(!enabled);
+        cmbLftTeam.setVisible(enabled);
+        cmbLftTeam.setManaged(enabled);
         btnLftPhoto.setDisable(!enabled);
         btnLftPhoto.setManaged(enabled);
         btnLftPhoto.setVisible(enabled);
     }
     
+    public void EnabledMaintenance (Boolean enabled){
+         btnLftDelete.setDisable(!enabled);
+         btnLftDelete.setManaged(enabled);
+         btnLftDelete.setVisible(enabled);
+     }
+    
+    public void ClearLeftPanel(){
+        TxtLftName.clear();
+        cmbLftTeam.setValue(null);
+        cmbLftTeam.getSelectionModel().clearSelection();
+        mgvImage.setImage(null);
+    }
+    
+    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+       rbtnLftSport.setSelected(true);
+       OnActionRbtnLftSport(null); //la accion del button
+       EnabledMaintenance(false);
+               
     }    
     
 }
