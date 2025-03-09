@@ -7,6 +7,7 @@ package cr.ac.una.taskprogramll.controller;
 import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
+
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -182,7 +183,7 @@ public class RegisterMaintenanceController implements Initializable {
         OnActionRbtnLftSport(null); //la accion del button
         EnabledMaintenance(false);
         //mgvImage.setImage( new Image("D:\\Git\\TaskProgramll\\TaskProgramll\\src\\main\\resources\\cr\\ac\\una\\taskprogramll\\resources\\balon.jpg"));
-
+        
     }
 
 }

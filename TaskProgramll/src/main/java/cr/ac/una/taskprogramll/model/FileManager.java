@@ -10,10 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- *
- * @author sofia
- */
 public class FileManager {
 
     public <T> void serialization(List<T> list, String filename) {
@@ -26,7 +22,7 @@ public class FileManager {
             System.out.println("Error al guardar la lista en el archivo.");
         }
     }
-
+    
     public <T> List<T> deserialization(String filename,Class<T> classType) {
         List<T> list = null;
         try {

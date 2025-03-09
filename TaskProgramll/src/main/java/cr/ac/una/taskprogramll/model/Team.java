@@ -7,11 +7,20 @@ package cr.ac.una.taskprogramll.model;
 public class Team {
     private String name;
     private String nameTeamImage;
+    private Sport sportType;
     private int draw;
     private int wins;
     private boolean isQualified;
 
     public Team() {
+    }
+
+    public Team(String name, String nameTeamImage, int draw, int wins, boolean isQualified) {
+        this.name = name;
+        this.nameTeamImage = nameTeamImage;
+        this.draw = draw;
+        this.wins = wins;
+        this.isQualified = isQualified;
     }
 
     public String getName() {
@@ -53,5 +62,7 @@ public class Team {
     public void setIsQualified(boolean isQualified) {
         this.isQualified = isQualified;
     }
+
+
     
 }
