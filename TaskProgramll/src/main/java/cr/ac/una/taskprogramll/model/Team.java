@@ -15,12 +15,21 @@ public class Team {
     public Team() {
     }
 
-    public Team(String name, String nameTeamImage, int draw, int wins, boolean isQualified) {
+    public Team(String name, String nameTeamImage, Sport sportType, int draw, int wins, boolean isQualified) {
         this.name = name;
         this.nameTeamImage = nameTeamImage;
+        this.sportType = sportType;
         this.draw = draw;
         this.wins = wins;
         this.isQualified = isQualified;
+    }
+
+    public Sport getSportType() {
+        return sportType;
+    }
+
+    public void setSportType(Sport sportType) {
+        this.sportType = sportType;
     }
 
     public String getName() {
