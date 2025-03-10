@@ -5,6 +5,7 @@
 package cr.ac.una.taskprogramll.model;
 
 public class Team {
+
     private String name;
     private String nameTeamImage;
     private Sport sportType;
@@ -17,19 +18,11 @@ public class Team {
 
     public Team(String name, String nameTeamImage, Sport sportType, int draw, int wins, boolean isQualified) {
         this.name = name;
-        this.nameTeamImage = nameTeamImage;
+        this.nameTeamImage = nameTeamImage + ".png";
         this.sportType = sportType;
         this.draw = draw;
         this.wins = wins;
         this.isQualified = isQualified;
-    }
-
-    public Sport getSportType() {
-        return sportType;
-    }
-
-    public void setSportType(Sport sportType) {
-        this.sportType = sportType;
     }
 
     public String getName() {
@@ -45,7 +38,15 @@ public class Team {
     }
 
     public void setNameTeamImage(String nameTeamImage) {
-        this.nameTeamImage = nameTeamImage;
+        this.nameTeamImage = nameTeamImage+".pgn";
+    }
+
+    public Sport getSportType() {
+        return sportType;
+    }
+
+    public void setSportType(Sport sportType) {
+        this.sportType = sportType;
     }
 
     public int getDraw() {
@@ -72,6 +73,4 @@ public class Team {
         this.isQualified = isQualified;
     }
 
-
-    
 }

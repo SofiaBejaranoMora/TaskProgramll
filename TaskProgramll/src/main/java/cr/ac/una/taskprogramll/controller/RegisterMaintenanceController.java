@@ -10,7 +10,10 @@ import cr.ac.una.taskprogramll.model.Team;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -25,19 +28,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-/**
- * FXML Controller class
- *
- * @author sofia
- */
 public class RegisterMaintenanceController implements Initializable {
 
+    File selectedImage = null;
     private Sport newSport = null;
     private List<Sport> sportList = new ArrayList<>();
     private List<Team> teamList = new ArrayList<>();
     private FileManager fileManeger = new FileManager();
     private File file;
+    private Image image = null;
 
     @FXML
     private TextField txtLftName;
@@ -52,7 +54,7 @@ public class RegisterMaintenanceController implements Initializable {
     private Button btnLftDelete;
 
     @FXML
-    private Button btnLftImage;
+    private Button btnLftSelectImage;
 
     @FXML
     private Button btnLftPhoto;
@@ -84,10 +86,11 @@ public class RegisterMaintenanceController implements Initializable {
                 // nameImage=Paths.get(mgvImage.getImage().getUrl()).getFileName().toString();
                 name = txtLftName.getText();
                 if (!CheckedExistsSport(name)) {
-                    newSport = new Sport(name, "  ");
+                    newSport = new Sport(name, name); //si se mantiene asi puedo ir a cambiar el contructor solo para que entre name
                     sportList.add(newSport);
                     fileManeger.serialization(sportList, "Sport");
-
+                    RelocateImage(name);
+                    //inicializar el combox deportes
                 }//Cuando el profe de los mensajes debo colocar un else y un mensaje de que ese equipo ya existe
                 else {
                     labLftHead.setText("no se puede");
@@ -111,8 +114,8 @@ public class RegisterMaintenanceController implements Initializable {
     }
 
     @FXML
-    void OnActionBtnLftImage(ActionEvent event) {
-
+    void OnActionBtnLftSelectImage(ActionEvent event) {
+        SelectImage();
     }
 
     @FXML
@@ -176,6 +179,30 @@ public class RegisterMaintenanceController implements Initializable {
         return false;
     }
 
+    public void SelectImage() {
+        JFileChooser jFileChooser = new JFileChooser();
+        FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("PNG", "png");
+        jFileChooser.setFileFilter(imageFilter);
+        int responseData = jFileChooser.showOpenDialog(null);
+        if (responseData == JFileChooser.APPROVE_OPTION) {
+            selectedImage = jFileChooser.getSelectedFile();
+            image = new Image(selectedImage.toURI().toString());
+            mgvImage.setImage(image);
+        }
+    }
+
+    public void RelocateImage(String name) {
+        String newRute = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/" + name + ".png";
+        try {
+            Path originalSourceImage = selectedImage.toPath();
+            Path newDestinationImage = new File(newRute).toPath();
+            Files.copy(originalSourceImage, newDestinationImage, StandardCopyOption.REPLACE_EXISTING);
+            image = new Image("File:" + newRute);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         rbtnLftSport.setSelected(true);
@@ -183,7 +210,7 @@ public class RegisterMaintenanceController implements Initializable {
         OnActionRbtnLftSport(null); //la accion del button
         EnabledMaintenance(false);
         //mgvImage.setImage( new Image("D:\\Git\\TaskProgramll\\TaskProgramll\\src\\main\\resources\\cr\\ac\\una\\taskprogramll\\resources\\balon.jpg"));
-        
+
     }
 
 }

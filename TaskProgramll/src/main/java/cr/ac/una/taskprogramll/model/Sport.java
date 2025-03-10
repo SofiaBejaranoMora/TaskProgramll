@@ -14,7 +14,7 @@ public class Sport {
 
     public Sport(String name, String nameBallImage) {
         this.name = name;
-        this.nameBallImage = nameBallImage;
+        this.nameBallImage = nameBallImage +".png";
     }
 
     public String getName() {
@@ -30,7 +30,7 @@ public class Sport {
     }
 
     public void setNameBallImage(String nameBallImage) {
-        this.nameBallImage = nameBallImage;
+        this.nameBallImage = nameBallImage+".png";
     }
 
 }
