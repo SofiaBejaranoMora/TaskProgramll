@@ -6,7 +6,10 @@ package cr.ac.una.taskprogramll.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 
 /**
  * FXML Controller class
@@ -15,6 +18,11 @@ import javafx.fxml.Initializable;
  */
 public class CreateTourneyController implements Initializable {
 
+    @FXML
+    private Button btnCancel;
+    @FXML
+    private Button btnStart;
+
     /**
      * Initializes the controller class.
      */
@@ -22,5 +30,9 @@ public class CreateTourneyController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
+
+    @FXML
+    private void createTourney(ActionEvent event) {
+    }
     
 }
