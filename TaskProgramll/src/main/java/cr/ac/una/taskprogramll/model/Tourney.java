@@ -20,7 +20,7 @@ public class Tourney {
         
     }
     public Tourney(int id, int time, Sport sportype, List<Team> teamList){
-        this.id=id;
+        this.id=id;//size+1 
         this.time=time;
         this.sportype=sportype;
         this.teamList=teamList;
