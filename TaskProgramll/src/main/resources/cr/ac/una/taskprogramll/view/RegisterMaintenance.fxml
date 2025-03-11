@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXRadioButton?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,60 +14,51 @@
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.RegisterMaintenanceController">
     <children>
-      <SplitPane dividerPositions="0.0" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="labHead" text="Registro/Mantenimiento" />
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" spacing="50.0" VBox.vgrow="ALWAYS">
                <children>
-                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <MFXRadioButton fx:id="rbtTeam" onAction="#OnActionRbtTeam" text="Equipo">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="grpFiltro" />
+                     </toggleGroup>
+                  </MFXRadioButton>
+                  <MFXRadioButton fx:id="rbtSport" onAction="#OnActionRbtSport" text="Deporte" toggleGroup="$grpFiltro" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+               <children>
+                  <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="30.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label fx:id="labLftHead" text="Registro/Mantenimiento" />
-                        <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" spacing="50.0" VBox.vgrow="ALWAYS">
+                        <MFXTextField fx:id="txtName" floatMode="BORDER" floatingText="Nombre" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                        <MFXComboBox fx:id="cmbTeam" maxWidth="1.7976931348623157E308" onAction="#OnActionCmbTeam" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <ImageView fx:id="mgvImage" fitHeight="160.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true" />
+                        <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <RadioButton fx:id="rbtnLftTeam" mnemonicParsing="false" onAction="#OnActionRbtnLftTeam" text="Equipo">
-                                 <toggleGroup>
-                                    <ToggleGroup fx:id="grpFiltro" />
-                                 </toggleGroup>
-                              </RadioButton>
-                              <RadioButton fx:id="rbtnLftSport" mnemonicParsing="false" onAction="#OnActionRbtnLftSport" text="Deporte" toggleGroup="$grpFiltro" />
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
-                           <children>
-                              <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="30.0" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <TextField fx:id="txtLftName" promptText="Nombre" />
-                                    <ComboBox fx:id="cmbLftTeam" onAction="#OnActionCmbLftTeam" prefWidth="150.0" promptText="Equipo" />
-                                 </children>
-                              </VBox>
-                              <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <ImageView fx:id="mgvImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                                    <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="ALWAYS">
-                                       <children>
-                                          <Button fx:id="btnLftSelectImage" mnemonicParsing="false" onAction="#OnActionBtnLftSelectImage" text="Seleccionar Imagen" />
-                                          <Button fx:id="btnLftPhoto" mnemonicParsing="false" onAction="#OnActionBtnLftPhoto" text="Tomar Foto" />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" spacing="70.0" VBox.vgrow="ALWAYS">
-                           <children>
-                              <Button fx:id="btnLftAccept" mnemonicParsing="false" onAction="#OnActionBtnLftAccept" text="Aceptar" />
-                              <Button fx:id="btnLftDelete" mnemonicParsing="false" onAction="#OnActionBtnLftDelete" text="Eliminar" />
-                              <Button fx:id="btnLftCancel" mnemonicParsing="false" onAction="#OnActionBtnLftCancel" text="Cancelar" />
+                              <MFXButton fx:id="btnSelectImage" onAction="#OnActionBtnSelectImage" text="Seleccionar" />
+                              <MFXButton fx:id="btnPhoto" onAction="#OnActionBtnPhoto" text="Tomar Foto" />
                            </children>
                         </HBox>
                      </children>
-                     <padding>
-                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-                     </padding>
                   </VBox>
                </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
+            </HBox>
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" spacing="70.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <MFXButton fx:id="btnAccept" onAction="#OnActionAccept" text="Aceptar" />
+                  <MFXButton fx:id="btnDelete" onAction="#OnActionBtnDelete" text="Eliminar" />
+                  <MFXButton fx:id="btnCancel" onAction="#OnActionBtnCancel" text="cancelar" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+         </padding>
+      </VBox>
    </children>
 </AnchorPane>

@@ -7,12 +7,15 @@ package cr.ac.una.taskprogramll.controller;
 import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
+import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
+import io.github.palexdev.materialfx.controls.MFXRadioButton;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +23,8 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -42,47 +42,47 @@ public class RegisterMaintenanceController implements Initializable {
     private Image image = null;
 
     @FXML
-    private TextField txtLftName;
+    private MFXTextField txtName;
 
     @FXML
-    private Button btnLftAccept;
+    private MFXButton btnAccept;
 
     @FXML
-    private Button btnLftCancel;
+    private MFXButton btnCancel;
 
     @FXML
-    private Button btnLftDelete;
+    private MFXButton btnDelete;
 
     @FXML
-    private Button btnLftSelectImage;
+    private MFXButton btnPhoto;
 
     @FXML
-    private Button btnLftPhoto;
+    private MFXButton btnSelectImage;
 
     @FXML
-    private ComboBox<String> cmbLftTeam;
+    private MFXComboBox<Team> cmbTeam;
 
     @FXML
     private ToggleGroup grpFiltro;
 
     @FXML
-    private Label labLftHead;
+    private Label labHead;
 
     @FXML
     private ImageView mgvImage;
 
     @FXML
-    private RadioButton rbtnLftTeam;
+    private MFXRadioButton rbtSport;
 
     @FXML
-    private RadioButton rbtnLftSport;
+    private MFXRadioButton rbtTeam;
 
     @FXML
-    void OnActionBtnLftAccept(ActionEvent event) {
+    void OnActionAccept(ActionEvent event) {
         String name = null;
-        if ((!txtLftName.getText().trim().isEmpty())&&(mgvImage.getImage() != null)) {
-            if ((RadioButton) grpFiltro.getSelectedToggle() == rbtnLftSport) {
-                name = txtLftName.getText();
+        if ((!txtName.getText().trim().isEmpty()) && (mgvImage.getImage() != null)) {
+            if ((RadioButton) grpFiltro.getSelectedToggle() == rbtSport) {
+                name = txtName.getText();
                 if (!CheckedExistsSport(name)) {
                     newSport = new Sport(name, name); //si se mantiene asi puedo ir a cambiar el contructor solo para que entre name
                     sportList.add(newSport);
@@ -91,7 +91,7 @@ public class RegisterMaintenanceController implements Initializable {
                     //inicializar el combox deportes
                 }//Cuando el profe de los mensajes debo colocar un else y un mensaje de que ese equipo ya existe
                 else {
-                    labLftHead.setText("no se puede");
+                    labHead.setText("no se puede");
                 }
             } else {
 
@@ -102,61 +102,61 @@ public class RegisterMaintenanceController implements Initializable {
     }
 
     @FXML
-    void OnActionBtnLftCancel(ActionEvent event) {
+    void OnActionBtnCancel(ActionEvent event) {
         ClearLeftPanel();
     }
 
     @FXML
-    void OnActionBtnLftDelete(ActionEvent event) {
+    void OnActionBtnDelete(ActionEvent event) {
 
     }
 
     @FXML
-    void OnActionBtnLftSelectImage(ActionEvent event) {
+    void OnActionBtnSelectImage(ActionEvent event) {
         SelectImage();
     }
 
     @FXML
-    void OnActionBtnLftPhoto(ActionEvent event) {
+    void OnActionBtnPhoto(ActionEvent event) {
 
     }
 
     @FXML
-    void OnActionCmbLftTeam(ActionEvent event) {
+    void OnActionCmbTeam(ActionEvent event) {
 
     }
 
     @FXML
-    void OnActionRbtnLftTeam(ActionEvent event) {
+    void OnActionRbtSport(ActionEvent event) {
         EnabledTeam(true);
     }
 
     @FXML
-    void OnActionRbtnLftSport(ActionEvent event) {
+    void OnActionRbtTeam(ActionEvent event) {
         EnabledTeam(false);
     }
 
     public void EnabledTeam(Boolean enabled) {
-        cmbLftTeam.setDisable(!enabled);
-        cmbLftTeam.setVisible(enabled);
-        cmbLftTeam.setManaged(enabled);
-        btnLftPhoto.setDisable(!enabled);
-        btnLftPhoto.setManaged(enabled);
-        btnLftPhoto.setVisible(enabled);
+        cmbTeam.setDisable(!enabled);
+        cmbTeam.setVisible(enabled);
+        cmbTeam.setManaged(enabled);
+        btnPhoto.setDisable(!enabled);
+        btnPhoto.setManaged(enabled);
+        btnPhoto.setVisible(enabled);
     }
 
     public void EnabledMaintenance(Boolean enabled) {
-        btnLftDelete.setDisable(!enabled);
-        btnLftDelete.setManaged(enabled);
-        btnLftDelete.setVisible(enabled);
+        btnDelete.setDisable(!enabled);
+        btnDelete.setManaged(enabled);
+        btnDelete.setVisible(enabled);
     }
 
     public void ClearLeftPanel() {
         // falta indicar el radion button con el que se inicia
         //tambien siempre iniciar en combox
-        txtLftName.clear();
-        cmbLftTeam.setValue(null);
-        cmbLftTeam.getSelectionModel().clearSelection();
+        txtName.clear();
+        cmbTeam.setValue(null);
+        cmbTeam.getSelectionModel().clearSelection();
         mgvImage.setImage(null);
     }
 
@@ -203,9 +203,9 @@ public class RegisterMaintenanceController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        rbtnLftSport.setSelected(true);
+        rbtSport.setSelected(true);
         InitialConditionsLefPanel();
-        OnActionRbtnLftSport(null); //la accion del button
+        OnActionRbtSport(null); //la accion del button
         EnabledMaintenance(false);
         //mgvImage.setImage( new Image("D:\\Git\\TaskProgramll\\TaskProgramll\\src\\main\\resources\\cr\\ac\\una\\taskprogramll\\resources\\balon.jpg"));
 
