@@ -79,11 +79,9 @@ public class RegisterMaintenanceController implements Initializable {
 
     @FXML
     void OnActionBtnLftAccept(ActionEvent event) {
-        String nameImage = null;
         String name = null;
-        if ((!txtLftName.getText().trim().isEmpty())/*&&(mgvImage.getImage() != null)*/) {
+        if ((!txtLftName.getText().trim().isEmpty())&&(mgvImage.getImage() != null)) {
             if ((RadioButton) grpFiltro.getSelectedToggle() == rbtnLftSport) {
-                // nameImage=Paths.get(mgvImage.getImage().getUrl()).getFileName().toString();
                 name = txtLftName.getText();
                 if (!CheckedExistsSport(name)) {
                     newSport = new Sport(name, name); //si se mantiene asi puedo ir a cambiar el contructor solo para que entre name

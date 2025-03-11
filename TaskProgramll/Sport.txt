@@ -1,1 +1,1 @@
-[{"name":"holi","nameBallImage":"  .png.png.png"},{"name":"holi","nameBallImage":"  .png.png.png"},{"name":"holi","nameBallImage":"  .png.png.png"},{"name":"holi","nameBallImage":"  .png.png.png"},{"name":"so","nameBallImage":"so.png.png.png"},{"name":"pau","nameBallImage":"pau.png.png"},{"name":"cris","nameBallImage":"cris.png"}]
+[{"name":"tin","nameBallImage":"tin.png"}]
