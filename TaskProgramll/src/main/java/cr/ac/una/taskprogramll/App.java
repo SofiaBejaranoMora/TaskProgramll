@@ -16,7 +16,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("RegisterMaintenance"), 640, 480);
+        //scene = new Scene(loadFXML("RegisterMaintenance"), 640, 480);
+        scene = new Scene(loadFXML("CreateTourney"), 640, 480);
         MFXThemeManager.addOn(scene,Themes.DEFAULT,Themes.LEGACY);
         stage.setScene(scene);
         stage.show();

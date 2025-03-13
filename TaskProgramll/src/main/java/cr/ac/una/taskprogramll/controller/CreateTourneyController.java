@@ -4,6 +4,7 @@
  */
 package cr.ac.una.taskprogramll.controller;
 
+import io.github.palexdev.materialfx.controls.MFXTextField;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -22,6 +23,12 @@ public class CreateTourneyController implements Initializable {
     private Button btnCancel;
     @FXML
     private Button btnStart;
+    @FXML
+    private MFXTextField txtTourneyName;
+    @FXML
+    private MFXTextField txtTeamQuantity;
+    @FXML
+    private MFXTextField txtMatchTime;
 
     /**
      * Initializes the controller class.
@@ -33,6 +40,18 @@ public class CreateTourneyController implements Initializable {
 
     @FXML
     private void createTourney(ActionEvent event) {
+    }
+
+    @FXML
+    private void validateName(ActionEvent event) {
+    }
+
+    @FXML
+    private void validateQuantity(ActionEvent event) {
+    }
+
+    @FXML
+    private void validateTime(ActionEvent event) {
     }
     
 }
