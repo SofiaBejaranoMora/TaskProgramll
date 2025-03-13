@@ -41,22 +41,42 @@ public class CreateTourneyController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
+    
+  private boolean isValidNumericInput(String input) {
+    input = input.trim(); 
+    if (input.isEmpty()) {
+        return false; // No se permiten solo espacios
+    }
+
+    try {
+        int number = Integer.parseInt(input); 
+        return number > 0;
+    } catch (NumberFormatException e) {
+        return false; 
+    }
+}
+  
 
     @FXML
     private void createTourney(ActionEvent event) {
-      
+        String name=txtTourneyName.getText();
+        String time=txtMatchTime.getText();
+        String teams=txtTeamQuantity.getText();
+       if(!isValidNumericInput(time)||!isValidNumericInput(teams)){
+           //mensaje de advertencia
+           return;
+       }
+       name = name.trim(); 
+       if(name.isEmpty()){
+           //mensaje de advertenciia
+           return;
+       }
+       
+       //finalmeentee revisamos teams
+   
     }
 
-    @FXML
-    private void validateName(ActionEvent event) {
-    }
 
-    @FXML
-    private void validateQuantity(ActionEvent event) {
-    }
 
-    @FXML
-    private void validateTime(ActionEvent event) {
-    }
     
 }
