@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -29,7 +30,7 @@ public class PhotographyController implements Initializable {
     public Dimension dimension = new Dimension(288, 240);
     private Webcam webcam = Webcam.getDefault();
     private WebcamPanel webcamPanel = new WebcamPanel(webcam, dimension, false);
-    private BufferedImage bufferedRuteImage;
+    private BufferedImage bufferedImage;
     private Thread thread;
     private Image photo = null;
     private Image image = null;
@@ -49,14 +50,14 @@ public class PhotographyController implements Initializable {
     @FXML
     private void onActionBntTakePhoto(ActionEvent event) {
         btnSavePhoto.setDisable(false);
-        bufferedRuteImage = webcam.getImage();
-        photo = SwingFXUtils.toFXImage(bufferedRuteImage, null);
+        bufferedImage = webcam.getImage();
+        photo = SwingFXUtils.toFXImage(bufferedImage, null);
         imvPhotography.setImage(photo);
     }
 
     @FXML
     private void onActionBtnSavePhoto(ActionEvent event) {
-
+        
     }
 
     @FXML
@@ -93,7 +94,10 @@ public class PhotographyController implements Initializable {
         checkedCamera = false;
         webcamPanel.stop();
         webcam.close();
-
+        imvPhotography.setImage(null);
+        photo = null;
+        bufferedImage = null;
+        ((Stage) btnSavePhoto.getScene().getWindow()).close();
     }
 
     @Override

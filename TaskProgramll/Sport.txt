@@ -1,1 +1,0 @@
-[{"name":"tin","nameBallImage":"tin.png.png.png"},{"name":"michi","nameBallImage":"michi.png.png"},{"name":"grr","nameBallImage":"grr.png"}]

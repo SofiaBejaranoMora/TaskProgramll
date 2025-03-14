@@ -11,8 +11,10 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXRadioButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import io.github.palexdev.materialfx.utils.SwingFXUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +30,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -40,6 +43,7 @@ public class RegisterMaintenanceController implements Initializable {
     private FileManager fileManeger = new FileManager();
     private File file;
     private Image image = null;
+    private String ruteImage= System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
 
     @FXML
     private MFXTextField txtName;
@@ -87,7 +91,9 @@ public class RegisterMaintenanceController implements Initializable {
                     newSport = new Sport(name, name); //si se mantiene asi puedo ir a cambiar el contructor solo para que entre name
                     sportList.add(newSport);
                     fileManeger.serialization(sportList, "Sport");
-                    RelocateImage(name);
+                    image=mgvImage.getImage();
+                    SaveImage(name);
+                    //RelocateImage(name);
                     //inicializar el combox deportes
                 }//Cuando el profe de los mensajes debo colocar un else y un mensaje de que ese equipo ya existe
                 else {
@@ -128,12 +134,12 @@ public class RegisterMaintenanceController implements Initializable {
 
     @FXML
     void OnActionRbtSport(ActionEvent event) {
-        EnabledTeam(true);
+        EnabledTeam(false);
     }
 
     @FXML
     void OnActionRbtTeam(ActionEvent event) {
-        EnabledTeam(false);
+        EnabledTeam(true);
     }
 
     public void EnabledTeam(Boolean enabled) {
@@ -190,14 +196,24 @@ public class RegisterMaintenanceController implements Initializable {
     }
 
     public void RelocateImage(String name) {
-        String newRute = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/" + name + ".png";
+        String newRute =ruteImage + name + ".png";
         try {
             Path originalSourceImage = selectedImage.toPath();
             Path newDestinationImage = new File(newRute).toPath();
             Files.copy(originalSourceImage, newDestinationImage, StandardCopyOption.REPLACE_EXISTING);
-            image = new Image("File:" + newRute);
+            image = new Image(newRute);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void SaveImage(String name) {
+        String newRute =  ruteImage+ name + ".png";
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(mgvImage.getImage(), null), "PNG", new File(newRute));
+        } 
+        catch (IOException e) {
+
         }
     }
 
