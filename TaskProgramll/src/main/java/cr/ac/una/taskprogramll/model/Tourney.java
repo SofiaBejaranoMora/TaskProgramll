@@ -4,6 +4,7 @@
  */
 package cr.ac.una.taskprogramll.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,13 +18,15 @@ public class Tourney {
     private List<Team> teamList;
     
     public Tourney(){
-        
+        this.teamList = new ArrayList<>();
     }
     public Tourney(int id, int time, Sport sportype, List<Team> teamList){
         this.id=id;//size+1 
         this.time=time;
         this.sportype=sportype;
-        this.teamList=teamList;
+        if(teamList==null){
+            this.teamList=new ArrayList<>();
+        }
     }
     public int  getId(){
         return id;
