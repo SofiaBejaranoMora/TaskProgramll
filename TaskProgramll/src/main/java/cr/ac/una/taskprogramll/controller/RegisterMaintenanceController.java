@@ -50,6 +50,8 @@ public class RegisterMaintenanceController implements Initializable {
     private File file;
     private Image image = null;
     private String ruteImage = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
+    private Boolean isSport = true;
+    private Boolean isMaintenace = true;
 
     @FXML
     private MFXTextField txtName;
@@ -91,18 +93,15 @@ public class RegisterMaintenanceController implements Initializable {
     void OnActionAccept(ActionEvent event) {
         String name = txtName.getText().trim();
         if ((!name.isEmpty()) && (mgvImage.getImage() != null)) {
-
-            if ((RadioButton) grpFiltro.getSelectedToggle() == rbtSport) { // pasar los if para ver si es registro dentrp de su respectivo metodo
-                SportRegistration(name);
+            name = txtName.getText();
+            if (isSport) {
+                if (!CheckedExistsSport(name)) {
+                    Sport(name);
+                }
             } else if (cmbSport.getValue() != null) {
                 Sport type = returnCmbSportValue();
                 if (!CheckedExistsTeam(name, type)) {
-                    newTeam = new Team(name, type);
-                    teamList.add(newTeam);
-                    fileManeger.serialization(teamList, "Team");
-                    image = mgvImage.getImage();
-                    SaveImage(name);
-                    ClearPanel();
+                    Team(name, type);
                 }
             }
         }
@@ -145,18 +144,41 @@ public class RegisterMaintenanceController implements Initializable {
     void OnActionRbtTeam(ActionEvent event) {
         EnabledTeam(true);
     }
+    
+    public void Team(String name, Sport type){
+        if(isMaintenace){
+            
+        }
+        else{
+            TeamRegistration(name, type);
+        }
+    }
+
+    public void Sport(String name) {
+        if (isMaintenace) {
+
+        } else {
+            SportRegistration(name);
+        }
+    }
 
     public void SportRegistration(String name) {
-        name = txtName.getText();
-        if (!CheckedExistsSport(name)) {
-            newSport = new Sport(name);
-            sportList.add(newSport);
-            fileManeger.serialization(sportList, "Sport");
-            image = mgvImage.getImage();
-            RelocateImage(name);
-            StartCmbSportType();
-            ClearPanel();
-        }//Cuando el profe de los mensajes debo colocar un else y un mensaje de que ese equipo ya existe
+        newSport = new Sport(name);
+        sportList.add(newSport);
+        fileManeger.serialization(sportList, "Sport");
+        image = mgvImage.getImage();// revisar y quitar si es necesario
+        RelocateImage(name);
+        StartCmbSportType();
+        ClearPanel();
+    }
+
+    public void TeamRegistration(String name, Sport type) {
+        newTeam = new Team(name, type);
+        teamList.add(newTeam);
+        fileManeger.serialization(teamList, "Team");
+        image = mgvImage.getImage();
+        SaveImage(name);
+        ClearPanel();
     }
 
     public void EnabledTeam(Boolean enabled) {
@@ -237,7 +259,7 @@ public class RegisterMaintenanceController implements Initializable {
             Path originalSourceImage = selectedImage.toPath();
             Path newDestinationImage = new File(newRute).toPath();
             Files.copy(originalSourceImage, newDestinationImage, StandardCopyOption.REPLACE_EXISTING);
-            image = new Image("file:" +newRute);
+            image = new Image("file:" + newRute);
         } catch (Exception e) {
             e.printStackTrace();
         }
