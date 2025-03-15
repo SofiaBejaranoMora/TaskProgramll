@@ -2,6 +2,7 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXSlider?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TableColumn?>
@@ -21,38 +22,59 @@
                <Font name="Arial" size="24.0" />
             </font>
          </Text>
-
-         <!-- Inputs Principales -->
-         <VBox alignment="CENTER" spacing="10.0">
-            <MFXTextField fx:id="txtTourneyName" floatingText="Tourney Name" prefWidth="300.0" />
-            <MFXTextField fx:id="txtMatchTime" floatingText="Time per Match (Minutes)" prefWidth="300.0" />
-            <ComboBox fx:id="tglLstSportType" prefWidth="300.0" promptText="Sport Type" />
-         </VBox>
-
-         <!-- Tabla de Equipos -->
-         <VBox alignment="CENTER" spacing="10.0">
-            <Text text="Teams" />
-            <TableView fx:id="tblTeams" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="250.0" prefWidth="400.0" VBox.vgrow="ALWAYS">
-               <columns>
-                  <TableColumn fx:id="colTeamName" prefWidth="200.0" text="Availables" />
-                  <TableColumn fx:id="colSelected" prefWidth="200.0" text="Selected" />
-               </columns>
-            </TableView>
-         </VBox>
+         <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="15.0" VBox.vgrow="ALWAYS">
+            <children>
+      
+               <!-- Inputs Principales -->
+               <VBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
+                  <MFXTextField fx:id="txtTourneyName" floatingText="Tourney Name" prefWidth="300.0" />
+                  <ComboBox fx:id="tglLstSportType" prefWidth="300.0" promptText="Sport Type" />
+               </VBox>
+               <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
+                  <children>
+                     <MFXTextField fx:id="txtMatchTime" floatingText="Time per Match (Minutes)" prefWidth="300.0" />
+                       <Button fx:id="btnAdjustTeams" onAction="#adjustSelectedTeamsSlice" prefWidth="300.0" text="Adjust Election" />
+                  </children>
+               </VBox>
+            </children>
+            <padding>
+               <Insets left="15.0" right="15.0" />
+            </padding>
+         </HBox>
 
          <!-- Selector de Cantidad de Equipos -->
          <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" VBox.vgrow="ALWAYS">
             <Text text="Select the number of teams (between 32 and 64):" />
             <MFXSlider fx:id="sliderTeamCount" max="64" min="32" prefWidth="300.0" value="32" />
-              <Button fx:id="btnAdjustTeams" onAction="#adjustSelectedTeamsSlice" prefWidth="150.0" text="Adjust Election" />
 
             
              </VBox>
+         <Text text="Teams" />
+         <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="30.0" VBox.vgrow="ALWAYS">
+            <children>
+               <TableView fx:id="tblTeams" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="250.0" prefWidth="400.0">
+                  <columns>
+                     <TableColumn fx:id="colTeamName" prefWidth="259.0" text="Equipos disponibles" />
+                  </columns>
+               </TableView>
+               <TableView fx:id="tblTeams1" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="250.0" prefWidth="400.0">
+                  <columns>
+                     <TableColumn fx:id="colTeamName1" prefWidth="259.0" text="Equipos Elegidos" />
+                  </columns>
+               </TableView>
+            </children>
+            <padding>
+               <Insets left="15.0" right="15.0" />
+            </padding>
+         </HBox>
 
          <!-- Botones Inferiores -->
-         <HBox alignment="CENTER" spacing="20.0">
+         <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="20.0" VBox.vgrow="ALWAYS">
             <Button fx:id="btnCancel" prefWidth="100.0" text="Cancel" />
             <Button fx:id="btnStart" onAction="#createTourney" prefWidth="100.0" text="Start" />
+            <padding>
+               <Insets bottom="10.0" />
+            </padding>
          </HBox>
       </VBox>
    </children>
