@@ -1,1 +1,0 @@
-[{"name":"sofi","nameTeamImage":"sofi.png","sportType":{"name":"sofi","nameBallImage":"sofi","id":0},"draw":0,"wins":0,"isQualified":false,"id":0,"ruteBallImage":"D:\\Git\\TaskProgramll\\TaskProgramll/src/main/resources/cr/ac/una/taskprogramll/resources/sofi.png"}]

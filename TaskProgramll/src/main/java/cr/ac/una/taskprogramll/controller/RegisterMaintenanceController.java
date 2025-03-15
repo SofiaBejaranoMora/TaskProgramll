@@ -29,9 +29,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -50,8 +48,7 @@ public class RegisterMaintenanceController implements Initializable {
     private File file;
     private Image image = null;
     private String ruteImage = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
-    private Boolean isSport = true;
-    private Boolean isMaintenace = true;
+    private Boolean isSport = false;
 
     @FXML
     private MFXTextField txtName;
@@ -96,12 +93,12 @@ public class RegisterMaintenanceController implements Initializable {
             name = txtName.getText();
             if (isSport) {
                 if (!CheckedExistsSport(name)) {
-                    Sport(name);
+                    SportRegistration(name);
                 }
             } else if (cmbSport.getValue() != null) {
                 Sport type = returnCmbSportValue();
                 if (!CheckedExistsTeam(name, type)) {
-                    Team(name, type);
+                    TeamRegistration(name, type);
                 }
             }
         }
@@ -143,23 +140,6 @@ public class RegisterMaintenanceController implements Initializable {
     @FXML
     void OnActionRbtTeam(ActionEvent event) {
         EnabledTeam(true);
-    }
-    
-    public void Team(String name, Sport type){
-        if(isMaintenace){
-            
-        }
-        else{
-            TeamRegistration(name, type);
-        }
-    }
-
-    public void Sport(String name) {
-        if (isMaintenace) {
-
-        } else {
-            SportRegistration(name);
-        }
     }
 
     public void SportRegistration(String name) {

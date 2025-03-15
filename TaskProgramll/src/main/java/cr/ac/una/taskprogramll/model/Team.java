@@ -93,7 +93,7 @@ public class Team {
         this.isQualified = isQualified;
     }
     
-    public String getRuteBallImage() {
+    public String RuteImage() {
         return System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/"+name+".png";
     }
     
