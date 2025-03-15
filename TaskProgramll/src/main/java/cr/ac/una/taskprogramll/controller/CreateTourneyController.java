@@ -23,118 +23,99 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class CreateTourneyController implements Initializable {
 
-    private List<Tourney> tourneyList = new ArrayList<>();
-
     @FXML
     private Button btnCancel;
     @FXML
     private Button btnStart;
     @FXML
-    private Button btnAdjustTeams; // Nuevo botón para ajustar los equipos seleccionados
+    private Button btnAdjustTeams;
     @FXML
     private MFXTextField txtTourneyName;
     @FXML
     private MFXTextField txtMatchTime;
-    private MFXTextField txtTeamCount; // Nuevo campo para ingresar la cantidad deseada de equipos
     @FXML
     private ComboBox<Sport> tglLstSportType;
     @FXML
-    private TableView<Team> tblTeams;
+    private TableView<Team> tblTeams; // Equipos disponibles
     @FXML
-    private TableColumn<Team, String> colTeamName;
+    private TableView<Team> tblTeams1; // Equipos elegidos
     @FXML
-    private TableColumn<Team, String> colSelected;
-
-    private final ObservableList<Team> teamList = FXCollections.observableArrayList();
-    private final ObservableList<Team> selectedTeams = FXCollections.observableArrayList(); // Lista de equipos seleccionados
+    private TableColumn<Team, String> colTeamName; // Columna de equipos disponibles
+    @FXML
+    private TableColumn<Team, String> colTeamName1; // Columna de equipos elegidos
     @FXML
     private MFXSlider sliderTeamCount;
 
+    private final ObservableList<Team> teamList = FXCollections.observableArrayList();
+    private final ObservableList<Team> selectedTeams = FXCollections.observableArrayList();
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Configurar las columnas
+        // Configurar las columnas de ambas tablas
         colTeamName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colSelected.setCellValueFactory(cellData -> {
-            Team team = cellData.getValue(); // Obtener el equipo
-            String status;
+        colTeamName1.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-            if (selectedTeams.contains(team)) {
-                status = "Seleccionado";
-            } else {
-                status = "No seleccionado";
-            }
+        // Asignar las listas a las tablas
+        tblTeams.setItems(teamList); // Tabla de equipos disponibles
+        tblTeams1.setItems(selectedTeams); // Tabla de equipos seleccionados
 
-            return new SimpleStringProperty(status); // Retornar un texto observable
+        // Configuración del slider
+        sliderTeamCount.setMin(32);
+        sliderTeamCount.setMax(64);
+        sliderTeamCount.setValue(32); // Valor inicial
+        sliderTeamCount.valueProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("Slider value: " + newValue.intValue());
         });
 
-        // Asignar lista observable a la tabla
-        tblTeams.setItems(teamList);
-
-        // Clic para seleccionar
+        // Clic en la tabla de equipos disponibles para mover a la tabla seleccionada
         tblTeams.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
                 Team clickedTeam = tblTeams.getSelectionModel().getSelectedItem();
                 if (clickedTeam != null && !selectedTeams.contains(clickedTeam)) {
-                    selectedTeams.add(clickedTeam);
-                    tblTeams.refresh();
-                    System.out.println("Equipo movido a 'Seleccionados': " + clickedTeam.getName());
+                    selectedTeams.add(clickedTeam); // Mover a equipos seleccionados
+                    teamList.remove(clickedTeam); // Remover de equipos disponibles
                 }
             }
         });
 
-        // Doble clic para deseleccionar
-        tblTeams.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                Team clickedTeam = tblTeams.getSelectionModel().getSelectedItem();
-                if (clickedTeam != null && selectedTeams.contains(clickedTeam)) {
-                    selectedTeams.remove(clickedTeam);
-                    tblTeams.refresh();
-                    System.out.println("Equipo movido a 'Seleccionables': " + clickedTeam.getName());
+        // Clic en la tabla de equipos seleccionados para devolver a disponibles
+        tblTeams1.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {
+                Team clickedTeam = tblTeams1.getSelectionModel().getSelectedItem();
+                if (clickedTeam != null) {
+                    teamList.add(clickedTeam); // Mover a equipos disponibles
+                    selectedTeams.remove(clickedTeam); // Remover de equipos seleccionados
                 }
             }
         });
     }
 
-    // Botón para seleccionar todos
-    private void selectAllTeams(ActionEvent event) {
+    @FXML
+    private void adjustSelectedTeamsSlice(ActionEvent event) {
+        int desiredCount = (int) sliderTeamCount.getValue();
+
+        // Asegurar que esté dentro del rango permitido
+        desiredCount = Math.max(32, Math.min(desiredCount, 64));
+
+        // Ajustar los equipos seleccionados según el slider
+        while (selectedTeams.size() > desiredCount) {
+            Team removedTeam = selectedTeams.remove(selectedTeams.size() - 1); // Remover del final
+            teamList.add(removedTeam); // Regresar a disponibles
+        }
+
         for (Team team : teamList) {
+            if (selectedTeams.size() >= desiredCount) {
+                break;
+            }
             if (!selectedTeams.contains(team)) {
-                selectedTeams.add(team);
+                selectedTeams.add(team); // Agregar a seleccionados
+                teamList.remove(team); // Remover de disponibles
             }
         }
-        tblTeams.refresh();
-        System.out.println("Todos los equipos han sido seleccionados.");
+
+        System.out.println("Teams adjusted to: " + selectedTeams.size());
     }
 
-    // Botón para ajustar la cantidad de equipos seleccionados
-    private void adjustSelectedTeams(ActionEvent event) {
-        String input = txtTeamCount.getText().trim(); // Obtener el número ingresado
-        if (isValidNumericInput(input)) {
-            int desiredCount = Integer.parseInt(input);
-
-            // Si ya hay demasiados equipos seleccionados, eliminar los sobrantes
-            while (selectedTeams.size() > desiredCount) {
-                selectedTeams.remove(selectedTeams.size() - 1); // Remover del final
-            }
-
-            // Si faltan equipos, agregar desde los disponibles
-            for (Team team : teamList) {
-                if (selectedTeams.size() >= desiredCount) {
-                    break; // Detener si ya se alcanzó la cantidad deseada
-                }
-                if (!selectedTeams.contains(team)) {
-                    selectedTeams.add(team);
-                }
-            }
-
-            tblTeams.refresh(); // Refrescar la tabla
-            System.out.println("Ajuste completado: " + selectedTeams.size() + " equipos seleccionados.");
-        } else {
-            System.out.println("Por favor, ingresa un número válido para ajustar.");
-        }
-    }
-
-    // Método para crear el torneo
     @FXML
     private void createTourney(ActionEvent event) {
         String tourneyName = txtTourneyName.getText().trim();
@@ -142,47 +123,45 @@ public class CreateTourneyController implements Initializable {
 
         // Validar entradas
         if (tourneyName.isEmpty() || matchTime.isEmpty()) {
-            System.out.println("Advertencia: Todos los campos son obligatorios.");
+            System.out.println("All fields are required.");
             return;
         }
         if (!isValidNumericInput(matchTime)) {
-            System.out.println("Advertencia: El tiempo debe ser un número válido.");
+            System.out.println("Match time must be a valid number.");
             return;
         }
 
         if (selectedTeams.isEmpty()) {
-            System.out.println("Advertencia: Debes seleccionar al menos un equipo.");
+            System.out.println("You must select at least one team.");
             return;
         }
 
         // Crear el torneo
-        int id = tourneyList.size() + 1;
         Sport selectedSport = tglLstSportType.getValue();
+        if (selectedSport == null) {
+            System.out.println("You must select a sport type.");
+            return;
+        }
+
+        int id = (int) (Math.random() * 1000); // Generar un ID de torneo único (puedes cambiar esta lógica)
         List<Team> teamsForTourney = new ArrayList<>(selectedTeams);
 
         Tourney newTourney = new Tourney(id, Integer.parseInt(matchTime), selectedSport, teamsForTourney);
-        tourneyList.add(newTourney);
-
-        System.out.println("Torneo creado con éxito: " + tourneyName + ", Equipos seleccionados: " + teamsForTourney.size());
+        System.out.println("Tourney created successfully: " + tourneyName + " with " + teamsForTourney.size() + " teams.");
     }
 
-    // Método auxiliar para validar números
     private boolean isValidNumericInput(String input) {
         input = input.trim();
         if (input.isEmpty()) {
-            System.out.println("Advertencia: La entrada no puede estar vacía.");
+            System.out.println("Input cannot be empty.");
             return false;
         }
         try {
             int number = Integer.parseInt(input);
-            return number > 0; // Solo permitimos números mayores a 0
+            return number > 0;
         } catch (NumberFormatException e) {
-            System.out.println("Advertencia: La entrada debe ser un número válido.");
+            System.out.println("Input must be a valid number.");
             return false;
         }
-    }
-
-    @FXML
-    private void adjustSelectedTeamsSlice(ActionEvent event) {
     }
 }
