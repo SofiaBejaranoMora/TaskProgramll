@@ -7,11 +7,13 @@ package cr.ac.una.taskprogramll.controller;
 import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
+import cr.ac.una.taskprogramll.util.AppContext;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXRadioButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.utils.SwingFXUtils;
+import java.awt.image.BufferedImage;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,9 +24,12 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
@@ -36,14 +41,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class RegisterMaintenanceController implements Initializable {
 
-    File selectedImage = null;
+    private File selectedImage = null;
     private Sport newSport = null;
+    private Team newTeam = null;
     private List<Sport> sportList = new ArrayList<>();
     private List<Team> teamList = new ArrayList<>();
     private FileManager fileManeger = new FileManager();
     private File file;
     private Image image = null;
-    private String ruteImage= System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
+    private String ruteImage = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
 
     @FXML
     private MFXTextField txtName;
@@ -64,7 +70,7 @@ public class RegisterMaintenanceController implements Initializable {
     private MFXButton btnSelectImage;
 
     @FXML
-    private MFXComboBox<Team> cmbTeam;
+    private MFXComboBox<String> cmbSport;
 
     @FXML
     private ToggleGroup grpFiltro;
@@ -83,33 +89,28 @@ public class RegisterMaintenanceController implements Initializable {
 
     @FXML
     void OnActionAccept(ActionEvent event) {
-        String name = null;
-        if ((!txtName.getText().trim().isEmpty()) && (mgvImage.getImage() != null)) {
-            if ((RadioButton) grpFiltro.getSelectedToggle() == rbtSport) {
-                name = txtName.getText();
-                if (!CheckedExistsSport(name)) {
-                    newSport = new Sport(name, name); //si se mantiene asi puedo ir a cambiar el contructor solo para que entre name
-                    sportList.add(newSport);
-                    fileManeger.serialization(sportList, "Sport");
-                    image=mgvImage.getImage();
-                    SaveImage(name);
-                    //RelocateImage(name);
-                    //inicializar el combox deportes
-                }//Cuando el profe de los mensajes debo colocar un else y un mensaje de que ese equipo ya existe
-                else {
-                    labHead.setText("no se puede");
-                }
-            } else {
+        String name = txtName.getText().trim();
+        if ((!name.isEmpty()) && (mgvImage.getImage() != null)) {
 
+            if ((RadioButton) grpFiltro.getSelectedToggle() == rbtSport) { // pasar los if para ver si es registro dentrp de su respectivo metodo
+                SportRegistration(name);
+            } else if (cmbSport.getValue() != null) {
+                Sport type = returnCmbSportValue();
+                if (!CheckedExistsTeam(name, type)) {
+                    newTeam = new Team(name, type);
+                    teamList.add(newTeam);
+                    fileManeger.serialization(teamList, "Team");
+                    image = mgvImage.getImage();
+                    SaveImage(name);
+                    ClearPanel();
+                }
             }
-            newSport = null;
-            ClearLeftPanel();
         }
     }
 
     @FXML
     void OnActionBtnCancel(ActionEvent event) {
-        ClearLeftPanel();
+        ClearPanel(); //Tambien tengo que poner el hasTeamList en falso cuando cierre
     }
 
     @FXML
@@ -124,11 +125,14 @@ public class RegisterMaintenanceController implements Initializable {
 
     @FXML
     void OnActionBtnPhoto(ActionEvent event) {
-
+        BufferedImage bufferedImage = (BufferedImage) AppContext.getInstance().get("bufferedImageTeam");
+        if (bufferedImage != null) {
+            mgvImage.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
+        }
     }
 
     @FXML
-    void OnActionCmbTeam(ActionEvent event) {
+    void OnActionCmbSport(ActionEvent event) {
 
     }
 
@@ -142,10 +146,23 @@ public class RegisterMaintenanceController implements Initializable {
         EnabledTeam(true);
     }
 
+    public void SportRegistration(String name) {
+        name = txtName.getText();
+        if (!CheckedExistsSport(name)) {
+            newSport = new Sport(name);
+            sportList.add(newSport);
+            fileManeger.serialization(sportList, "Sport");
+            image = mgvImage.getImage();
+            RelocateImage(name);
+            StartCmbSportType();
+            ClearPanel();
+        }//Cuando el profe de los mensajes debo colocar un else y un mensaje de que ese equipo ya existe
+    }
+
     public void EnabledTeam(Boolean enabled) {
-        cmbTeam.setDisable(!enabled);
-        cmbTeam.setVisible(enabled);
-        cmbTeam.setManaged(enabled);
+        cmbSport.setDisable(!enabled);
+        cmbSport.setVisible(enabled);
+        cmbSport.setManaged(enabled);
         btnPhoto.setDisable(!enabled);
         btnPhoto.setManaged(enabled);
         btnPhoto.setVisible(enabled);
@@ -157,26 +174,45 @@ public class RegisterMaintenanceController implements Initializable {
         btnDelete.setVisible(enabled);
     }
 
-    public void ClearLeftPanel() {
+    public void ClearPanel() {
         // falta indicar el radion button con el que se inicia
         //tambien siempre iniciar en combox
         txtName.clear();
-        cmbTeam.setValue(null);
-        cmbTeam.getSelectionModel().clearSelection();
+        cmbSport.setValue(null);
+        cmbSport.getSelectionModel().clearSelection();
         mgvImage.setImage(null);
+        newSport = null;
+        newTeam = null;
+        image = null;
     }
 
-    public void InitialConditionsLefPanel() {
+    public void InitialConditionsPanel() {
         file = new File("Sport.txt");
-        if (file.exists()) {
+        if ((file.exists()) && (file.length() > 0)) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
+            StartCmbSportType();
         }
+        file = new File("Team.txt");
+        if ((file.exists()) && (file.length() > 0)) {
+            teamList = fileManeger.deserialization("Team", Team.class);
+        }
+    }
 
+    public Boolean CheckedExistsTeam(String name, Sport sport) {
+        name = name.toUpperCase().replaceAll("\\s+", "");
+        String nameCurrentTeam;
+        for (Team currentTeam : teamList) {
+            nameCurrentTeam = currentTeam.getName().toUpperCase().replaceAll("\\s+", "");
+            if ((currentTeam.getSportType().getName().equals(sport.getName())) && (nameCurrentTeam.equals(name))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Boolean CheckedExistsSport(String name) {
-        for (Sport sport : sportList) {
-            if (sport.getName().toUpperCase().replaceAll("\\s+", "").equals(name.toUpperCase().replaceAll("\\s+", ""))) {
+        for (Sport currentTeam : sportList) {
+            if (currentTeam.getName().toUpperCase().replaceAll("\\s+", "").equals(name.toUpperCase().replaceAll("\\s+", ""))) {
                 return true;
             }
         }
@@ -196,35 +232,52 @@ public class RegisterMaintenanceController implements Initializable {
     }
 
     public void RelocateImage(String name) {
-        String newRute =ruteImage + name + ".png";
+        String newRute = ruteImage + name + ".png";
         try {
             Path originalSourceImage = selectedImage.toPath();
             Path newDestinationImage = new File(newRute).toPath();
             Files.copy(originalSourceImage, newDestinationImage, StandardCopyOption.REPLACE_EXISTING);
-            image = new Image(newRute);
+            image = new Image("file:" +newRute);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void SaveImage(String name) {
-        String newRute =  ruteImage+ name + ".png";
+        String newRute = ruteImage + name + ".png";
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(mgvImage.getImage(), null), "PNG", new File(newRute));
-        } 
-        catch (IOException e) {
-
+        } catch (IOException e) {
         }
+    }
+
+    public void StartCmbSportType() {
+        List<String> TypeSportList = new ArrayList<>();
+        ObservableList<String> items = null;
+        for (Sport currentSport : sportList) {
+            TypeSportList.add(currentSport.getName());
+        }
+        items = FXCollections.observableArrayList(TypeSportList);
+        cmbSport.setItems(items);
+    }
+
+    public Sport returnCmbSportValue() {
+        Sport sport = null;
+        for (Sport currentSport : sportList) {
+            if (currentSport.getName().toUpperCase().replaceAll("\\s+", "").equals(cmbSport.getValue().toUpperCase().replaceAll("\\s+", ""))) {
+                sport = currentSport;
+                return sport;
+            }
+        }
+        return sport;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         rbtSport.setSelected(true);
-        InitialConditionsLefPanel();
+        InitialConditionsPanel();
         OnActionRbtSport(null); //la accion del button
         EnabledMaintenance(false);
-        //mgvImage.setImage( new Image("D:\\Git\\TaskProgramll\\TaskProgramll\\src\\main\\resources\\cr\\ac\\una\\taskprogramll\\resources\\balon.jpg"));
-
     }
 
 }

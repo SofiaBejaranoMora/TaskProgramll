@@ -4,6 +4,8 @@
  */
 package cr.ac.una.taskprogramll.model;
 
+import java.io.File;
+
 public class Team {
 
     private String name;
@@ -12,8 +14,26 @@ public class Team {
     private int draw;
     private int wins;
     private boolean isQualified;
+    private int id;
 
     public Team() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Team(String name, Sport sportType) {
+        this.name = name;
+        this.sportType = sportType;
+        this.nameTeamImage= name + ".png";
+        this.draw=0;
+        this.wins=0;
+        isQualified=false;
     }
 
     public Team(String name, String nameTeamImage, Sport sportType, int draw, int wins, boolean isQualified) {
@@ -38,7 +58,7 @@ public class Team {
     }
 
     public void setNameTeamImage(String nameTeamImage) {
-        this.nameTeamImage = nameTeamImage+".pgn";
+        this.nameTeamImage = nameTeamImage;
     }
 
     public Sport getSportType() {
@@ -71,6 +91,19 @@ public class Team {
 
     public void setIsQualified(boolean isQualified) {
         this.isQualified = isQualified;
+    }
+    
+    public String getRuteBallImage() {
+        return System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/"+name+".png";
+    }
+    
+    public void ChangeName(String name) {
+        String rute = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
+        File imagenOriginal = new File(rute + this.name + ".png");
+        File imagenNueva = new File(rute + name + ".png");
+        imagenOriginal.renameTo(imagenNueva);
+        this.name = name + ".png";
+        this.nameTeamImage = name + ".png";
     }
 
 }

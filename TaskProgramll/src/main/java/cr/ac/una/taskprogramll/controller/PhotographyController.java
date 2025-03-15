@@ -6,6 +6,7 @@ package cr.ac.una.taskprogramll.controller;
 
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
+import cr.ac.una.taskprogramll.util.AppContext;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.utils.SwingFXUtils;
 import java.awt.Dimension;
@@ -57,11 +58,14 @@ public class PhotographyController implements Initializable {
 
     @FXML
     private void onActionBtnSavePhoto(ActionEvent event) {
-        
+        AppContext.getInstance().set("bufferedImageTeam", bufferedImage);
+        close();
     }
 
     @FXML
     private void OnActionBtnCancel(ActionEvent event) {
+        bufferedImage=null;
+        AppContext.getInstance().set("bufferedImageTeam", bufferedImage);
         close();
     }
 

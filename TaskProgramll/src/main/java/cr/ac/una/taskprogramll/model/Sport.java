@@ -4,17 +4,33 @@
  */
 package cr.ac.una.taskprogramll.model;
 
+import java.io.File;
+
 public class Sport {
 
     private String name;
     private String nameBallImage;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Sport() {
     }
 
+    public Sport(String name) {
+        this.name = name;
+        this.nameBallImage = name;
+    }
+
     public Sport(String name, String nameBallImage) {
         this.name = name;
-        this.nameBallImage = nameBallImage +".png";
+        this.nameBallImage = nameBallImage;
     }
 
     public String getName() {
@@ -30,7 +46,20 @@ public class Sport {
     }
 
     public void setNameBallImage(String nameBallImage) {
-        this.nameBallImage = nameBallImage+".png";
+        this.nameBallImage = nameBallImage;
+    }
+
+    public String RuteBallImage() {
+        return System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/"+name+".png";
+    }
+    
+    public void ChangeName(String name) {
+        String rute = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
+        File imagenOriginal = new File(rute + this.name + ".png");
+        File imagenNueva = new File(rute + name + ".png");
+        imagenOriginal.renameTo(imagenNueva);
+        this.name = name;
+        this.nameBallImage = name;
     }
 
 }
