@@ -1,6 +1,6 @@
-
 package cr.ac.una.taskprogramll.controller;
 
+import cr.ac.una.taskprogramll.App;
 import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
@@ -21,6 +21,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ThreadLocalRandom;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -46,6 +47,7 @@ public class RegisterMaintenanceController implements Initializable {
     private Image image = null;
     private String ruteImage = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
     private Boolean isSport = false;
+    private Boolean isMaintenace = false;
 
     @FXML
     private MFXTextField txtName;
@@ -90,12 +92,12 @@ public class RegisterMaintenanceController implements Initializable {
             name = txtName.getText();
             if (isSport) {
                 if (!CheckedExistsSport(name)) {
-                    SportRegistration(name);
+                    Sport(name);
                 }
             } else if (cmbSport.getValue() != null) {
                 Sport type = cmbSport.getValue();
                 if (!CheckedExistsTeam(name, type)) {
-                    TeamRegistration(name, type);
+                    Team(name, type);
                 }
             }
         }
@@ -117,7 +119,8 @@ public class RegisterMaintenanceController implements Initializable {
     }
 
     @FXML
-    void OnActionBtnPhoto(ActionEvent event) {
+    void OnActionBtnPhoto(ActionEvent event) throws IOException {
+        App.setRoot("Photography");
         BufferedImage bufferedImage = (BufferedImage) AppContext.getInstance().get("bufferedImageTeam");
         if (bufferedImage != null) {
             mgvImage.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
@@ -139,8 +142,24 @@ public class RegisterMaintenanceController implements Initializable {
         EnabledTeam(true);
     }
 
+    public void Team(String name, Sport type) {
+        if (isMaintenace) {
+
+        } else {
+            TeamRegistration(name, type);
+        }
+    }
+
+    public void Sport(String name) {
+        if (isMaintenace) {
+
+        } else {
+            SportRegistration(name);
+        }
+    }
+
     public void SportRegistration(String name) {
-        newSport = new Sport(name);
+        newSport = new Sport(name,CreateIdSport());
         sportList.add(newSport);
         fileManeger.serialization(sportList, "Sport");
         image = mgvImage.getImage();// revisar y quitar si es necesario
@@ -150,7 +169,7 @@ public class RegisterMaintenanceController implements Initializable {
     }
 
     public void TeamRegistration(String name, Sport type) {
-        newTeam = new Team(name, type);
+        newTeam = new Team(name, type,CreateIdTeam());
         teamList.add(newTeam);
         fileManeger.serialization(teamList, "Team");
         image = mgvImage.getImage();
@@ -163,7 +182,7 @@ public class RegisterMaintenanceController implements Initializable {
         String nameCurrentTeam;
         for (Team currentTeam : teamList) {
             nameCurrentTeam = currentTeam.getName().toUpperCase().replaceAll("\\s+", "");
-            if ((currentTeam.getSportType().getName().equals(sport.getName())) && (nameCurrentTeam.equals(name))) {
+            if ((currentTeam.getSportType().getId()==sport.getId())&& (nameCurrentTeam.equals(name))) {
                 return true;
             }
         }
@@ -177,6 +196,12 @@ public class RegisterMaintenanceController implements Initializable {
             }
         }
         return false;
+    }
+
+    public void EnabledMaintenance(Boolean enabled) {
+        btnDelete.setDisable(!enabled);
+        btnDelete.setManaged(enabled);
+        btnDelete.setVisible(enabled);
     }
 
     public void SelectImage() {
@@ -215,7 +240,41 @@ public class RegisterMaintenanceController implements Initializable {
         ObservableList<Sport> items = FXCollections.observableArrayList(sportList);
         cmbSport.setItems(items);
     }
+
+    public int CreateIdTeam() {
+        Boolean isUnique = false;
+        int id = 0;
+        do {
+            id = ThreadLocalRandom.current().nextInt(1, 10000);
+            isUnique = true;
+            for (Team currentTeam : teamList) {
+                if (currentTeam.getId() == id) {
+                    isUnique = false;
+                    break; 
+                }
+            }
+        } while (!isUnique);
+
+        return id;
+    }
     
+    public int CreateIdSport() {
+        Boolean isUnique = false;
+        int id = 0;
+        do {
+            id = ThreadLocalRandom.current().nextInt(1, 10000);
+            isUnique = true;
+            for (Sport currentTeam : sportList) {
+                if (currentTeam.getId() == id) {
+                    isUnique = false;
+                    break; 
+                }
+            }
+        } while (!isUnique);
+
+        return id;
+    }
+
     public void EnabledTeam(Boolean enabled) {
         cmbSport.setDisable(!enabled);
         cmbSport.setVisible(enabled);
@@ -224,7 +283,7 @@ public class RegisterMaintenanceController implements Initializable {
         btnPhoto.setManaged(enabled);
         btnPhoto.setVisible(enabled);
     }
-    
+
     public void InitialConditionsPanel() {
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {
@@ -236,7 +295,7 @@ public class RegisterMaintenanceController implements Initializable {
             teamList = fileManeger.deserialization("Team", Team.class);
         }
     }
-    
+
     public void ClearPanel() {
         // falta indicar el radion button con el que se inicia
         //tambien siempre iniciar en combox
@@ -254,6 +313,7 @@ public class RegisterMaintenanceController implements Initializable {
         rbtSport.setSelected(true);
         InitialConditionsPanel();
         OnActionRbtSport(null); //la accion del button
+        EnabledMaintenance(false);
     }
 
 }

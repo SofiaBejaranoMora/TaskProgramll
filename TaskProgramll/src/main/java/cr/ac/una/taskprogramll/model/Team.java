@@ -27,22 +27,24 @@ public class Team {
         this.id = id;
     }
 
-    public Team(String name, Sport sportType) {
+    public Team(String name, Sport sportType,int id) {
         this.name = name;
         this.sportType = sportType;
         this.nameTeamImage= name + ".png";
+        this.id=id;
         this.draw=0;
         this.wins=0;
         isQualified=false;
     }
 
-    public Team(String name, String nameTeamImage, Sport sportType, int draw, int wins, boolean isQualified) {
+    public Team(String name, String nameTeamImage, Sport sportType, int draw, int wins, boolean isQualified,int id) {
         this.name = name;
         this.nameTeamImage = nameTeamImage + ".png";
         this.sportType = sportType;
         this.draw = draw;
         this.wins = wins;
         this.isQualified = isQualified;
+        this.id=id;
     }
 
     public String getName() {

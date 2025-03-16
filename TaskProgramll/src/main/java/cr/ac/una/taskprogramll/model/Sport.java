@@ -23,9 +23,10 @@ public class Sport {
     public Sport() {
     }
 
-    public Sport(String name) {
+    public Sport(String name, int id) {
         this.name = name;
         this.nameBallImage = name;
+        this.id=id;
     }
 
     public Sport(String name, String nameBallImage) {
