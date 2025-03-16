@@ -105,5 +105,9 @@ public class Team {
         this.name = name + ".png";
         this.nameTeamImage = name + ".png";
     }
-
+    
+    @Override
+    public String toString(){
+        return name;
+    }
 }

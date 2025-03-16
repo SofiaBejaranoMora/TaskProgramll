@@ -66,7 +66,7 @@ public class RegisterMaintenanceController implements Initializable {
     private MFXButton btnSelectImage;
 
     @FXML
-    private MFXComboBox<String> cmbSport;
+    private MFXComboBox<Sport> cmbSport;
 
     @FXML
     private ToggleGroup grpFiltro;
@@ -93,7 +93,7 @@ public class RegisterMaintenanceController implements Initializable {
                     SportRegistration(name);
                 }
             } else if (cmbSport.getValue() != null) {
-                Sport type = returnCmbSportValue();
+                Sport type = cmbSport.getValue();
                 if (!CheckedExistsTeam(name, type)) {
                     TeamRegistration(name, type);
                 }
@@ -145,7 +145,7 @@ public class RegisterMaintenanceController implements Initializable {
         fileManeger.serialization(sportList, "Sport");
         image = mgvImage.getImage();// revisar y quitar si es necesario
         RelocateImage(name);
-        StartCmbSportType();
+        StartComboxSportType();
         ClearPanel();
     }
 
@@ -178,8 +178,6 @@ public class RegisterMaintenanceController implements Initializable {
         }
         return false;
     }
-    
-    
 
     public void SelectImage() {
         JFileChooser jFileChooser = new JFileChooser();
@@ -213,25 +211,9 @@ public class RegisterMaintenanceController implements Initializable {
         }
     }
 
-    public void StartCmbSportType() {
-        List<String> TypeSportList = new ArrayList<>();
-        ObservableList<String> items = null;
-        for (Sport currentSport : sportList) {
-            TypeSportList.add(currentSport.getName());
-        }
-        items = FXCollections.observableArrayList(TypeSportList);
+    public void StartComboxSportType() {
+        ObservableList<Sport> items = FXCollections.observableArrayList(sportList);
         cmbSport.setItems(items);
-    }
-
-    public Sport returnCmbSportValue() {
-        Sport sport = null;
-        for (Sport currentSport : sportList) {
-            if (currentSport.getName().toUpperCase().replaceAll("\\s+", "").equals(cmbSport.getValue().toUpperCase().replaceAll("\\s+", ""))) {
-                sport = currentSport;
-                return sport;
-            }
-        }
-        return sport;
     }
     
     public void EnabledTeam(Boolean enabled) {
@@ -247,7 +229,7 @@ public class RegisterMaintenanceController implements Initializable {
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
-            StartCmbSportType();
+            StartComboxSportType();
         }
         file = new File("Team.txt");
         if ((file.exists()) && (file.length() > 0)) {
