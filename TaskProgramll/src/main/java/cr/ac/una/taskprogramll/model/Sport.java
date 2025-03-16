@@ -49,7 +49,7 @@ public class Sport {
         this.nameBallImage = nameBallImage;
     }
 
-    public String RuteBallImage() {
+    public String RuteImage() {
         return System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/"+name+".png";
     }
     
@@ -60,6 +60,11 @@ public class Sport {
         imagenOriginal.renameTo(imagenNueva);
         this.name = name;
         this.nameBallImage = name;
+    }
+    
+    @Override
+    public String toString(){
+        return name;
     }
 
 }

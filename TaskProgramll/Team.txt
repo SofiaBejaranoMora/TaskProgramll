@@ -1,0 +1,1 @@
+[{"name":"dawdqawedaw","nameTeamImage":"dawdqawedaw.png","sportType":{"name":"futbol.","nameBallImage":"futbol.","id":0},"draw":0,"wins":0,"isQualified":false,"id":0}]

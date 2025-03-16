@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
+
 package cr.ac.una.taskprogramll.controller;
 
 import cr.ac.una.taskprogramll.model.FileManager;
@@ -161,45 +158,6 @@ public class RegisterMaintenanceController implements Initializable {
         ClearPanel();
     }
 
-    public void EnabledTeam(Boolean enabled) {
-        cmbSport.setDisable(!enabled);
-        cmbSport.setVisible(enabled);
-        cmbSport.setManaged(enabled);
-        btnPhoto.setDisable(!enabled);
-        btnPhoto.setManaged(enabled);
-        btnPhoto.setVisible(enabled);
-    }
-
-    public void EnabledMaintenance(Boolean enabled) {
-        btnDelete.setDisable(!enabled);
-        btnDelete.setManaged(enabled);
-        btnDelete.setVisible(enabled);
-    }
-
-    public void ClearPanel() {
-        // falta indicar el radion button con el que se inicia
-        //tambien siempre iniciar en combox
-        txtName.clear();
-        cmbSport.setValue(null);
-        cmbSport.getSelectionModel().clearSelection();
-        mgvImage.setImage(null);
-        newSport = null;
-        newTeam = null;
-        image = null;
-    }
-
-    public void InitialConditionsPanel() {
-        file = new File("Sport.txt");
-        if ((file.exists()) && (file.length() > 0)) {
-            sportList = fileManeger.deserialization("Sport", Sport.class);
-            StartCmbSportType();
-        }
-        file = new File("Team.txt");
-        if ((file.exists()) && (file.length() > 0)) {
-            teamList = fileManeger.deserialization("Team", Team.class);
-        }
-    }
-
     public Boolean CheckedExistsTeam(String name, Sport sport) {
         name = name.toUpperCase().replaceAll("\\s+", "");
         String nameCurrentTeam;
@@ -220,6 +178,8 @@ public class RegisterMaintenanceController implements Initializable {
         }
         return false;
     }
+    
+    
 
     public void SelectImage() {
         JFileChooser jFileChooser = new JFileChooser();
@@ -273,13 +233,45 @@ public class RegisterMaintenanceController implements Initializable {
         }
         return sport;
     }
+    
+    public void EnabledTeam(Boolean enabled) {
+        cmbSport.setDisable(!enabled);
+        cmbSport.setVisible(enabled);
+        cmbSport.setManaged(enabled);
+        btnPhoto.setDisable(!enabled);
+        btnPhoto.setManaged(enabled);
+        btnPhoto.setVisible(enabled);
+    }
+    
+    public void InitialConditionsPanel() {
+        file = new File("Sport.txt");
+        if ((file.exists()) && (file.length() > 0)) {
+            sportList = fileManeger.deserialization("Sport", Sport.class);
+            StartCmbSportType();
+        }
+        file = new File("Team.txt");
+        if ((file.exists()) && (file.length() > 0)) {
+            teamList = fileManeger.deserialization("Team", Team.class);
+        }
+    }
+    
+    public void ClearPanel() {
+        // falta indicar el radion button con el que se inicia
+        //tambien siempre iniciar en combox
+        txtName.clear();
+        cmbSport.setValue(null);
+        cmbSport.getSelectionModel().clearSelection();
+        mgvImage.setImage(null);
+        newSport = null;
+        newTeam = null;
+        image = null;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         rbtSport.setSelected(true);
         InitialConditionsPanel();
         OnActionRbtSport(null); //la accion del button
-        EnabledMaintenance(false);
     }
 
 }
