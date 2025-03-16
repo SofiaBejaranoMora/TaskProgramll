@@ -1,10 +1,12 @@
 package cr.ac.una.taskprogramll.controller;
 
+import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import io.github.palexdev.materialfx.controls.MFXSlider;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import java.io.File;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,6 +24,7 @@ import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
 
 public class CreateTourneyController implements Initializable {
+   
 
     @FXML
     private Button btnCancel;
@@ -46,18 +49,25 @@ public class CreateTourneyController implements Initializable {
     @FXML
     private MFXSlider sliderTeamCount;
 
+    private FileManager fileManeger = new FileManager();
     private final ObservableList<Team> teamList = FXCollections.observableArrayList();
     private final ObservableList<Team> selectedTeams = FXCollections.observableArrayList();
+    private List<Sport> sportList=new ArrayList<>();
+    private File file;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // Configurar las columnas de ambas tablas
         colTeamName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colTeamName1.setCellValueFactory(new PropertyValueFactory<>("name"));
-
+        
         // Asignar las listas a las tablas
         tblTeams.setItems(teamList); // Tabla de equipos disponibles
         tblTeams1.setItems(selectedTeams); // Tabla de equipos seleccionados
+        
+         // Añadir equipos manualmente para probar
+    teamList.add(new Team("Team A", new Sport("Soccer")));
+    teamList.add(new Team("Team B", new Sport("Basketball")));
 
         // Configuración del slider
         sliderTeamCount.setMin(32);
@@ -164,4 +174,20 @@ public class CreateTourneyController implements Initializable {
             return false;
         }
     }
+    public void initialiceSportList(){
+        file = new File("Sport.txt");
+        if ((file.exists()) && (file.length() > 0)) {
+            sportList = fileManeger.deserialization("Sport", Sport.class);
+            StartComboxSportType();
+        }
+        
+    }
+    public void StartComboxSportType(){
+        ObservableList<Sport> items=FXCollections.observableArrayList(sportList);
+        tglLstSportType.setItems(items);
+    }
+    
+    
+   
 }
+
