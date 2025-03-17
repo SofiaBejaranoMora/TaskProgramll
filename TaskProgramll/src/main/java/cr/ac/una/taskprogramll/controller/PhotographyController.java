@@ -59,7 +59,7 @@ public class PhotographyController implements Initializable {
     @FXML
     private void onActionBtnSavePhoto(ActionEvent event) {
         AppContext.getInstance().set("bufferedImageTeam", bufferedImage);
-        close();
+        //close();
     }
 
     @FXML

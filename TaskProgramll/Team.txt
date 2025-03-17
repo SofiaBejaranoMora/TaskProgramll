@@ -1,1 +1,1 @@
-[{"name":"sofia","nameTeamImage":"sofia.png","sportType":{"name":"sofi","nameBallImage":"sofi","id":0},"draw":0,"wins":0,"isQualified":false,"id":0}]
+[{"name":"sofia","nameTeamImage":"sofia.png","sportType":{"name":"sofia","nameBallImage":"sofia","id":3506},"draw":0,"wins":0,"isQualified":false,"id":604}]
