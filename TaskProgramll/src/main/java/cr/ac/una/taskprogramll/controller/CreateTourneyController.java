@@ -21,10 +21,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.beans.property.SimpleStringProperty;
 
 public class CreateTourneyController implements Initializable {
-   
 
     @FXML
     private Button btnCancel;
@@ -41,153 +39,176 @@ public class CreateTourneyController implements Initializable {
     @FXML
     private TableView<Team> tblTeams; // Equipos disponibles
     @FXML
-    private TableView<Team> tblTeams1; // Equipos elegidos
+    private TableView<Team> tblTeams1; // Equipos elegidos (restaurado el nombre original)
     @FXML
     private TableColumn<Team, String> colTeamName; // Columna de equipos disponibles
     @FXML
-    private TableColumn<Team, String> colTeamName1; // Columna de equipos elegidos
+    private TableColumn<Team, String> colTeamName1; // Columna de equipos elegidos (restaurado el nombre original)
     @FXML
     private MFXSlider sliderTeamCount;
 
-    private FileManager fileManeger = new FileManager();
-    private final ObservableList<Team> teamList = FXCollections.observableArrayList();
+    private final FileManager fileManager = new FileManager();
+    private final ObservableList<Team> availableTeams = FXCollections.observableArrayList();
     private final ObservableList<Team> selectedTeams = FXCollections.observableArrayList();
-    private List<Sport> sportList=new ArrayList<>();
-    private File file;
+    private final List<Sport> sportList = new ArrayList<>();
+    private final List<Tourney> tourneyList = new ArrayList<>();
+    private File sportFile;
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // Configurar las columnas de ambas tablas
-        colTeamName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colTeamName1.setCellValueFactory(new PropertyValueFactory<>("name"));
-        
-        // Asignar las listas a las tablas
-        tblTeams.setItems(teamList); // Tabla de equipos disponibles
-        tblTeams1.setItems(selectedTeams); // Tabla de equipos seleccionados
-        
-         // Añadir equipos manualmente para probar
-    teamList.add(new Team("Team A", new Sport("Soccer")));
-    teamList.add(new Team("Team B", new Sport("Basketball")));
-
-        // Configuración del slider
-        sliderTeamCount.setMin(32);
-        sliderTeamCount.setMax(64);
-        sliderTeamCount.setValue(32); // Valor inicial
-        sliderTeamCount.valueProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println("Slider value: " + newValue.intValue());
-        });
-
-        // Clic en la tabla de equipos disponibles para mover a la tabla seleccionada
-        tblTeams.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {
-                Team clickedTeam = tblTeams.getSelectionModel().getSelectedItem();
-                if (clickedTeam != null && !selectedTeams.contains(clickedTeam)) {
-                    selectedTeams.add(clickedTeam); // Mover a equipos seleccionados
-                    teamList.remove(clickedTeam); // Remover de equipos disponibles
-                }
-            }
-        });
-
-        // Clic en la tabla de equipos seleccionados para devolver a disponibles
-        tblTeams1.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {
-                Team clickedTeam = tblTeams1.getSelectionModel().getSelectedItem();
-                if (clickedTeam != null) {
-                    teamList.add(clickedTeam); // Mover a equipos disponibles
-                    selectedTeams.remove(clickedTeam); // Remover de equipos seleccionados
-                }
-            }
-        });
+  @Override
+public void initialize(URL url, ResourceBundle rb) {
+    try {
+        configureTableColumns();
+        assignTableItems();
+        setupSlider();
+        setupTeamSelection();
+        initializeSportList();
+    } catch (Exception e) {
+        System.err.println("Error during initialization: " + e.getMessage());
+        e.printStackTrace();
     }
+}
 
+private void configureTableColumns() {
+    colTeamName.setCellValueFactory(new PropertyValueFactory<>("name"));
+    colTeamName1.setCellValueFactory(new PropertyValueFactory<>("name"));
+}
+
+private void assignTableItems() {
+    tblTeams.setItems(availableTeams);
+    tblTeams1.setItems(selectedTeams);
+}
+
+private void setupSlider() {
+    sliderTeamCount.setMin(32);
+    sliderTeamCount.setMax(64);
+    sliderTeamCount.setValue(32);
+    sliderTeamCount.valueProperty().addListener((observable, oldValue, newValue) ->
+        System.out.println("Slider value changed to: " + newValue.intValue())
+    );
+}
+
+// Este ya lo teníamos separado, lo mantenemos
+private void setupTeamSelection() {
+    tblTeams.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 1) {
+            Team selectedTeam = tblTeams.getSelectionModel().getSelectedItem();
+            if (selectedTeam != null && !selectedTeams.contains(selectedTeam)) {
+                selectedTeams.add(selectedTeam);
+                availableTeams.remove(selectedTeam);
+            }
+        }
+    });
+
+    tblTeams1.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 1) {
+            Team selectedTeam = tblTeams1.getSelectionModel().getSelectedItem();
+            if (selectedTeam != null) {
+                availableTeams.add(selectedTeam);
+                selectedTeams.remove(selectedTeam);
+            }
+        }
+    });
+}
+
+// Este ya lo teníamos, lo mantenemos igual
+private void initializeSportList() {
+    sportFile = new File("Sport.txt");
+    if (sportFile.exists() && sportFile.length() > 0) {
+        try {
+            sportList.addAll(fileManager.deserialization("Sport", Sport.class));
+            tglLstSportType.setItems(FXCollections.observableArrayList(sportList));
+            System.out.println("Sport list loaded successfully: " + sportList.size() + " sports.");
+        } catch (Exception e) {
+            System.err.println("Error loading sport list: " + e.getMessage());
+            e.printStackTrace();
+        }
+    } else {
+        System.err.println("Sport.txt file does not exist or is empty.");
+    }
+}
     @FXML
     private void adjustSelectedTeamsSlice(ActionEvent event) {
-        int desiredCount = (int) sliderTeamCount.getValue();
+        try {
+            int desiredCount = (int) sliderTeamCount.getValue();
+            desiredCount = Math.max(32, Math.min(desiredCount, 64));
 
-        // Asegurar que esté dentro del rango permitido
-        desiredCount = Math.max(32, Math.min(desiredCount, 64));
-
-        // Ajustar los equipos seleccionados según el slider
-        while (selectedTeams.size() > desiredCount) {
-            Team removedTeam = selectedTeams.remove(selectedTeams.size() - 1); // Remover del final
-            teamList.add(removedTeam); // Regresar a disponibles
-        }
-
-        for (Team team : teamList) {
-            if (selectedTeams.size() >= desiredCount) {
-                break;
+            while (selectedTeams.size() > desiredCount) {
+                Team removedTeam = selectedTeams.remove(selectedTeams.size() - 1);
+                availableTeams.add(removedTeam);
             }
-            if (!selectedTeams.contains(team)) {
-                selectedTeams.add(team); // Agregar a seleccionados
-                teamList.remove(team); // Remover de disponibles
-            }
-        }
 
-        System.out.println("Teams adjusted to: " + selectedTeams.size());
+            for (Team team : new ArrayList<>(availableTeams)) {
+                if (selectedTeams.size() >= desiredCount) break;
+                if (!selectedTeams.contains(team)) {
+                    selectedTeams.add(team);
+                    availableTeams.remove(team);
+                }
+            }
+
+            System.out.println("Teams adjusted to: " + selectedTeams.size());
+        } catch (Exception e) {
+            System.err.println("Error adjusting teams: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private String checkInputs(String name, String time, ObservableList<Team> teams, Sport selectedSport) {
+        if (name.isEmpty() || time.isEmpty()) return "All fields are required.";
+        if (!isValidNumericInput(time)) return "Match time must be a valid number.";
+        if (teams.isEmpty()) return "You must select at least one team.";
+        if (selectedSport == null) return "You must select a sport type.";
+        return null;
     }
 
     @FXML
     private void createTourney(ActionEvent event) {
-        String tourneyName = txtTourneyName.getText().trim();
-        String matchTime = txtMatchTime.getText().trim();
+        try {
+            String tourneyName = txtTourneyName.getText().trim();
+            String matchTime = txtMatchTime.getText().trim();
+            Sport selectedSport = tglLstSportType.getValue();
 
-        // Validar entradas
-        if (tourneyName.isEmpty() || matchTime.isEmpty()) {
-            System.out.println("All fields are required.");
-            return;
+            String errorMessage = checkInputs(tourneyName, matchTime, selectedTeams, selectedSport);
+            if (errorMessage != null) {
+                System.err.println(errorMessage);
+                return;
+            }
+
+            int id = generateTourneyId();
+            Tourney newTourney = new Tourney(id, Integer.parseInt(matchTime), selectedSport, new ArrayList<>(selectedTeams));
+            tourneyList.add(newTourney);
+            System.out.println("Tourney created successfully: " + tourneyName + " with " + selectedTeams.size() + " teams.");
+            resetInputs();
+        } catch (Exception e) {
+            System.err.println("Error creating tourney: " + e.getMessage());
+            e.printStackTrace();
         }
-        if (!isValidNumericInput(matchTime)) {
-            System.out.println("Match time must be a valid number.");
-            return;
-        }
+    }
 
-        if (selectedTeams.isEmpty()) {
-            System.out.println("You must select at least one team.");
-            return;
-        }
-
-        // Crear el torneo
-        Sport selectedSport = tglLstSportType.getValue();
-        if (selectedSport == null) {
-            System.out.println("You must select a sport type.");
-            return;
-        }
-
-        int id = (int) (Math.random() * 1000); // Generar un ID de torneo único (puedes cambiar esta lógica)
-        List<Team> teamsForTourney = new ArrayList<>(selectedTeams);
-
-        Tourney newTourney = new Tourney(id, Integer.parseInt(matchTime), selectedSport, teamsForTourney);
-        System.out.println("Tourney created successfully: " + tourneyName + " with " + teamsForTourney.size() + " teams.");
+    private int generateTourneyId() {
+        if (tourneyList.isEmpty()) return 1;
+        return tourneyList.size() + 1;
     }
 
     private boolean isValidNumericInput(String input) {
-        input = input.trim();
-        if (input.isEmpty()) {
-            System.out.println("Input cannot be empty.");
+        if (input.trim().isEmpty()) {
+            System.err.println("Input cannot be empty.");
             return false;
         }
         try {
             int number = Integer.parseInt(input);
             return number > 0;
         } catch (NumberFormatException e) {
-            System.out.println("Input must be a valid number.");
+            System.err.println("Input must be a valid number.");
             return false;
         }
     }
-    public void initialiceSportList(){
-        file = new File("Sport.txt");
-        if ((file.exists()) && (file.length() > 0)) {
-            sportList = fileManeger.deserialization("Sport", Sport.class);
-            StartComboxSportType();
-        }
-        
+
+    private void resetInputs() {
+        txtTourneyName.clear();
+        txtMatchTime.clear();
+        selectedTeams.clear();
+        tglLstSportType.getSelectionModel().clearSelection();
+        System.out.println("Fields reset after tourney creation.");
     }
-    public void StartComboxSportType(){
-        ObservableList<Sport> items=FXCollections.observableArrayList(sportList);
-        tglLstSportType.setItems(items);
-    }
-    
-    
-   
 }
 
