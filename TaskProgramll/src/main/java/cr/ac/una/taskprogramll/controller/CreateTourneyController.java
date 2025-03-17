@@ -39,22 +39,23 @@ public class CreateTourneyController implements Initializable {
     @FXML
     private TableView<Team> tblTeams; // Equipos disponibles
     @FXML
-    private TableView<Team> tblTeams1; // Equipos elegidos (restaurado el nombre original)
+    private TableView<Team> tblTeams1; // Equipos elegidos
     @FXML
     private TableColumn<Team, String> colTeamName; // Columna de equipos disponibles
     @FXML
-    private TableColumn<Team, String> colTeamName1; // Columna de equipos elegidos (restaurado el nombre original)
+    private TableColumn<Team, String> colTeamName1; // Columna de equipos elegidos 
     @FXML
     private MFXSlider sliderTeamCount;
 
     private final FileManager fileManager = new FileManager();
+    private ObservableList<Team> allTeams = FXCollections.observableArrayList(); // Todos los equipos sin filtrar
     private final ObservableList<Team> availableTeams = FXCollections.observableArrayList();
     private final ObservableList<Team> selectedTeams = FXCollections.observableArrayList();
     private final List<Sport> sportList = new ArrayList<>();
     private final List<Tourney> tourneyList = new ArrayList<>();
     private File sportFile;
 
-  @Override
+@Override
 public void initialize(URL url, ResourceBundle rb) {
     try {
         configureTableColumns();
@@ -62,6 +63,8 @@ public void initialize(URL url, ResourceBundle rb) {
         setupSlider();
         setupTeamSelection();
         initializeSportList();
+        initializeTeamList(); // Nueva función para cargar equipos
+        setupSportSelectionListener(); // Nuevo listener para filtrar equipos
     } catch (Exception e) {
         System.err.println("Error during initialization: " + e.getMessage());
         e.printStackTrace();
@@ -87,7 +90,6 @@ private void setupSlider() {
     );
 }
 
-// Este ya lo teníamos separado, lo mantenemos
 private void setupTeamSelection() {
     tblTeams.setOnMouseClicked(event -> {
         if (event.getClickCount() == 1) {
@@ -110,7 +112,6 @@ private void setupTeamSelection() {
     });
 }
 
-// Este ya lo teníamos, lo mantenemos igual
 private void initializeSportList() {
     sportFile = new File("Sport.txt");
     if (sportFile.exists() && sportFile.length() > 0) {
@@ -210,5 +211,71 @@ private void initializeSportList() {
         tglLstSportType.getSelectionModel().clearSelection();
         System.out.println("Fields reset after tourney creation.");
     }
+    
+   
+
+
+
+// Función para cargar equipos
+private void initializeTeamList() {
+    File teamFile = new File("Team.txt");
+    if (teamFile.exists() && teamFile.length() > 0) {
+        try {
+            List<Team> loadedTeams = fileManager.deserialization("Team", Team.class);
+            // Filtrar duplicados por ID
+            allTeams.addAll(loadedTeams.stream()
+                .distinct() // Elimina duplicados basados en equals, pero necesitamos personalizar equals en Team
+                .toList());
+            System.out.println("Team list loaded successfully: " + allTeams.size() + " teams.");
+            filterTeamsBySport(null);
+        } catch (Exception e) {
+            System.err.println("Error loading team list: " + e.getMessage());
+            e.printStackTrace();
+        }
+    } else {
+        System.err.println("Team.txt file does not exist or is empty.");
+    }
+}
+// Función para filtrar equipos
+private void filterTeamsBySport(Sport selectedSport) {
+    if (selectedSport != null) {
+        System.out.println("Selected Sport: id=" + selectedSport.getId() + ", name=" + selectedSport.getName());
+        // Mover equipos seleccionados que no coincidan con el nuevo deporte de vuelta a disponibles
+        List<Team> teamsToRemove = selectedTeams.stream()
+            .filter(team -> {
+                boolean remove = team.getSportType() == null || !team.getSportType().equals(selectedSport);
+                System.out.println("Team " + team.getName() + " sportType=" + (team.getSportType() != null ? team.getSportType().getId() : "null") + ", remove=" + remove);
+                return remove;
+            })
+            .toList();
+        selectedTeams.removeAll(teamsToRemove);
+        // No añadimos a allTeams porque ya están ahí
+        // Filtrar availableTeams para incluirlos si coinciden con el nuevo deporte
+    }
+
+    // Filtrar equipos disponibles
+    if (selectedSport == null) {
+        availableTeams.setAll(allTeams.stream()
+            .filter(team -> !selectedTeams.contains(team))
+            .toList());
+    } else {
+        availableTeams.setAll(allTeams.stream()
+            .filter(team -> {
+                boolean keep = team.getSportType() != null && team.getSportType().equals(selectedSport);
+                System.out.println("Team " + team.getName() + " sportType=" + (team.getSportType() != null ? team.getSportType().getId() : "null") + ", keep=" + keep);
+                return keep;
+            })
+            .filter(team -> !selectedTeams.contains(team)) // Excluir los que ya están seleccionados
+            .toList());
+    }
+    tblTeams.refresh();
+    tblTeams1.refresh();
+}
+// Nuevo listener para el ComboBox
+private void setupSportSelectionListener() {
+    tglLstSportType.valueProperty().addListener((observable, oldValue, newValue) -> {
+        filterTeamsBySport(newValue);
+    });
+}
 }
 
