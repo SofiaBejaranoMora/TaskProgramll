@@ -24,118 +24,147 @@ import java.util.ResourceBundle;
 
 public class CreateTourneyController implements Initializable {
 
-    @FXML
-    private Button btnCancel;
-    @FXML
-    private Button btnStart;
-    @FXML
-    private Button btnAdjustTeams;
-    @FXML
-    private MFXTextField txtTourneyName;
-    @FXML
-    private MFXTextField txtMatchTime;
-    @FXML
-    private ComboBox<Sport> tglLstSportType;
-    @FXML
-    private TableView<Team> tblTeams; // Equipos disponibles
-    @FXML
-    private TableView<Team> tblTeams1; // Equipos elegidos
-    @FXML
-    private TableColumn<Team, String> colTeamName; // Columna de equipos disponibles
-    @FXML
-    private TableColumn<Team, String> colTeamName1; // Columna de equipos elegidos 
-    @FXML
-    private MFXSlider sliderTeamCount;
+    @FXML private Button btnCancel;
+    @FXML private Button btnStart;
+    @FXML private Button btnAdjustTeams;
+    @FXML private MFXTextField txtTourneyName;
+    @FXML private MFXTextField txtMatchTime;
+    @FXML private ComboBox<Sport> tglLstSportType;
+    @FXML private TableView<Team> tblTeams; // Equipos disponibles
+    @FXML private TableView<Team> tblTeams1; // Equipos elegidos
+    @FXML private TableColumn<Team, String> colTeamName; // Columna de equipos disponibles
+    @FXML private TableColumn<Team, String> colTeamName1; // Columna de equipos elegidos
+    @FXML private MFXSlider sliderTeamCount;
 
     private final FileManager fileManager = new FileManager();
-    private ObservableList<Team> allTeams = FXCollections.observableArrayList(); // Todos los equipos sin filtrar
+    private final ObservableList<Team> allTeams = FXCollections.observableArrayList(); // Todos los equipos sin filtrar
     private final ObservableList<Team> availableTeams = FXCollections.observableArrayList();
     private final ObservableList<Team> selectedTeams = FXCollections.observableArrayList();
     private final List<Sport> sportList = new ArrayList<>();
     private final List<Tourney> tourneyList = new ArrayList<>();
     private File sportFile;
 
-@Override
-public void initialize(URL url, ResourceBundle rb) {
-    try {
-        configureTableColumns();
-        assignTableItems();
-        setupSlider();
-        setupTeamSelection();
-        initializeSportList();
-        initializeTeamList(); // Nueva función para cargar equipos
-        setupSportSelectionListener(); // Nuevo listener para filtrar equipos
-    } catch (Exception e) {
-        System.err.println("Error during initialization: " + e.getMessage());
-        e.printStackTrace();
-    }
-}
-
-private void configureTableColumns() {
-    colTeamName.setCellValueFactory(new PropertyValueFactory<>("name"));
-    colTeamName1.setCellValueFactory(new PropertyValueFactory<>("name"));
-}
-
-private void assignTableItems() {
-    tblTeams.setItems(availableTeams);
-    tblTeams1.setItems(selectedTeams);
-}
-
-private void setupSlider() {
-    sliderTeamCount.setMin(32);
-    sliderTeamCount.setMax(64);
-    sliderTeamCount.setValue(32);
-    sliderTeamCount.valueProperty().addListener((observable, oldValue, newValue) ->
-        System.out.println("Slider value changed to: " + newValue.intValue())
-    );
-}
-
-private void setupTeamSelection() {
-    tblTeams.setOnMouseClicked(event -> {
-        if (event.getClickCount() == 1) {
-            Team selectedTeam = tblTeams.getSelectionModel().getSelectedItem();
-            if (selectedTeam != null && !selectedTeams.contains(selectedTeam)) {
-                selectedTeams.add(selectedTeam);
-                availableTeams.remove(selectedTeam);
-            }
-        }
-    });
-
-    tblTeams1.setOnMouseClicked(event -> {
-        if (event.getClickCount() == 1) {
-            Team selectedTeam = tblTeams1.getSelectionModel().getSelectedItem();
-            if (selectedTeam != null) {
-                availableTeams.add(selectedTeam);
-                selectedTeams.remove(selectedTeam);
-            }
-        }
-    });
-}
-
-private void initializeSportList() {
-    sportFile = new File("Sport.txt");
-    if (sportFile.exists() && sportFile.length() > 0) {
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
         try {
-            sportList.addAll(fileManager.deserialization("Sport", Sport.class));
-            tglLstSportType.setItems(FXCollections.observableArrayList(sportList));
-            System.out.println("Sport list loaded successfully: " + sportList.size() + " sports.");
+            setupTableColumns();
+            setupTableItems();
+            configureSlider();
+            configureTeamSelection();
+            loadSportList();
+            loadTeamList();
+            setupSportFilter();
         } catch (Exception e) {
-            System.err.println("Error loading sport list: " + e.getMessage());
-            e.printStackTrace();
+            handleError(e); // Corrección aquí
         }
-    } else {
-        System.err.println("Sport.txt file does not exist or is empty.");
     }
-}
+
+    private void setupTableColumns() {
+        colTeamName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colTeamName1.setCellValueFactory(new PropertyValueFactory<>("name"));
+    }
+
+    private void setupTableItems() {
+        tblTeams.setItems(availableTeams);
+        tblTeams1.setItems(selectedTeams);
+    }
+
+    private void configureSlider() {
+        sliderTeamCount.setMin(32);
+        sliderTeamCount.setMax(64);
+        sliderTeamCount.setValue(32);
+        sliderTeamCount.valueProperty().addListener((observable, oldValue, newValue) -> {
+            // Debug opcional: System.out.println("Slider value changed to: " + newValue.intValue());
+        });
+    }
+
+    private void configureTeamSelection() {
+        tblTeams.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {
+                Team selectedTeam = tblTeams.getSelectionModel().getSelectedItem();
+                if (selectedTeam != null && !selectedTeams.contains(selectedTeam)) {
+                    selectedTeams.add(selectedTeam);
+                    availableTeams.remove(selectedTeam);
+                }
+            }
+        });
+
+        tblTeams1.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {
+                Team selectedTeam = tblTeams1.getSelectionModel().getSelectedItem();
+                if (selectedTeam != null) {
+                    availableTeams.add(selectedTeam);
+                    selectedTeams.remove(selectedTeam);
+                }
+            }
+        });
+    }
+
+    private void loadSportList() {
+        sportFile = new File("Sport.txt");
+        if (sportFile.exists() && sportFile.length() > 0) {
+            try {
+                sportList.addAll(fileManager.deserialization("Sport", Sport.class));
+                tglLstSportType.setItems(FXCollections.observableArrayList(sportList));
+                // Debug opcional: System.out.println("Sport list loaded successfully: " + sportList.size() + " sports.");
+            } catch (Exception e) {
+                handleError(e);
+            }
+        } else {
+            System.err.println("Sport.txt file does not exist or is empty.");
+        }
+    }
+
+    private void loadTeamList() {
+        File teamFile = new File("Team.txt");
+        if (teamFile.exists() && teamFile.length() > 0) {
+            try {
+                allTeams.addAll(fileManager.deserialization("Team", Team.class));
+                filterTeamsBySport(null); // Inicializa con todos los equipos
+                // Debug opcional: System.out.println("Team list loaded successfully: " + allTeams.size() + " teams.");
+            } catch (Exception e) {
+                handleError(e);
+            }
+        } else {
+            System.err.println("Team.txt file does not exist or is empty.");
+        }
+    }
+
+    private void filterTeamsBySport(Sport selectedSport) {
+        if (selectedSport != null) {
+            List<Team> teamsToRemove = selectedTeams.stream()
+                .filter(team -> team.getSportType() == null || !team.getSportType().equals(selectedSport))
+                .toList();
+            selectedTeams.removeAll(teamsToRemove);
+        }
+
+        if (selectedSport == null) {
+            availableTeams.setAll(allTeams.stream()
+                .filter(team -> !selectedTeams.contains(team))
+                .toList());
+        } else {
+            availableTeams.setAll(allTeams.stream()
+                .filter(team -> team.getSportType() != null && team.getSportType().equals(selectedSport))
+                .filter(team -> !selectedTeams.contains(team))
+                .toList());
+        }
+        tblTeams.refresh();
+        tblTeams1.refresh();
+    }
+
+    private void setupSportFilter() {
+        tglLstSportType.valueProperty().addListener((observable, oldValue, newValue) -> {
+            filterTeamsBySport(newValue);
+        });
+    }
+
     @FXML
     private void adjustSelectedTeamsSlice(ActionEvent event) {
         try {
-            int desiredCount = (int) sliderTeamCount.getValue();
-            desiredCount = Math.max(32, Math.min(desiredCount, 64));
+            int desiredCount = Math.clamp((int) sliderTeamCount.getValue(), 32, 64);
 
             while (selectedTeams.size() > desiredCount) {
-                Team removedTeam = selectedTeams.remove(selectedTeams.size() - 1);
-                availableTeams.add(removedTeam);
+                availableTeams.add(selectedTeams.remove(selectedTeams.size() - 1));
             }
 
             for (Team team : new ArrayList<>(availableTeams)) {
@@ -145,11 +174,9 @@ private void initializeSportList() {
                     availableTeams.remove(team);
                 }
             }
-
-            System.out.println("Teams adjusted to: " + selectedTeams.size());
+            // Debug opcional: System.out.println("Teams adjusted to: " + selectedTeams.size());
         } catch (Exception e) {
-            System.err.println("Error adjusting teams: " + e.getMessage());
-            e.printStackTrace();
+            handleError(e);
         }
     }
 
@@ -180,14 +207,12 @@ private void initializeSportList() {
             System.out.println("Tourney created successfully: " + tourneyName + " with " + selectedTeams.size() + " teams.");
             resetInputs();
         } catch (Exception e) {
-            System.err.println("Error creating tourney: " + e.getMessage());
-            e.printStackTrace();
+            handleError(e);
         }
     }
 
     private int generateTourneyId() {
-        if (tourneyList.isEmpty()) return 1;
-        return tourneyList.size() + 1;
+        return tourneyList.isEmpty() ? 1 : tourneyList.size() + 1;
     }
 
     private boolean isValidNumericInput(String input) {
@@ -196,8 +221,7 @@ private void initializeSportList() {
             return false;
         }
         try {
-            int number = Integer.parseInt(input);
-            return number > 0;
+            return Integer.parseInt(input) > 0;
         } catch (NumberFormatException e) {
             System.err.println("Input must be a valid number.");
             return false;
@@ -211,71 +235,9 @@ private void initializeSportList() {
         tglLstSportType.getSelectionModel().clearSelection();
         System.out.println("Fields reset after tourney creation.");
     }
-    
-   
 
-
-
-// Función para cargar equipos
-private void initializeTeamList() {
-    File teamFile = new File("Team.txt");
-    if (teamFile.exists() && teamFile.length() > 0) {
-        try {
-            List<Team> loadedTeams = fileManager.deserialization("Team", Team.class);
-            // Filtrar duplicados por ID
-            allTeams.addAll(loadedTeams.stream()
-                .distinct() // Elimina duplicados basados en equals, pero necesitamos personalizar equals en Team
-                .toList());
-            System.out.println("Team list loaded successfully: " + allTeams.size() + " teams.");
-            filterTeamsBySport(null);
-        } catch (Exception e) {
-            System.err.println("Error loading team list: " + e.getMessage());
-            e.printStackTrace();
-        }
-    } else {
-        System.err.println("Team.txt file does not exist or is empty.");
+    private void handleError(Exception e) {
+        System.err.println("Error: " + e.getMessage());
+        e.printStackTrace();
     }
 }
-// Función para filtrar equipos
-private void filterTeamsBySport(Sport selectedSport) {
-    if (selectedSport != null) {
-        System.out.println("Selected Sport: id=" + selectedSport.getId() + ", name=" + selectedSport.getName());
-        // Mover equipos seleccionados que no coincidan con el nuevo deporte de vuelta a disponibles
-        List<Team> teamsToRemove = selectedTeams.stream()
-            .filter(team -> {
-                boolean remove = team.getSportType() == null || !team.getSportType().equals(selectedSport);
-                System.out.println("Team " + team.getName() + " sportType=" + (team.getSportType() != null ? team.getSportType().getId() : "null") + ", remove=" + remove);
-                return remove;
-            })
-            .toList();
-        selectedTeams.removeAll(teamsToRemove);
-        // No añadimos a allTeams porque ya están ahí
-        // Filtrar availableTeams para incluirlos si coinciden con el nuevo deporte
-    }
-
-    // Filtrar equipos disponibles
-    if (selectedSport == null) {
-        availableTeams.setAll(allTeams.stream()
-            .filter(team -> !selectedTeams.contains(team))
-            .toList());
-    } else {
-        availableTeams.setAll(allTeams.stream()
-            .filter(team -> {
-                boolean keep = team.getSportType() != null && team.getSportType().equals(selectedSport);
-                System.out.println("Team " + team.getName() + " sportType=" + (team.getSportType() != null ? team.getSportType().getId() : "null") + ", keep=" + keep);
-                return keep;
-            })
-            .filter(team -> !selectedTeams.contains(team)) // Excluir los que ya están seleccionados
-            .toList());
-    }
-    tblTeams.refresh();
-    tblTeams1.refresh();
-}
-// Nuevo listener para el ComboBox
-private void setupSportSelectionListener() {
-    tglLstSportType.valueProperty().addListener((observable, oldValue, newValue) -> {
-        filterTeamsBySport(newValue);
-    });
-}
-}
-
