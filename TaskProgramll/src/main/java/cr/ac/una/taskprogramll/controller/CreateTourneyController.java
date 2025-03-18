@@ -178,6 +178,7 @@ public class CreateTourneyController implements Initializable {
         } catch (Exception e) {
             handleError(e);
         }
+        //Michelle
     }
 
     private String checkInputs(String name, String time, ObservableList<Team> teams, Sport selectedSport) {
