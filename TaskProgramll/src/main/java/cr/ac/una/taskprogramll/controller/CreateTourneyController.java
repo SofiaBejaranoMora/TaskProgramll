@@ -131,27 +131,42 @@ public class CreateTourneyController implements Initializable {
     }
 
     private void filterTeamsBySport(Sport selectedSport) {
-        if (selectedSport != null) {
-            List<Team> teamsToRemove = selectedTeams.stream()
-                .filter(team -> team.getSportType() == null || !team.getSportType().equals(selectedSport))
-                .toList();
-            selectedTeams.removeAll(teamsToRemove);
+    // Lista temporal para los equipos seleccionados que cumplen el criterio
+    ObservableList<Team> filteredSelectedTeams = FXCollections.observableArrayList();
+    
+    // Filtrar selectedTeams: agregar solo los equipos que coincidan con el deporte seleccionado
+    if (selectedSport != null) {
+        int selectedSportId = selectedSport.getId(); // Asumiendo que getId() devuelve un int
+        for (Team team : selectedTeams) {
+            if (team.getSportType() != null && team.getSportType().getId() == selectedSportId) {
+                filteredSelectedTeams.add(team);
+            }
         }
-
-        if (selectedSport == null) {
-            availableTeams.setAll(allTeams.stream()
-                .filter(team -> !selectedTeams.contains(team))
-                .toList());
-        } else {
-            availableTeams.setAll(allTeams.stream()
-                .filter(team -> team.getSportType() != null && team.getSportType().equals(selectedSport))
-                .filter(team -> !selectedTeams.contains(team))
-                .toList());
-        }
-        tblTeams.refresh();
-        tblTeams1.refresh();
+        selectedTeams.setAll(filteredSelectedTeams); // Reemplazar la lista con los equipos filtrados
     }
 
+    // Actualizar availableTeams
+    ObservableList<Team> filteredAvailableTeams = FXCollections.observableArrayList();
+    for (Team team : allTeams) {
+        // Si no hay deporte seleccionado, agregar todos los equipos que no estén en selectedTeams
+        if (selectedSport == null) {
+            if (!selectedTeams.contains(team)) {
+                filteredAvailableTeams.add(team);
+            }
+        } else {
+            // Si hay un deporte seleccionado, agregar solo los equipos que coincidan y no estén en selectedTeams
+            int teamSportId = (team.getSportType() != null) ? team.getSportType().getId() : -1; // Usar -1 como valor por defecto si es null
+            if (teamSportId == selectedSport.getId() && !selectedTeams.contains(team)) {
+                filteredAvailableTeams.add(team);
+            }
+        }
+    }
+    availableTeams.setAll(filteredAvailableTeams);
+
+    // Refrescar las tablas
+    tblTeams.refresh();
+    tblTeams1.refresh();
+}
     private void setupSportFilter() {
         tglLstSportType.valueProperty().addListener((observable, oldValue, newValue) -> {
             filterTeamsBySport(newValue);
@@ -213,7 +228,9 @@ public class CreateTourneyController implements Initializable {
     }
 
     private int generateTourneyId() {
-        return tourneyList.isEmpty() ? 1 : tourneyList.size() + 1;
+        if(tourneyList.isEmpty())
+            return 1;
+        return tourneyList.size() + 1;
     }
 
     private boolean isValidNumericInput(String input) {
