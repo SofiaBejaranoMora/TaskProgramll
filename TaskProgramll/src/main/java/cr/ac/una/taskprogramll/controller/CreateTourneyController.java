@@ -20,6 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 public class CreateTourneyController implements Initializable {
@@ -228,10 +229,26 @@ public class CreateTourneyController implements Initializable {
     }
 
     private int generateTourneyId() {
-        if(tourneyList.isEmpty())
-            return 1;
-        return tourneyList.size() + 1;
+    Random random = new Random();
+    int newId = Math.abs(random.nextInt()); // Generar un ID positivo (0 a Integer.MAX_VALUE)
+
+    // Verificar si el ID ya existe en tourneyList
+    while (isIdUsed(newId)) {
+        newId = Math.abs(random.nextInt()); // Generar otro ID si ya está usado
     }
+
+    return newId;
+}
+
+// Método auxiliar para verificar si un ID ya está usado
+private boolean isIdUsed(int id) {
+    for (Tourney tourney : tourneyList) {
+        if (tourney.getId() == id) {
+            return true;
+        }
+    }
+    return false;
+}
 
     private boolean isValidNumericInput(String input) {
         if (input.trim().isEmpty()) {
