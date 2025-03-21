@@ -5,6 +5,62 @@
     -fx-background-position: center center;
 }
 
+.BusStopBackground {
+    -fx-background-image: url("../resources/BusStopBackground.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.CameraIcon {
+    -fx-background-image: url("../resources/CameraIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.SelectIcon {
+    -fx-background-image: url("../resources/SelectIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.LobbyIcon {
+    -fx-background-image: url("../resources/LobbyIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.ModifyIcon {
+    -fx-background-image: url("../resources/ModifyIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.SearchIcon {
+    -fx-background-image: url("../resources/SearchIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.MaintenanceIcon {
+    -fx-background-image: url("../resources/MaintenanceIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.SaveIcon {
+    -fx-background-image: url("../resources/SaveIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
 MFXButton{
     -fx-transition: all 0.3s ease-in-out;
 }
