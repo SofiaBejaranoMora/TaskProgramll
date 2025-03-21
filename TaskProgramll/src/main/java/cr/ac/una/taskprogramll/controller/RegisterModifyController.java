@@ -8,7 +8,6 @@ import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXRadioButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.utils.SwingFXUtils;
 import java.awt.image.BufferedImage;
@@ -32,18 +31,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class RegisterMaintenanceController extends Controller implements Initializable {
+public class RegisterModifyController extends Controller implements Initializable {
 
     private File selectedImage = null;
     private Sport newSport = null;
     private Team newTeam = null;
     private List<Sport> sportList = new ArrayList<>();
     private List<Team> teamList = new ArrayList<>();
-    private FileManager fileManeger = new FileManager();
+    private final FileManager fileManeger = new FileManager();
     private File file;
     private Image image = null;
     private String ruteImage = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
@@ -71,13 +71,14 @@ public class RegisterMaintenanceController extends Controller implements Initial
     @FXML
     private MFXComboBox<Sport> cmbSport;
 
-
     @FXML
     private Label labHead;
 
     @FXML
-    private ImageView mgvImage;
+    private VBox hbxImage;
 
+    @FXML
+    private ImageView mgvImage;
 
     @FXML
     void OnActionAccept(ActionEvent event) {
@@ -143,7 +144,7 @@ public class RegisterMaintenanceController extends Controller implements Initial
     }
 
     public void SportRegistration(String name) {
-        newSport = new Sport(name,CreateIdSport());
+        newSport = new Sport(name, CreateIdSport());
         sportList.add(newSport);
         fileManeger.serialization(sportList, "Sport");
         image = mgvImage.getImage();// revisar y quitar si es necesario
@@ -153,7 +154,7 @@ public class RegisterMaintenanceController extends Controller implements Initial
     }
 
     public void TeamRegistration(String name, Sport type) {
-        newTeam = new Team(name, type,CreateIdTeam());
+        newTeam = new Team(name, type, CreateIdTeam());
         teamList.add(newTeam);
         fileManeger.serialization(teamList, "Team");
         image = mgvImage.getImage();
@@ -166,7 +167,7 @@ public class RegisterMaintenanceController extends Controller implements Initial
         String nameCurrentTeam;
         for (Team currentTeam : teamList) {
             nameCurrentTeam = currentTeam.getName().toUpperCase().replaceAll("\\s+", "");
-            if ((currentTeam.getSportType().getId()==sport.getId())&& (nameCurrentTeam.equals(name))) {
+            if ((currentTeam.getSportType().getId() == sport.getId()) && (nameCurrentTeam.equals(name))) {
                 return true;
             }
         }
@@ -234,14 +235,14 @@ public class RegisterMaintenanceController extends Controller implements Initial
             for (Team currentTeam : teamList) {
                 if (currentTeam.getId() == id) {
                     isUnique = false;
-                    break; 
+                    break;
                 }
             }
         } while (!isUnique);
 
         return id;
     }
-    
+
     public int CreateIdSport() {
         Boolean isUnique = false;
         int id = 0;
@@ -251,7 +252,7 @@ public class RegisterMaintenanceController extends Controller implements Initial
             for (Sport currentTeam : sportList) {
                 if (currentTeam.getId() == id) {
                     isUnique = false;
-                    break; 
+                    break;
                 }
             }
         } while (!isUnique);
@@ -270,6 +271,8 @@ public class RegisterMaintenanceController extends Controller implements Initial
 
     public void InitialConditionsPanel() {
         EnabledTeam(!isSport);
+        mgvImage.fitHeightProperty().bind(hbxImage.heightProperty().multiply(0.85));
+        mgvImage.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
@@ -296,6 +299,7 @@ public class RegisterMaintenanceController extends Controller implements Initial
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         InitialConditionsPanel();
+        EnabledTeam(!isSport);
         EnabledMaintenance(false);
     }
 
