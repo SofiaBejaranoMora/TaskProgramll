@@ -6,6 +6,7 @@ import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
+import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -27,6 +28,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
@@ -49,6 +51,7 @@ public class RegisterModifyController extends Controller implements Initializabl
     private String ruteImage = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
     private Boolean isSport = false;
     private Boolean isMaintenace = false;
+    private Mensaje message = new Mensaje();
 
     @FXML
     private MFXTextField txtName;
@@ -89,12 +92,24 @@ public class RegisterModifyController extends Controller implements Initializabl
                 if (!CheckedExistsSport(name)) {
                     Sport(name);
                 }
+                else{
+                    message.show(Alert.AlertType.WARNING, "Alerta", "Ya hay un deporte registrado con el mismo nombre");
+                }
             } else if (cmbSport.getValue() != null) {
                 Sport type = cmbSport.getValue();
                 if (!CheckedExistsTeam(name, type)) {
                     Team(name, type);
                 }
+                else{
+                    message.show(Alert.AlertType.WARNING, "Alerta", "Ya hay un equipo registrado con el mismo nombre");
+                }
             }
+            else{
+                message.show(Alert.AlertType.WARNING, "Aviso", "No se ha seleccionado un deporte");
+            }
+        }
+        else{
+            message.show(Alert.AlertType.INFORMATION, "Aviso", "No se a registrado nombre o imagen");
         }
     }
 
@@ -285,8 +300,6 @@ public class RegisterModifyController extends Controller implements Initializabl
     }
 
     public void ClearPanel() {
-        // falta indicar el radion button con el que se inicia
-        //tambien siempre iniciar en combox
         txtName.clear();
         cmbSport.setValue(null);
         cmbSport.getSelectionModel().clearSelection();
@@ -308,5 +321,5 @@ public class RegisterModifyController extends Controller implements Initializabl
         InitialConditionsPanel();
         EnabledMaintenance(false);
     }
-
+    
 }
