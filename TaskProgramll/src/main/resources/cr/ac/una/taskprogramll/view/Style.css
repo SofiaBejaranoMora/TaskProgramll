@@ -3,6 +3,7 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-position: center center;
+    -fx-preserve-ratio: false;
 }
 
 .BusStopBackground {
@@ -10,13 +11,22 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-position: center center;
+     -fx-preserve-ratio: false;
 }
 
-.CameraIcon {
-    -fx-background-image: url("../resources/CameraIcon.png");
+.LobbyBackground {
+    -fx-background-image: url("../resources/LobbyBackground.jpg");
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-position: center center;
+     -fx-preserve-ratio: false;
+}
+
+.CameraIcon {
+    -fx-background-image: url("../resources/CameraIcon.png"); 
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
 }
 
 .SelectIcon {
@@ -66,7 +76,7 @@ MFXButton{
 }
 
 MFXButton:hover{
-     -fx-scale-x: 1.1;
+    -fx-scale-x: 1.1;
     -fx-scale-y: 1.1;
 }
 
@@ -87,11 +97,11 @@ MFXButton:hover{
 }
 
 .boxRose{
-    -fx-background-color: rgba(255, 165, 219, 0.85); 
+    -fx-background-color: rgba(255, 165, 219, 0.85);
     -fx-background-radius: 15px;
     -fx-transition: 0.3s;
 }
 
 .boxRose:hover{
-      -fx-background-color:#FFA5DB;
+    -fx-background-color:#FFA5DB;
 }

@@ -1,6 +1,5 @@
 package cr.ac.una.taskprogramll.controller;
 
-import cr.ac.una.taskprogramll.App;
 import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
@@ -30,7 +29,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -115,7 +113,7 @@ public class RegisterModifyController extends Controller implements Initializabl
 
     @FXML
     void OnActionBtnCancel(ActionEvent event) {
-        ClearPanel(); //Tambien tengo que poner el hasTeamList en falso cuando cierre
+        ClearPanel();
     }
 
     @FXML
@@ -285,6 +283,9 @@ public class RegisterModifyController extends Controller implements Initializabl
     }
 
     public void InitialConditionsPanel() {
+        isSport = (Boolean) AppContext.getInstance().get("isSport");
+        isMaintenace = (Boolean) AppContext.getInstance().get("isMaintenace");
+        EnabledMaintenance(isMaintenace);
         EnabledTeam(!isSport);
         mgvImage.fitHeightProperty().bind(hbxImage.heightProperty().multiply(0.85));
         mgvImage.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
@@ -312,14 +313,11 @@ public class RegisterModifyController extends Controller implements Initializabl
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         InitialConditionsPanel();
-        EnabledTeam(!isSport);
-        EnabledMaintenance(false);
     }
 
     @Override
     public void initialize() {
         InitialConditionsPanel();
-        EnabledMaintenance(false);
     }
     
 }

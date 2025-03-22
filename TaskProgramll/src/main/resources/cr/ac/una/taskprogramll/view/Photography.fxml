@@ -19,7 +19,7 @@
                      <children>
                         <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="260.0" prefWidth="320.0" styleClass="jfx-panelfondo" VBox.vgrow="ALWAYS">
                            <children>
-                              <ImageView fx:id="imvCamera" fitHeight="240.0" fitWidth="288.0" pickOnBounds="true" preserveRatio="true" styleClass="CameraIcon" HBox.hgrow="ALWAYS" />
+                              <ImageView fx:id="imvCamera" fitHeight="240.0" fitWidth="288.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS" />
                            </children>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -31,7 +31,7 @@
                               <String fx:value="jfx-btnTakePhoto-" />
                            </styleClass>
                            <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" styleClass="CameraIcon" />
                            </graphic>
                         </MFXButton>
                      </children>
