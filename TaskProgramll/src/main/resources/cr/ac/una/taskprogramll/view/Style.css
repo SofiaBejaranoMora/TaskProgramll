@@ -1,0 +1,107 @@
+.StoreBackground {
+    -fx-background-image: url("../resources/StoreBackground.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-preserve-ratio: false;
+}
+
+.BusStopBackground {
+    -fx-background-image: url("../resources/BusStopBackground.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+     -fx-preserve-ratio: false;
+}
+
+.LobbyBackground {
+    -fx-background-image: url("../resources/LobbyBackground.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+     -fx-preserve-ratio: false;
+}
+
+.CameraIcon {
+    -fx-background-image: url("../resources/CameraIcon.png"); 
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+.SelectIcon {
+    -fx-background-image: url("../resources/SelectIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.LobbyIcon {
+    -fx-background-image: url("../resources/LobbyIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.ModifyIcon {
+    -fx-background-image: url("../resources/ModifyIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.SearchIcon {
+    -fx-background-image: url("../resources/SearchIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.MaintenanceIcon {
+    -fx-background-image: url("../resources/MaintenanceIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.SaveIcon {
+    -fx-background-image: url("../resources/SaveIcon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+MFXButton{
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+MFXButton:hover{
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+#btnAccept{
+    -fx-background-color: #1AFF1A;
+}
+
+#btnAccept:hover{
+    -fx-background-color: #4DFF4D;
+}
+
+#btnCancel{
+    -fx-background-color: #BFBDB7;
+}
+
+#btnCancel:hover{
+    -fx-background-color: #D7D6D2;
+}
+
+.boxRose{
+    -fx-background-color: rgba(255, 165, 219, 0.85);
+    -fx-background-radius: 15px;
+    -fx-transition: 0.3s;
+}
+
+.boxRose:hover{
+    -fx-background-color:#FFA5DB;
+}

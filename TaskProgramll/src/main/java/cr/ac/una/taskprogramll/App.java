@@ -1,5 +1,6 @@
 package cr.ac.una.taskprogramll;
 
+import cr.ac.una.taskprogramll.util.FlowController;
 import io.github.palexdev.materialfx.css.themes.MFXThemeManager;
 import io.github.palexdev.materialfx.css.themes.Themes;
 import javafx.application.Application;
@@ -16,8 +17,9 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        //scene = new Scene(loadFXML("RegisterMaintenance"), 640, 480);
-        scene = new Scene(loadFXML("CreateTourney"), 640, 480);
+        FlowController.getInstance().InitializeFlow(stage, null);
+        scene = new Scene(loadFXML("Lobby"), 640, 480);
+        //scene = new Scene(loadFXML("CreateTourney"), 640, 480);
         MFXThemeManager.addOn(scene,Themes.DEFAULT,Themes.LEGACY);
         stage.setScene(scene);
         stage.show();

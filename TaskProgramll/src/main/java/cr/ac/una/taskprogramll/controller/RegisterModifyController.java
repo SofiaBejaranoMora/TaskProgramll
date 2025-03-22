@@ -1,13 +1,13 @@
 package cr.ac.una.taskprogramll.controller;
 
-import cr.ac.una.taskprogramll.App;
 import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.util.AppContext;
+import cr.ac.una.taskprogramll.util.FlowController;
+import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXRadioButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.utils.SwingFXUtils;
 import java.awt.image.BufferedImage;
@@ -27,27 +27,29 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class RegisterMaintenanceController implements Initializable {
+public class RegisterModifyController extends Controller implements Initializable {
 
     private File selectedImage = null;
     private Sport newSport = null;
     private Team newTeam = null;
     private List<Sport> sportList = new ArrayList<>();
     private List<Team> teamList = new ArrayList<>();
-    private FileManager fileManeger = new FileManager();
+    private final FileManager fileManeger = new FileManager();
     private File file;
     private Image image = null;
     private String ruteImage = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
     private Boolean isSport = false;
     private Boolean isMaintenace = false;
+    private Mensaje message = new Mensaje();
 
     @FXML
     private MFXTextField txtName;
@@ -71,19 +73,13 @@ public class RegisterMaintenanceController implements Initializable {
     private MFXComboBox<Sport> cmbSport;
 
     @FXML
-    private ToggleGroup grpFiltro;
-
-    @FXML
     private Label labHead;
 
     @FXML
+    private VBox hbxImage;
+
+    @FXML
     private ImageView mgvImage;
-
-    @FXML
-    private MFXRadioButton rbtSport;
-
-    @FXML
-    private MFXRadioButton rbtTeam;
 
     @FXML
     void OnActionAccept(ActionEvent event) {
@@ -94,18 +90,30 @@ public class RegisterMaintenanceController implements Initializable {
                 if (!CheckedExistsSport(name)) {
                     Sport(name);
                 }
+                else{
+                    message.show(Alert.AlertType.WARNING, "Alerta", "Ya hay un deporte registrado con el mismo nombre");
+                }
             } else if (cmbSport.getValue() != null) {
                 Sport type = cmbSport.getValue();
                 if (!CheckedExistsTeam(name, type)) {
                     Team(name, type);
                 }
+                else{
+                    message.show(Alert.AlertType.WARNING, "Alerta", "Ya hay un equipo registrado con el mismo nombre");
+                }
             }
+            else{
+                message.show(Alert.AlertType.WARNING, "Aviso", "No se ha seleccionado un deporte");
+            }
+        }
+        else{
+            message.show(Alert.AlertType.INFORMATION, "Aviso", "No se a registrado nombre o imagen");
         }
     }
 
     @FXML
     void OnActionBtnCancel(ActionEvent event) {
-        ClearPanel(); //Tambien tengo que poner el hasTeamList en falso cuando cierre
+        ClearPanel();
     }
 
     @FXML
@@ -120,7 +128,7 @@ public class RegisterMaintenanceController implements Initializable {
 
     @FXML
     void OnActionBtnPhoto(ActionEvent event) throws IOException {
-        App.setRoot("Photography");
+        FlowController.getInstance().goViewInWindowModal("Photography", getStage(), Boolean.FALSE);
         BufferedImage bufferedImage = (BufferedImage) AppContext.getInstance().get("bufferedImageTeam");
         if (bufferedImage != null) {
             mgvImage.setImage(SwingFXUtils.toFXImage(bufferedImage, null));
@@ -130,16 +138,6 @@ public class RegisterMaintenanceController implements Initializable {
     @FXML
     void OnActionCmbSport(ActionEvent event) {
 
-    }
-
-    @FXML
-    void OnActionRbtSport(ActionEvent event) {
-        EnabledTeam(false);
-    }
-
-    @FXML
-    void OnActionRbtTeam(ActionEvent event) {
-        EnabledTeam(true);
     }
 
     public void Team(String name, Sport type) {
@@ -159,7 +157,7 @@ public class RegisterMaintenanceController implements Initializable {
     }
 
     public void SportRegistration(String name) {
-        newSport = new Sport(name,CreateIdSport());
+        newSport = new Sport(name, CreateIdSport());
         sportList.add(newSport);
         fileManeger.serialization(sportList, "Sport");
         image = mgvImage.getImage();// revisar y quitar si es necesario
@@ -169,7 +167,7 @@ public class RegisterMaintenanceController implements Initializable {
     }
 
     public void TeamRegistration(String name, Sport type) {
-        newTeam = new Team(name, type,CreateIdTeam());
+        newTeam = new Team(name, type, CreateIdTeam());
         teamList.add(newTeam);
         fileManeger.serialization(teamList, "Team");
         image = mgvImage.getImage();
@@ -182,7 +180,7 @@ public class RegisterMaintenanceController implements Initializable {
         String nameCurrentTeam;
         for (Team currentTeam : teamList) {
             nameCurrentTeam = currentTeam.getName().toUpperCase().replaceAll("\\s+", "");
-            if ((currentTeam.getSportType().getId()==sport.getId())&& (nameCurrentTeam.equals(name))) {
+            if ((currentTeam.getSportType().getId() == sport.getId()) && (nameCurrentTeam.equals(name))) {
                 return true;
             }
         }
@@ -250,14 +248,14 @@ public class RegisterMaintenanceController implements Initializable {
             for (Team currentTeam : teamList) {
                 if (currentTeam.getId() == id) {
                     isUnique = false;
-                    break; 
+                    break;
                 }
             }
         } while (!isUnique);
 
         return id;
     }
-    
+
     public int CreateIdSport() {
         Boolean isUnique = false;
         int id = 0;
@@ -267,7 +265,7 @@ public class RegisterMaintenanceController implements Initializable {
             for (Sport currentTeam : sportList) {
                 if (currentTeam.getId() == id) {
                     isUnique = false;
-                    break; 
+                    break;
                 }
             }
         } while (!isUnique);
@@ -285,6 +283,12 @@ public class RegisterMaintenanceController implements Initializable {
     }
 
     public void InitialConditionsPanel() {
+        isSport = (Boolean) AppContext.getInstance().get("isSport");
+        isMaintenace = (Boolean) AppContext.getInstance().get("isMaintenace");
+        EnabledMaintenance(isMaintenace);
+        EnabledTeam(!isSport);
+        mgvImage.fitHeightProperty().bind(hbxImage.heightProperty().multiply(0.85));
+        mgvImage.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
@@ -297,8 +301,6 @@ public class RegisterMaintenanceController implements Initializable {
     }
 
     public void ClearPanel() {
-        // falta indicar el radion button con el que se inicia
-        //tambien siempre iniciar en combox
         txtName.clear();
         cmbSport.setValue(null);
         cmbSport.getSelectionModel().clearSelection();
@@ -310,10 +312,12 @@ public class RegisterMaintenanceController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        rbtSport.setSelected(true);
         InitialConditionsPanel();
-        OnActionRbtSport(null); //la accion del button
-        EnabledMaintenance(false);
     }
 
+    @Override
+    public void initialize() {
+        InitialConditionsPanel();
+    }
+    
 }

@@ -7,6 +7,7 @@ package cr.ac.una.taskprogramll.controller;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 import cr.ac.una.taskprogramll.util.AppContext;
+import cr.ac.una.taskprogramll.util.FlowController;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.utils.SwingFXUtils;
 import java.awt.Dimension;
@@ -26,7 +27,7 @@ import javafx.stage.Stage;
  *
  * @author sofia
  */
-public class PhotographyController implements Initializable {
+public class PhotographyController extends Controller implements Initializable {
 
     public Dimension dimension = new Dimension(288, 240);
     private Webcam webcam = Webcam.getDefault();
@@ -59,7 +60,7 @@ public class PhotographyController implements Initializable {
     @FXML
     private void onActionBtnSavePhoto(ActionEvent event) {
         AppContext.getInstance().set("bufferedImageTeam", bufferedImage);
-        //close();
+        close();
     }
 
     @FXML
@@ -107,6 +108,12 @@ public class PhotographyController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         btnSavePhoto.setDisable(true);
+        camera();
+    }
+
+    @Override
+    public void initialize() {
+       btnSavePhoto.setDisable(true);
         camera();
     }
 }
