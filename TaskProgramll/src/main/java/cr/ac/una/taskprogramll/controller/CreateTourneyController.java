@@ -4,6 +4,7 @@ import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXSlider;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import java.io.File;
@@ -30,12 +31,13 @@ public class CreateTourneyController implements Initializable {
     @FXML private Button btnAdjustTeams;
     @FXML private MFXTextField txtTourneyName;
     @FXML private MFXTextField txtMatchTime;
-    @FXML private ComboBox<Sport> tglLstSportType;
+    @FXML private MFXComboBox<Sport> tglLstSportType;
     @FXML private TableView<Team> tblTeams; // Equipos disponibles
     @FXML private TableView<Team> tblTeams1; // Equipos elegidos
     @FXML private TableColumn<Team, String> colTeamName; // Columna de equipos disponibles
     @FXML private TableColumn<Team, String> colTeamName1; // Columna de equipos elegidos
     @FXML private MFXSlider sliderTeamCount;
+    
 
     private final FileManager fileManager = new FileManager();
     private final ObservableList<Team> allTeams = FXCollections.observableArrayList(); // Todos los equipos sin filtrar
@@ -275,4 +277,5 @@ private boolean isIdUsed(int id) {
         System.err.println("Error: " + e.getMessage());
         e.printStackTrace();
     }
+   
 }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXSlider?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -29,14 +29,14 @@
             <children>
       
                <!-- Inputs Principales -->
-               <VBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="100.0" spacing="15.0" HBox.hgrow="ALWAYS">
-                  <MFXTextField fx:id="txtTourneyName" floatingText="Tourney Name" prefWidth="300.0" />
-                  <ComboBox fx:id="tglLstSportType" prefWidth="300.0" promptText="Sport Type" />
+               <VBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" spacing="15.0" HBox.hgrow="ALWAYS">
+                  <MFXTextField fx:id="txtTourneyName" floatingText="Tourney Name" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="300.0" VBox.vgrow="ALWAYS" />
+                  <MFXComboBox fx:id="tglLstSportType" floatingText="Sport Type" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
                </VBox>
-               <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="100.0" spacing="15.0" HBox.hgrow="ALWAYS">
+               <VBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" spacing="15.0" HBox.hgrow="ALWAYS">
                   <children>
-                     <MFXTextField fx:id="txtMatchTime" floatingText="Time per Match (Minutes)" prefWidth="300.0" />
-                       <Button fx:id="btnAdjustTeams" onAction="#adjustSelectedTeamsSlice" prefWidth="300.0" text="Adjust Election" />
+                     <MFXTextField fx:id="txtMatchTime" floatingText="Time per Match (Minutes)" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="300.0" VBox.vgrow="ALWAYS" />
+                     <MFXButton fx:id="btnAdjustTeams" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#adjustSelectedTeamsSlice" prefHeight="43.0" prefWidth="262.0" text="Adjust Election" VBox.vgrow="ALWAYS" />
                   </children>
                </VBox>
             </children>
@@ -66,8 +66,8 @@
 
          <!-- Botones Inferiores -->
          <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="20.0" VBox.vgrow="ALWAYS">
-            <Button fx:id="btnCancel" prefWidth="100.0" text="Cancel" />
-            <Button fx:id="btnStart" onAction="#createTourney" prefWidth="100.0" text="Start" />
+            <MFXButton fx:id="btnCancel" prefWidth="100.0" text="Cancel" />
+            <MFXButton fx:id="btnStart" onAction="#createTourney" prefWidth="100.0" text="Start" />
          </HBox>
       </VBox>
    </children>
