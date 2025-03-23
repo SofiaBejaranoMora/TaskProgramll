@@ -177,27 +177,41 @@ public class CreateTourneyController implements Initializable {
     }
 
     @FXML
-    private void adjustSelectedTeamsSlice(ActionEvent event) {
-        try {
-            int desiredCount = Math.clamp((int) sliderTeamCount.getValue(), 32, 64);
+private void adjustSelectedTeamsSlice(ActionEvent event) {
+    try {
+        int desiredCount = Math.clamp((int) sliderTeamCount.getValue(), 32, 64);
 
-            while (selectedTeams.size() > desiredCount) {
-                availableTeams.add(selectedTeams.remove(selectedTeams.size() - 1));
-            }
-
-            for (Team team : new ArrayList<>(availableTeams)) {
-                if (selectedTeams.size() >= desiredCount) break;
-                if (!selectedTeams.contains(team)) {
-                    selectedTeams.add(team);
-                    availableTeams.remove(team);
-                }
-            }
-            // Debug opcional: System.out.println("Teams adjusted to: " + selectedTeams.size());
-        } catch (Exception e) {
-            handleError(e);
+        // Verificar si hay suficientes equipos en total (selectedTeams + availableTeams)
+        int totalTeamsAvailable = selectedTeams.size() + availableTeams.size();
+        if (totalTeamsAvailable < desiredCount) {
+            System.err.printf(
+                "No hay suficientes equipos disponibles. Se necesitan %d equipos, pero solo hay %d.%n",
+                desiredCount, totalTeamsAvailable
+            );
+            return; // Salir de la función si no hay suficientes equipos
         }
-        //Michelle
+
+        // Eliminar equipos excedentes si hay más de los deseados
+        while (selectedTeams.size() > desiredCount) {
+            availableTeams.add(selectedTeams.remove(selectedTeams.size() - 1));
+        }
+
+        // Agregar equipos aleatoriamente si faltan para alcanzar desiredCount
+        Random random = new Random();
+        while (selectedTeams.size() < desiredCount && !availableTeams.isEmpty()) {
+            int randomIndex = random.nextInt(availableTeams.size());
+            Team randomTeam = availableTeams.get(randomIndex);
+            selectedTeams.add(randomTeam);
+            availableTeams.remove(randomIndex);
+        }
+
+        // Debug opcional: Mostrar cuántos equipos hay en selectedTeams
+        System.out.println("Teams adjusted to: " + selectedTeams.size());
+    } catch (Exception e) {
+        handleError(e);
     }
+    // Michelle
+}
 
     private String checkInputs(String name, String time, ObservableList<Team> teams, Sport selectedSport) {
         if (name.isEmpty() || time.isEmpty()) return "All fields are required.";
