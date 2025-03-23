@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Tourney {
     private int id;
+    private String name; // Nuevo campo
     private int time;
     private Sport sportType;
     private List<Team> teamList;
@@ -19,8 +20,9 @@ public class Tourney {
         this.loosersList = new ArrayList<>();
     }
 
-    public Tourney(int id, int time, Sport sportType, List<Team> teamList) {
+    public Tourney(int id, String name, int time, Sport sportType, List<Team> teamList) {
         this.id = id;
+        this.name = name;
         this.time = time;
         this.sportType = sportType;
         this.teamList = (teamList == null) ? new ArrayList<>() : new ArrayList<>(teamList);
@@ -32,6 +34,10 @@ public class Tourney {
         return id;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public int getTime() {
         return time;
     }
@@ -41,16 +47,20 @@ public class Tourney {
     }
 
     public List<Team> getTeamList() {
-        return new ArrayList<>(teamList); // Devolver una copia para evitar modificaciones externas
+        return new ArrayList<>(teamList);
     }
 
     public List<Team> getLoosersList() {
-        return new ArrayList<>(loosersList); // Devolver una copia para evitar modificaciones externas
+        return new ArrayList<>(loosersList);
     }
 
     // Setters
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setTime(int time) {
@@ -61,14 +71,14 @@ public class Tourney {
         this.sportType = sportType;
     }
 
-    public void setTeamList(List<Team> teamList) {
+   public void setTeamList(List<Team> teamList) {
     if (teamList == null) {
         this.teamList = new ArrayList<>();
     } else {
         this.teamList = new ArrayList<>(teamList);
     }
 }
-    // Métodos para gestionar equipos
+
     public void addTeam(Team team) {
         if (team == null) {
             return;
@@ -94,7 +104,6 @@ public class Tourney {
         }
     }
 
-    // Calcular el estado dinámicamente
     public String getState() {
         if (teamList.isEmpty() && !loosersList.isEmpty()) {
             return "Finalizado";
@@ -103,15 +112,14 @@ public class Tourney {
         } else if (!teamList.isEmpty() && !loosersList.isEmpty()) {
             return "En Proceso";
         } else {
-            return "Sin Configurar"; // Caso raro: ambas listas vacías
+            return "Sin Configurar";
         }
     }
 
-    // Obtener el ranking (el último perdedor es el subcampeón, etc.)
     public List<Team> getRanking() {
         List<Team> ranking = new ArrayList<>(loosersList);
         if (!teamList.isEmpty()) {
-            ranking.addAll(teamList); // El último equipo en teamList es el ganador
+            ranking.addAll(teamList);
         }
         return ranking;
     }
@@ -120,6 +128,7 @@ public class Tourney {
     public String toString() {
         return "Tourney{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
                 ", time=" + time +
                 ", sportType=" + sportType +
                 ", teamList=" + teamList +
