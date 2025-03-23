@@ -24,7 +24,7 @@ public class LobbyController extends Controller implements Initializable {
     private MFXComboBox<String> cmbMenu;
     
     public void comboxInitializer(){
-        cmbMenu.getItems().addAll("Registro Deporte", "Registro Equipo", "Mantenimiento de Deporte", "Mantenimiento de Equipo");
+        cmbMenu.getItems().addAll("Registro Deporte", "Registro Equipo", "Mantenimiento de Deporte", "Mantenimiento de Equipo", "Crear Torneo");
     }
 
     @FXML

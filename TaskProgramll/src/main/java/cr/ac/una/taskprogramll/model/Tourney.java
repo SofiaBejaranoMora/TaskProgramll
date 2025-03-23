@@ -7,75 +7,124 @@ package cr.ac.una.taskprogramll.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Michelle Wittingham
- */
 public class Tourney {
     private int id;
     private int time;
-    private Sport sportype;
+    private Sport sportType;
     private List<Team> teamList;
-    
-    public Tourney(){
+    private List<Team> loosersList;
+
+    public Tourney() {
         this.teamList = new ArrayList<>();
+        this.loosersList = new ArrayList<>();
     }
-    public Tourney(int id, int time, Sport sportype, List<Team> teamList){
-        this.id=id;//size+1 
-        this.time=time;
-        this.sportype=sportype;
-        if(teamList==null){
-            this.teamList=new ArrayList<>();
-        }
+
+    public Tourney(int id, int time, Sport sportType, List<Team> teamList) {
+        this.id = id;
+        this.time = time;
+        this.sportType = sportType;
+        this.teamList = (teamList == null) ? new ArrayList<>() : new ArrayList<>(teamList);
+        this.loosersList = new ArrayList<>();
     }
-    public int  getId(){
+
+    // Getters
+    public int getId() {
         return id;
     }
-    public int getTime(){
+
+    public int getTime() {
         return time;
     }
-    public Sport getSportType(){
-        return sportype;
-    }
-    public List<Team> getTeamList(){
-        return teamList;
-    }
-    
-    public void setId(int id){
-        this.id=id;
+
+    public Sport getSportType() {
+        return sportType;
     }
 
-public void setTime(int time){
-    this.time=time;
-}    
+    public List<Team> getTeamList() {
+        return new ArrayList<>(teamList); // Devolver una copia para evitar modificaciones externas
+    }
 
-public void setSportType(Sport sportType){
-    this.sportype=sportType;
+    public List<Team> getLoosersList() {
+        return new ArrayList<>(loosersList); // Devolver una copia para evitar modificaciones externas
+    }
+
+    // Setters
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public void setSportType(Sport sportType) {
+        this.sportType = sportType;
+    }
+
+    public void setTeamList(List<Team> teamList) {
+    if (teamList == null) {
+        this.teamList = new ArrayList<>();
+    } else {
+        this.teamList = new ArrayList<>(teamList);
+    }
 }
-
-public void setTeamList(List<Team>teamList){
-    this.teamList=teamList;
-}
-
-public void addTeam(Team team) {
-        if (!this.teamList.contains(team)) {
-            this.teamList.add(team);
+    // Métodos para gestionar equipos
+    public void addTeam(Team team) {
+        if (team == null) {
+            return;
+        }
+        if (!teamList.contains(team) && !loosersList.contains(team)) {
+            teamList.add(team);
         }
     }
 
     public void removeTeam(Team team) {
-        this.teamList.remove(team);
+        if (team != null) {
+            teamList.remove(team);
+        }
     }
-    
-    //por cuestiones de debug
+
+    public void moveTeamToLoosers(Team team) {
+        if (team == null) {
+            return;
+        }
+        if (teamList.contains(team) && !loosersList.contains(team)) {
+            teamList.remove(team);
+            loosersList.add(team);
+        }
+    }
+
+    // Calcular el estado dinámicamente
+    public String getState() {
+        if (teamList.isEmpty() && !loosersList.isEmpty()) {
+            return "Finalizado";
+        } else if (loosersList.isEmpty() && !teamList.isEmpty()) {
+            return "Sin Empezar";
+        } else if (!teamList.isEmpty() && !loosersList.isEmpty()) {
+            return "En Proceso";
+        } else {
+            return "Sin Configurar"; // Caso raro: ambas listas vacías
+        }
+    }
+
+    // Obtener el ranking (el último perdedor es el subcampeón, etc.)
+    public List<Team> getRanking() {
+        List<Team> ranking = new ArrayList<>(loosersList);
+        if (!teamList.isEmpty()) {
+            ranking.addAll(teamList); // El último equipo en teamList es el ganador
+        }
+        return ranking;
+    }
+
     @Override
-    public String toString(){
-         return "Tourney{" +
+    public String toString() {
+        return "Tourney{" +
                 "id=" + id +
-                ", time='" + time + '\'' +
-                ", sportype=" + sportype +
+                ", time=" + time +
+                ", sportType=" + sportType +
                 ", teamList=" + teamList +
+                ", loosersList=" + loosersList +
+                ", state=" + getState() +
                 '}';
     }
-    
 }
