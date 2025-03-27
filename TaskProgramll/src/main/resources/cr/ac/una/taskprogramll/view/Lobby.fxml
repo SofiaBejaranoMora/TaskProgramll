@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.LobbyController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="LobbyBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.LobbyController">
    <children>
-      <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+      <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <MFXComboBox fx:id="cmbMenu" floatingText="Menu" onAction="#OnActionCmbMenu" prefHeight="40.0" prefWidth="182.0" />
+            <MFXComboBox fx:id="cmbMenu" floatingText="Menu" onAction="#OnActionCmbMenu" prefHeight="40.0" prefWidth="182.0">
+               <HBox.margin>
+                  <Insets left="10.0" top="10.0" />
+               </HBox.margin></MFXComboBox>
+            <VBox alignment="TOP_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <ImageView fitHeight="79.0" fitWidth="100.0" onMouseClicked="#OnMouseClickedImgExit" pickOnBounds="true" preserveRatio="true" styleClass="ExitIcon">
+                     <VBox.margin>
+                        <Insets right="15.0" />
+                     </VBox.margin></ImageView>
+               </children>
+            </VBox>
          </children>
       </HBox>
    </children>

@@ -1,9 +1,15 @@
+
+*{
+    -fx-lightBlue-base-color:#BBF6F9;
+    -fx-rose-base-color:#FFA5DB;
+}
+
 .StoreBackground {
     -fx-background-image: url("../resources/StoreBackground.jpg");
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-position: center center;
-    -fx-preserve-ratio: false;
+    -fx-preserve-ratio: true;
 }
 
 .BusStopBackground {
@@ -11,7 +17,7 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-position: center center;
-     -fx-preserve-ratio: false;
+    -fx-preserve-ratio: true;
 }
 
 .LobbyBackground {
@@ -19,65 +25,72 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-position: center center;
-     -fx-preserve-ratio: false;
+    -fx-preserve-ratio: true;
 }
 
 .CameraIcon {
-    -fx-background-image: url("../resources/CameraIcon.png"); 
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-    -fx-background-position: center;
+    -fx-image: url("../resources/CameraIcon.png");
 }
 
 .SelectIcon {
-    -fx-background-image: url("../resources/SelectIcon.png");
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-    -fx-background-position: center center;
+    -fx-image: url("../resources/SelectIcon.png");
 }
 
 .LobbyIcon {
-    -fx-background-image: url("../resources/LobbyIcon.png");
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-    -fx-background-position: center center;
+    -fx-image: url("../resources/LobbyIcon.png");
 }
 
 .ModifyIcon {
-    -fx-background-image: url("../resources/ModifyIcon.png");
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-    -fx-background-position: center center;
+    -fx-image: url("../resources/ModifyIcon.png");
+}
+
+.ExitIcon {
+    -fx-image: url("../resources/ExitIcon.png");
 }
 
 .SearchIcon {
-    -fx-background-image: url("../resources/SearchIcon.png");
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-    -fx-background-position: center center;
+    -fx-image: url("../resources/SearchIcon.png");
 }
 
 .MaintenanceIcon {
-    -fx-background-image: url("../resources/MaintenanceIcon.png");
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-    -fx-background-position: center center;
+    -fx-image: url("../resources/MaintenanceIcon.png");
 }
 
 .SaveIcon {
-    -fx-background-image: url("../resources/SaveIcon.png");
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-    -fx-background-position: center center;
+    -fx-image: url("../resources/SaveIcon.png");
 }
 
-MFXButton{
-    -fx-transition: all 0.3s ease-in-out;
+.SaveIcon,
+.MaintenanceIcon,
+.SearchIcon,
+.LobbyIcon,
+.SelectIcon {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1); /* Opcional */
 }
 
-MFXButton:hover{
+.SaveIcon:hover,
+.MaintenanceIcon:hover,
+.SearchIcon:hover,
+.LobbyIcon:hover,
+.SelectIcon:hover {
     -fx-scale-x: 1.1;
     -fx-scale-y: 1.1;
+    -fx-cursor: hand;
+}
+
+.mfx-button {
+    -fx-background-color: #BBF6F9;
+    -mfx-button-type:RAISED;
+}
+
+.mfx-button:hover{
+    -fx-background-color: #D2F9FB;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.mfx-button:active{
+
 }
 
 #btnAccept{
@@ -97,11 +110,41 @@ MFXButton:hover{
 }
 
 .boxRose{
-    -fx-background-color: rgba(255, 165, 219, 0.85);
+    -fx-background-color: -fx-rose-base-color;
+    -fx-opacity:0.85;
     -fx-background-radius: 15px;
     -fx-transition: 0.3s;
 }
 
 .boxRose:hover{
-    -fx-background-color:#FFA5DB;
+    -fx-background-color: -fx-rose-base-color;
+    -fx-opacity:1;
+}
+
+.boxLightBlue{
+    -fx-background-color: -fx-lightBlue-base-color;
+    -fx-opacity:0.85;
+    -fx-background-radius: 15px;
+    -fx-transition: 0.3s;
+}
+
+.boxLightBlue:hover{
+    -fx-background-color: -fx-lightBlue-base-color;
+    -fx-opacity:1;
+}
+
+.TableViewLightdBlue{
+    -fx-background-radius: 10px;
+    -fx-background-color: -fx-lightBlue-base-color;
+    -fx-opacity:0.70;
+    -fx-border-radius: 10px;
+    -fx-border-width: 2px;
+}
+
+.TableColumnLightdBlue{
+    -fx-background-color:rgba(15, 159, 166, 0.85);
+}
+
+TableViewLightdBlue:selected {
+    -fx-background-color: #5DEAF1;
 }

@@ -1,11 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.MaintenanceController">
-    
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="BusStopBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.MaintenanceController">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+         <children>
+            <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308">
+               <children>
+                  <ImageView fitHeight="39.0" fitWidth="46.0" onMouseClicked="#OnMouseClickedImgLobby" pickOnBounds="true" preserveRatio="true" styleClass="LobbyIcon" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="boxLightBlue" VBox.vgrow="ALWAYS">
+               <children>
+                  <Label fx:id="labTitle" text="Label" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" spacing="5.0" styleClass="boxLightBlue" VBox.vgrow="ALWAYS">
+               <children>
+                  <MFXTextField fx:id="txtNameSearch" floatMode="BORDER" floatingText="Buscar por nombre" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                  <ImageView fitHeight="45.0" fitWidth="53.0" onMouseClicked="#OnMouseClickedNameSearch" pickOnBounds="true" preserveRatio="true" styleClass="SearchIcon" />
+                  <MFXComboBox fx:id="cmbSportSearch" floatMode="BORDER" floatingText="Deporte" onAction="#OnActionCmbSportSearch">
+                     <HBox.margin>
+                        <Insets left="25.0" />
+                     </HBox.margin></MFXComboBox>
+               </children>
+               <VBox.margin>
+                  <Insets left="15.0" right="15.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+               </padding>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="110.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+               <children>
+                  <TableView fx:id="tbvTeams" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="TableViewLightdBlue" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                     </padding>
+                     <columns>
+                        <TableColumn fx:id="tclTeam" prefWidth="503.0" styleClass="TableColumnLightdBlue" text="Nombre" />
+                     </columns>
+                  </TableView>
+                  <TableView fx:id="tbvSport" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="TableViewLightdBlue" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                     </padding>
+                     <columns>
+                        <TableColumn fx:id="tclSport" prefWidth="503.0" styleClass="TableColumnLightdBlue" text="Nombre" />
+                     </columns>
+                  </TableView>
+               </children>
+               <VBox.margin>
+                  <Insets left="15.0" right="15.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="210.0" maxWidth="1.7976931348623157E308" spacing="40.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <MFXButton fx:id="btnModify" onAction="#OnActionBtnModify" text="Modificar" />
+                  <MFXButton text="Button" />
+                  <MFXButton fx:id="btnCancel" onAction="#OnActionBtnCancel" text="Cancelar" />
+               </children>
+            </HBox>
+         </children></VBox>
+   </children>
 </AnchorPane>
