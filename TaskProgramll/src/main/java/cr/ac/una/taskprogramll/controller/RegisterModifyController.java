@@ -73,7 +73,7 @@ public class RegisterModifyController extends Controller implements Initializabl
     private MFXComboBox<Sport> cmbSport;
 
     @FXML
-    private Label labHead;
+    private Label labTitle;
 
     @FXML
     private VBox hbxImage;
@@ -283,6 +283,7 @@ public class RegisterModifyController extends Controller implements Initializabl
     }
 
     public void InitialConditionsPanel() {
+        labTitle.setText((String) AppContext.getInstance().get("Title"));
         isSport = (Boolean) AppContext.getInstance().get("isSport");
         isMaintenace = (Boolean) AppContext.getInstance().get("isMaintenace");
         EnabledMaintenance(isMaintenace);

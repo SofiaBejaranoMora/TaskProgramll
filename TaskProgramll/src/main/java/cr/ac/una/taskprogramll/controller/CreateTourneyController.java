@@ -5,6 +5,7 @@ import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
+import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXSlider;
@@ -25,6 +26,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 public class CreateTourneyController extends Controller implements Initializable {
 
@@ -52,7 +54,7 @@ public class CreateTourneyController extends Controller implements Initializable
         try {
             InitialConditionsPanel();
         } catch (Exception e) {
-            message.showModal(Alert.AlertType.ERROR, "Error de Inicialización", getStage(), "No se pudo inicializar la vista: " + e.getMessage());
+            message.show(Alert.AlertType.ERROR, "Error de Inicialización", "No se pudo inicializar la vista: " + e.getMessage());
         }
     }
 
@@ -119,7 +121,7 @@ public class CreateTourneyController extends Controller implements Initializable
                 try {
                     sports.addAll(fileManager.deserialization("Sport", Sport.class));
                 } catch (Exception e) {
-                    message.showModal(Alert.AlertType.ERROR, "Error al Cargar Deportes", getStage(), "No se pudieron cargar los deportes: " + e.getMessage());
+                    message.show(Alert.AlertType.ERROR, "Error al Cargar Deportes", "No se pudieron cargar los deportes: " + e.getMessage());
                 }
             }
         }
@@ -139,7 +141,7 @@ public class CreateTourneyController extends Controller implements Initializable
                 try {
                     teams.addAll(fileManager.deserialization("Team", Team.class));
                 } catch (Exception e) {
-                    message.showModal(Alert.AlertType.ERROR, "Error al Cargar Equipos", getStage(), "No se pudieron cargar los equipos: " + e.getMessage());
+                    message.show(Alert.AlertType.ERROR, "Error al Cargar Equipos", "No se pudieron cargar los equipos: " + e.getMessage());
                 }
             }
         }
@@ -184,12 +186,13 @@ public class CreateTourneyController extends Controller implements Initializable
         });
     }
 
-    private void AdjustSelectedTeamsSlice(ActionEvent event) {
+    @FXML
+    private void adjustSelectedTeamsSlice(ActionEvent event) {
         try {
             int desiredCount = Math.clamp((int) sliderTeamCount.getValue(), 32, 64);
             int totalTeamsAvailable = selectedTeams.size() + availableTeams.size();
             if (totalTeamsAvailable < desiredCount) {
-                message.showModal(Alert.AlertType.ERROR, "Error de Equipos", getStage(), String.format(
+                message.show(Alert.AlertType.ERROR, "Error de Equipos", String.format(
                     "No hay suficientes equipos disponibles. Se necesitan %d equipos, pero solo hay %d.",
                     desiredCount, totalTeamsAvailable
                 ));
@@ -210,7 +213,7 @@ public class CreateTourneyController extends Controller implements Initializable
 
             System.out.println("Teams adjusted to: " + selectedTeams.size());
         } catch (Exception e) {
-            message.showModal(Alert.AlertType.ERROR, "Error al Ajustar Equipos", getStage(), "No se pudieron ajustar los equipos: " + e.getMessage());
+            message.show(Alert.AlertType.ERROR, "Error al Ajustar Equipos", "No se pudieron ajustar los equipos: " + e.getMessage());
         }
     }
 
@@ -222,7 +225,8 @@ public class CreateTourneyController extends Controller implements Initializable
         return null;
     }
 
-    private void CreateTourney(ActionEvent event) {
+    @FXML
+    private void createTourney(ActionEvent event) {
         try {
             String tourneyName = txtTourneyName.getText().trim();
             String matchTime = txtMatchTime.getText().trim();
@@ -230,7 +234,7 @@ public class CreateTourneyController extends Controller implements Initializable
 
             String errorMessage = CheckInputs(tourneyName, matchTime, selectedTeams, selectedSport);
             if (errorMessage != null) {
-                message.showModal(Alert.AlertType.ERROR, "Error de Validación", getStage(), errorMessage);
+                message.show(Alert.AlertType.ERROR, "Error de Validación", errorMessage);
                 return;
             }
 
@@ -247,7 +251,7 @@ public class CreateTourneyController extends Controller implements Initializable
             System.out.println("Tourney created successfully: " + tourneyName + " with " + selectedTeams.size() + " teams.");
             ClearPanel();
         } catch (Exception e) {
-            message.showModal(Alert.AlertType.ERROR, "Error al Crear Torneo", getStage(), "No se pudo crear el torneo: " + e.getMessage());
+            message.show(Alert.AlertType.ERROR, "Error al Crear Torneo", "No se pudo crear el torneo: " + e.getMessage());
         }
     }
 
@@ -294,6 +298,15 @@ public class CreateTourneyController extends Controller implements Initializable
         System.out.println("Fields reset after tourney creation.");
     }
 
+    @FXML
+    private void OnActionBtnCancel(ActionEvent event) {
+        ClearPanel();
+        // Usar FlowController para navegar a "Lobby"
+        FlowController.getInstance().goViewInStage("Lobby", (Stage) btnCancel.getScene().getWindow());
+        // Cerrar la ventana actual
+        ((Stage) btnCancel.getScene().getWindow()).close();
+    }
+
     public void customInitialize() {
         InitialConditionsPanel();
     }
@@ -301,13 +314,5 @@ public class CreateTourneyController extends Controller implements Initializable
     @Override
     public void initialize() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @FXML
-    private void adjustSelectedTeamsSlice(ActionEvent event) {
-    }
-
-    @FXML
-    private void createTourney(ActionEvent event) {
     }
 }
