@@ -50,12 +50,12 @@ public class LobbyController extends Controller implements Initializable {
 
                 break;
                 
-                case "Crear Torneo":
+            case "Crear Torneo":
                 FlowController.getInstance().goViewInStage("CreateTourney", (Stage) cmbMenu.getScene().getWindow());
                 ((Stage) cmbMenu.getScene().getWindow()).close();
                 break;
                 
-                case "Ver Torneos":
+            case "Ver Torneos":
                 FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) cmbMenu.getScene().getWindow());
                 ((Stage) cmbMenu.getScene().getWindow()).close();
                 break;
