@@ -250,6 +250,7 @@ public class CreateTourneyController extends Controller implements Initializable
             fileManager.serialization(tourneys, "Tourney");
             System.out.println("Tourney created successfully: " + tourneyName + " with " + selectedTeams.size() + " teams.");
             ClearPanel();
+            FlowController.getInstance().goView("PlayersTable");
         } catch (Exception e) {
             message.show(Alert.AlertType.ERROR, "Error al Crear Torneo", "No se pudo crear el torneo: " + e.getMessage());
         }
