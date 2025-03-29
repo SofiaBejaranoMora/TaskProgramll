@@ -83,7 +83,6 @@ public class CreateTourneyController extends Controller implements Initializable
         sliderTeamCount.setMax(64);
         sliderTeamCount.setValue(32);
         sliderTeamCount.valueProperty().addListener((observable, oldValue, newValue) -> {
-            // Debug opcional: System.out.println("Slider value changed to: " + newValue.intValue());
         });
     }
 
@@ -314,6 +313,5 @@ public class CreateTourneyController extends Controller implements Initializable
 
     @Override
     public void initialize() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

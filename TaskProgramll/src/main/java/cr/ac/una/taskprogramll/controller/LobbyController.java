@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 
@@ -74,6 +75,10 @@ public class LobbyController extends Controller implements Initializable {
     @Override
     public void initialize() {
         
+    }
+
+    @FXML
+    private void OnMouseClickedImgExit(MouseEvent event) {
     }
     
 }
