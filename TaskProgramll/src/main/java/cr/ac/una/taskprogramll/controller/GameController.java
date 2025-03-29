@@ -5,23 +5,29 @@
 package cr.ac.una.taskprogramll.controller;
 
 import cr.ac.una.taskprogramll.model.Team;
+import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.FlowController;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import cr.ac.una.taskprogramll.model.Tourney;
-import javafx.scene.control.TableView;
 import java.net.URL;
+import javafx.util.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.Duration;
 
 /**
  * FXML Controller class
@@ -29,8 +35,7 @@ import javafx.util.Duration;
  * @author ashly
  */
 public class GameController extends Controller implements Initializable {
-
-       
+    
     private Tourney actualTourney;
     @FXML
     private MFXButton btnOut;
@@ -39,7 +44,7 @@ public class GameController extends Controller implements Initializable {
     @FXML
     private MFXButton btnStart;
     @FXML
-    private TableView<Team> tblvPlayersTable;
+    private TableView<Team> tblPlayersTable;
     @FXML
     private Label lblFirstTeam;
     @FXML
@@ -52,19 +57,24 @@ public class GameController extends Controller implements Initializable {
     private ImageView mgvFirstTeam;
     @FXML
     private ImageView mgvSecondTeam;
-    @FXML
-    private AnchorPane ncpRoot;
-    private Timeline timeLine;
-    private int timeCalculate = 0;
-    private int counterFirstTeam = 0;
-    private int counterSecondTeam = 0;
-    private int timeLimit = actualTourney.getTime();
-    
+        
     @FXML
     void onActionBtnOut(ActionEvent event) {
-        FlowController.getInstance().goView("Loby");
+        FlowController.getInstance().goView("PlayersTable");
     }
-        
+    
+    @FXML
+    void onActionBtnBack(ActionEvent event) {
+        FlowController.getInstance().goView("Lobby");
+    }
+
+    @FXML
+    void onActionBtnStart(ActionEvent event) {
+        FlowController.getInstance().goView("Game");
+        encounter(count);
+        count += 2;
+    }
+    
     @FXML
     void onMouseDraggedMgvBall(MouseEvent event) {
         mgvBall.setLayoutX(event.getSceneX());
@@ -81,6 +91,55 @@ public class GameController extends Controller implements Initializable {
         mgvBall.setCursor(Cursor.DEFAULT);
     }
     
+    private int timeLimit = actualTourney.getTime();
+    private List<Team> teamNames = actualTourney.getTeamList(); //Tenemos las listas desde acá.
+    private final ObservableList<Team> matchTeams = FXCollections.observableArrayList();
+    private int count = 0;
+    
+//Vista de  match en equipos y llaves del torneo
+    private void distributionOnTable() {
+        if("Sin empezar".equals(actualTourney.getState())) {
+            matchTeams.clear();
+            List<String> distributionTeams = new ArrayList<>();
+            int roundSize = teamNames.size();
+            while (distributionTeams.size() == teamNames.size()) {
+                Random randomTeam = new Random();
+                int choosenTeam = randomTeam.nextInt(roundSize);
+                if (!choosed(teamNames.getClass().getName()))
+                    distributionTeams.add(teamNames.get(choosenTeam).getName());
+            }
+            tblPlayersTable.setItems(matchTeams);
+        }
+        String imageBallonPath = teamNames.getClass() + ".png";
+        Image BallonImage = new Image(getClass().getResourceAsStream(imageBallonPath));
+        mgvFirstTeam.setImage(BallonImage);
+    }
+    
+    private Boolean choosed(String name){ 
+        List<String> choosenNames = new ArrayList<>();
+       if (choosenNames.contains(name)) {
+           return true;
+       } else {
+            choosenNames.add(name);
+            return false;
+       }
+   }
+
+    public void encounter(int index) {
+            String imageFirstPath = teamNames.get(index).getNameTeamImage() + ".png";
+            Image firstImage = new Image(getClass().getResourceAsStream(imageFirstPath));
+            mgvFirstTeam.setImage(firstImage);
+            String imageSecondPath = teamNames.get(index).getNameTeamImage() + ".png";
+            Image secondImage = new Image(getClass().getResourceAsStream(imageSecondPath));
+            mgvSecondTeam.setImage(secondImage);
+    }
+    
+    private Timeline timeLine;
+    private int timeCalculate = 0;
+    private int counterFirstTeam = 0;
+    private int counterSecondTeam = 0;
+    
+//A partir de acá se trabaja con la vista Game
     private void timer() {
         timeLine = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             if(timeCalculate <= timeLimit){
@@ -112,10 +171,16 @@ public class GameController extends Controller implements Initializable {
             System.out.println("Falla de limites en imagenes...");
         }
     }
-            
+          
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //Inicializar crónometro, marcador y más
+//Inicializador de...       
+        
+//Inicializar crónometro, marcador y más
+        lblTimer.setText("0:00");
+        lblFirstTeam.setText("0");
+        lblSecondTeam.setText("0");
     }    
 
     @Override

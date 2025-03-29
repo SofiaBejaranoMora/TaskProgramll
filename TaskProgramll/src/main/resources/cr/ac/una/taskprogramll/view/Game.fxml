@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" fx:id="ncpRoot" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.GameController">
+<AnchorPane id="AnchorPane" fx:id="ncpRoot" prefHeight="400.0" prefWidth="600.0" styleClass="GameBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.GameController">
    <children>
       <VBox alignment="TOP_CENTER" layoutX="221.0" layoutY="62.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
@@ -66,7 +66,7 @@
             </Label>
             <HBox alignment="BOTTOM_RIGHT" maxHeight="40.0" prefHeight="59.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
                <children>
-                  <MFXButton fx:id="btnOut" onAction="#onActionBtnOut" text="Salir" HBox.hgrow="ALWAYS" />
+                  <MFXButton fx:id="btnOut" onAction="#onActionBtnOut" styleClass="mfx-button" stylesheets="@Style.css" text="Salir" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
          </children>

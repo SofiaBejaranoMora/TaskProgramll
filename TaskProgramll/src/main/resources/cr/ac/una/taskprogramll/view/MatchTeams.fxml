@@ -8,24 +8,24 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.GameController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="GameBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.GameController">
    <children>
       <VBox layoutX="221.0" layoutY="87.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
-            <TableView fx:id="tblvPlayersTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="372.0" prefWidth="571.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tblPlayersTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" opacity="0.75" prefHeight="372.0" prefWidth="571.0" styleClass="TableViewLightdBlue" stylesheets="@Style.css" VBox.vgrow="ALWAYS">
                <columns>
-                  <TableColumn prefWidth="82.66665649414062" text="Primera ronda" />
-                  <TableColumn prefWidth="78.0" text="Segunda Ronda" />
+                  <TableColumn prefWidth="82.66665649414062" text="Round 1" />
+                  <TableColumn prefWidth="78.0" text="Round 2" />
                </columns>
             </TableView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                <children>
-                  <MFXButton fx:id="btnBack" text="Regresar" HBox.hgrow="ALWAYS">
+                  <MFXButton fx:id="btnBack" onAction="#onActionBtnBack" styleClass="mfx-button" stylesheets="@Style.css" text="Regresar" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets right="200.0" />
                      </HBox.margin>
                   </MFXButton>
-                  <MFXButton fx:id="btnStart" text="Empezar" HBox.hgrow="ALWAYS">
+                  <MFXButton fx:id="btnStart" onAction="#onActionBtnStart" styleClass="mfx-button" stylesheets="@Style.css" text="Empezar" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets left="200.0" />
                      </HBox.margin>

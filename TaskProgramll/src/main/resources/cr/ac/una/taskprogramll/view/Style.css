@@ -28,6 +28,14 @@
     -fx-preserve-ratio: true;
 }
 
+.GameBackground {
+    -fx-background-image: url("../resources/GameBackground.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-preserve-ratio: true;
+}
+
 .CameraIcon {
     -fx-image: url("../resources/CameraIcon.png");
 }
