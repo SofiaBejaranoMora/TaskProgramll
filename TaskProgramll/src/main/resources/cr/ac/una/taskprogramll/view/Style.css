@@ -68,7 +68,12 @@
     -fx-image: url("../resources/SaveIcon.png");
 }
 
+ImageView{
+    -fx-opacity:1;
+}
+
 .SaveIcon,
+.ExitIcon,
 .MaintenanceIcon,
 .SearchIcon,
 .LobbyIcon,
@@ -78,6 +83,7 @@
 
 .SaveIcon:hover,
 .MaintenanceIcon:hover,
+.ExitIcon:hover,
 .SearchIcon:hover,
 .LobbyIcon:hover,
 .SelectIcon:hover {
@@ -98,7 +104,7 @@
 }
 
 .mfx-button:active{
-
+     -fx-background-color: #5DEAF1;
 }
 
 #btnAccept{

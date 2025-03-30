@@ -4,7 +4,6 @@
  */
 package cr.ac.una.taskprogramll.controller;
 
-import cr.ac.una.taskprogramll.controller.Controller;
 import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
@@ -121,6 +120,5 @@ public class MaintenanceController extends Controller implements Initializable {
     @Override
     public void initialize() {
         InitialConditionsPanel();
-        //segundo controler
     }
 }

@@ -36,13 +36,11 @@ public class LobbyController extends Controller implements Initializable {
                 AppContext.getInstance().set("isSport", true);
                 AppContext.getInstance().set("isMaintenace", false);
                 FlowController.getInstance().goViewInStage("RegisterModify",  (Stage) cmbMenu.getScene().getWindow());
-                ((Stage) cmbMenu.getScene().getWindow()).close();
                 break;
             case "Registro Equipo":            
                 AppContext.getInstance().set("isSport", false);
                 AppContext.getInstance().set("isMaintenace", false);
                 FlowController.getInstance().goViewInStage("RegisterModify",  (Stage) cmbMenu.getScene().getWindow());
-                ((Stage) cmbMenu.getScene().getWindow()).close();
                 break;
             case "Mantenimiento de Deporte":
 
@@ -53,17 +51,19 @@ public class LobbyController extends Controller implements Initializable {
                 
             case "Crear Torneo":
                 FlowController.getInstance().goViewInStage("CreateTourney", (Stage) cmbMenu.getScene().getWindow());
-                ((Stage) cmbMenu.getScene().getWindow()).close();
                 break;
                 
             case "Ver Torneos":
                 FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) cmbMenu.getScene().getWindow());
-                ((Stage) cmbMenu.getScene().getWindow()).close();
                 break;
                 
             default:
                 throw new AssertionError();
         }
+    }
+    
+       @FXML
+    private void OnMouseClickedImgExit(MouseEvent event) {
     }
     
         @Override
@@ -76,9 +76,4 @@ public class LobbyController extends Controller implements Initializable {
     public void initialize() {
         
     }
-
-    @FXML
-    private void OnMouseClickedImgExit(MouseEvent event) {
-    }
-    
 }

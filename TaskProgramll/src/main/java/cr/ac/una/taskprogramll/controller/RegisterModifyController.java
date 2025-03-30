@@ -82,6 +82,9 @@ public class RegisterModifyController extends Controller implements Initializabl
     private ImageView mgvImage;
 
     @FXML
+    private ImageView imgOther;
+
+    @FXML
     void OnActionAccept(ActionEvent event) {
         String name = txtName.getText().trim();
         if ((!name.isEmpty()) && (mgvImage.getImage() != null)) {
@@ -89,24 +92,20 @@ public class RegisterModifyController extends Controller implements Initializabl
             if (isSport) {
                 if (!CheckedExistsSport(name)) {
                     Sport(name);
-                }
-                else{
+                } else {
                     message.show(Alert.AlertType.WARNING, "Alerta", "Ya hay un deporte registrado con el mismo nombre");
                 }
             } else if (cmbSport.getValue() != null) {
                 Sport type = cmbSport.getValue();
                 if (!CheckedExistsTeam(name, type)) {
                     Team(name, type);
-                }
-                else{
+                } else {
                     message.show(Alert.AlertType.WARNING, "Alerta", "Ya hay un equipo registrado con el mismo nombre");
                 }
-            }
-            else{
+            } else {
                 message.show(Alert.AlertType.WARNING, "Aviso", "No se ha seleccionado un deporte");
             }
-        }
-        else{
+        } else {
             message.show(Alert.AlertType.INFORMATION, "Aviso", "No se a registrado nombre o imagen");
         }
     }
@@ -290,6 +289,7 @@ public class RegisterModifyController extends Controller implements Initializabl
         EnabledTeam(!isSport);
         mgvImage.fitHeightProperty().bind(hbxImage.heightProperty().multiply(0.85));
         mgvImage.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
+        imgOther.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
@@ -320,5 +320,5 @@ public class RegisterModifyController extends Controller implements Initializabl
     public void initialize() {
         InitialConditionsPanel();
     }
-    
+
 }
