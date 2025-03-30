@@ -153,7 +153,7 @@ public class CreateTourneyController extends Controller implements Initializable
         if (selectedSport != null) {
             int selectedSportId = selectedSport.getId();
             for (Team team : selectedTeams) {
-                if (team.getSportType() != null && team.getSportType().getId() == selectedSportId) {
+                if (team.getIdSportType()== selectedSportId) {
                     filteredSelectedTeams.add(team);
                 }
             }
@@ -167,7 +167,8 @@ public class CreateTourneyController extends Controller implements Initializable
                     filteredAvailableTeams.add(team);
                 }
             } else {
-                int teamSportId = (team.getSportType() != null) ? team.getSportType().getId() : -1;
+                
+                int teamSportId=team.getIdSportType();
                 if (teamSportId == selectedSport.getId() && !selectedTeams.contains(team)) {
                     filteredAvailableTeams.add(team);
                 }

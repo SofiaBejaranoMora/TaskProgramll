@@ -128,6 +128,10 @@ public void initialize(URL url, ResourceBundle rb) {
         return tourneys;
     }
 
+    public void continueGame(){
+        
+    }
+    
     @Override
     public void initialize() {
     }
