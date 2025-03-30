@@ -93,12 +93,12 @@
 }
 
 .mfx-button {
-    -fx-background-color: #BBF6F9;
+    -fx-background-color: #FF72C7;
     -mfx-button-type:RAISED;
 }
 
 .mfx-button:hover{
-    -fx-background-color: #D2F9FB;
+    -fx-background-color: -fx-rose-base-color;
     -fx-scale-x: 1.1;
     -fx-scale-y: 1.1;
 }

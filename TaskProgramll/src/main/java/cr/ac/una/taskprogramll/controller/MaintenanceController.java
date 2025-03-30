@@ -28,17 +28,17 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class MaintenanceController extends Controller implements Initializable {
 
     private List<Sport> sportList = new ArrayList<>();
     private List<Team> teamList = new ArrayList<>();
-    private File file;
     private FileManager fileManeger = new FileManager();
     private Boolean isSport = false;
+    private File file;
 
     @FXML
     private MFXTextField txtNameSearch;
@@ -69,19 +69,51 @@ public class MaintenanceController extends Controller implements Initializable {
     }
 
     @FXML
-    private void OnMouseClickedNameSearch(MouseEvent event) {
-    }
-
-    @FXML
     private void OnActionBtnModify(ActionEvent event) {
     }
 
     @FXML
     private void OnActionBtnCancel(ActionEvent event) {
+
     }
 
     @FXML
     private void OnActionCmbSportSearch(ActionEvent event) {
+        teamList.clear();
+        teamList=SearchTeam();
+        TableInitialize();
+    }
+
+    @FXML
+    private void OnKeyReleasedNameSearch(KeyEvent event) {
+        if (!txtNameSearch.getText().isBlank()) {
+            teamList.clear();
+            List<Team> list = SearchTeam();
+            String nameSearch = txtNameSearch.getText().trim().toUpperCase();
+            for (Team currentTeam : list) {
+                if (currentTeam.getName().toUpperCase().startsWith(nameSearch)) {
+                    teamList.add(currentTeam);
+                }
+            }
+        } else {
+            teamList = SearchTeam();
+        }
+        TableInitialize();
+    }
+
+    public List<Team> SearchTeam() {
+        if (cmbSportSearch.getValue() != null) {
+            List<Team> result = new ArrayList<>();
+            List<Team> list = fileManeger.deserialization("Team", Team.class);
+            for (Team currentTeam : list) {
+                if (currentTeam.getIdSportType() == cmbSportSearch.getValue().getId()) {
+                    result.add(currentTeam);
+                }
+            }
+            return result;
+        } else {
+             return fileManeger.deserialization("Team", Team.class);
+        }
     }
 
     public void StartComboxSportType() {
@@ -106,16 +138,17 @@ public class MaintenanceController extends Controller implements Initializable {
             ObservableList<Sport> sportObservableList = FXCollections.observableArrayList(sportList);
             tbvSport.setItems(sportObservableList);
             tclSport.setCellValueFactory(new PropertyValueFactory<>("Name"));
-            tclSport.prefWidthProperty().bind(tbvSport.widthProperty().multiply(1)); 
+            tclSport.prefWidthProperty().bind(tbvSport.widthProperty().multiply(1));
         } else {
             ObservableList<Team> sportObservableList = FXCollections.observableArrayList(teamList);
             tbvTeams.setItems(sportObservableList);
             tclTeam.setCellValueFactory(new PropertyValueFactory<>("Name"));
-            tclTeamSportType.setCellValueFactory(cellData -> { Sport sport = cellData.getValue().searchSportType();
-                    return new SimpleStringProperty(sport.toString()); 
+            tclTeamSportType.setCellValueFactory(cellData -> {
+                Sport sport = cellData.getValue().searchSportType();
+                return new SimpleStringProperty(sport.toString());
             });
             tclTeam.prefWidthProperty().bind(tbvTeams.widthProperty().multiply(0.50));
-            tclTeamSportType.prefWidthProperty().bind(tbvTeams.widthProperty().multiply(0.50)); 
+            tclTeamSportType.prefWidthProperty().bind(tbvTeams.widthProperty().multiply(0.50));
         }
     }
 
@@ -145,3 +178,4 @@ public class MaintenanceController extends Controller implements Initializable {
         InitialConditionsPanel();
     }
 }
+

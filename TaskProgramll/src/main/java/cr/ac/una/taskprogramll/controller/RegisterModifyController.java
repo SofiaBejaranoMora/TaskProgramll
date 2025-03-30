@@ -165,7 +165,7 @@ public class RegisterModifyController extends Controller implements Initializabl
     }
 
     public void SportRegistration(String name) {
-        newSport = new Sport(name, CreateIdSport());
+        newSport = new Sport(name.trim(), CreateIdSport());
         sportList.add(newSport);
         fileManeger.serialization(sportList, "Sport");
         image = mgvImage.getImage();// revisar y quitar si es necesario
@@ -175,7 +175,7 @@ public class RegisterModifyController extends Controller implements Initializabl
     }
 
     public void TeamRegistration(String name, Sport type) {
-        newTeam = new Team(name, type.getId(), CreateIdTeam());
+        newTeam = new Team(name.trim(), type.getId(), CreateIdTeam());
         teamList.add(newTeam);
         fileManeger.serialization(teamList, "Team");
         image = mgvImage.getImage();
