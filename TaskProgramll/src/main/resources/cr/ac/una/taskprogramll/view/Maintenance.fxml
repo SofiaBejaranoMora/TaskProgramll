@@ -52,7 +52,8 @@
                         <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
                      </padding>
                      <columns>
-                        <TableColumn fx:id="tclTeam" prefWidth="503.0" styleClass="TableColumnLightdBlue" text="Nombre" />
+                        <TableColumn fx:id="tclTeam" prefWidth="503.0" text="Nombre" />
+                        <TableColumn fx:id="tclTeamSportType" prefWidth="503.0" text="Deporte" />
                      </columns>
                   </TableView>
                   <TableView fx:id="tbvSport" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="TableViewLightdBlue" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
@@ -60,7 +61,7 @@
                         <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
                      </padding>
                      <columns>
-                        <TableColumn fx:id="tclSport" prefWidth="503.0" styleClass="TableColumnLightdBlue" text="Nombre" />
+                        <TableColumn fx:id="tclSport" prefWidth="503.0" text="Nombre" />
                      </columns>
                   </TableView>
                </children>

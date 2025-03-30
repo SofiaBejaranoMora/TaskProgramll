@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,6 +26,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -58,6 +60,8 @@ public class MaintenanceController extends Controller implements Initializable {
     private Label labTitle;
     @FXML
     private ImageView lobbyIcon;
+    @FXML
+    private TableColumn<Team, String> tclTeamSportType;
 
     @FXML
     private void OnMouseClickedLobbyIcon(MouseEvent event) {
@@ -97,6 +101,24 @@ public class MaintenanceController extends Controller implements Initializable {
         tbvSport.setDisable(enabled);
     }
 
+    public void TableInitialize() {
+        if (isSport) {
+            ObservableList<Sport> sportObservableList = FXCollections.observableArrayList(sportList);
+            tbvSport.setItems(sportObservableList);
+            tclSport.setCellValueFactory(new PropertyValueFactory<>("Name"));
+            tclSport.prefWidthProperty().bind(tbvSport.widthProperty().multiply(1)); 
+        } else {
+            ObservableList<Team> sportObservableList = FXCollections.observableArrayList(teamList);
+            tbvTeams.setItems(sportObservableList);
+            tclTeam.setCellValueFactory(new PropertyValueFactory<>("Name"));
+            tclTeamSportType.setCellValueFactory(cellData -> { Sport sport = cellData.getValue().searchSportType();
+                    return new SimpleStringProperty(sport.toString()); 
+            });
+            tclTeam.prefWidthProperty().bind(tbvTeams.widthProperty().multiply(0.50));
+            tclTeamSportType.prefWidthProperty().bind(tbvTeams.widthProperty().multiply(0.50)); 
+        }
+    }
+
     public void InitialConditionsPanel() {
         labTitle.setText((String) AppContext.getInstance().get("Title"));
         isSport = (Boolean) AppContext.getInstance().get("isSport");
@@ -110,6 +132,7 @@ public class MaintenanceController extends Controller implements Initializable {
         if ((file.exists()) && (file.length() > 0)) {
             teamList = fileManeger.deserialization("Team", Team.class);
         }
+        TableInitialize();
     }
 
     @Override

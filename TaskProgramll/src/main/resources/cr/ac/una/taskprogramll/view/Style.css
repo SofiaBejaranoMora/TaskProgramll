@@ -155,10 +155,6 @@
     -fx-border-width: 2px;
 }
 
-.TableColumnLightdBlue{
-    -fx-background-color:rgba(15, 159, 166, 0.85);
-}
-
 TableViewLightdBlue:selected {
     -fx-background-color: #5DEAF1;
 }
