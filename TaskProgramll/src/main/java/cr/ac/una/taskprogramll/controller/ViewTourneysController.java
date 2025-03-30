@@ -46,6 +46,7 @@ public class ViewTourneysController extends Controller implements Initializable 
     private final FileManager fileManager = new FileManager();
     private ObservableList<Tourney> torneosList;
     private List<Sport> sportList = new ArrayList<>();
+    AppContext torneoElegido;
 
    @Override
 public void initialize(URL url, ResourceBundle rb) {
@@ -76,7 +77,7 @@ public void initialize(URL url, ResourceBundle rb) {
             if (tourneys != null) {
                 // Filtrar torneos por el deporte seleccionado
                 for (Tourney tourney : tourneys) {
-                    if (tourney.getSport() != null && tourney.getSportType().getId() == selectedSport.getId()) {
+                    if (tourney.getSportType()!= null && tourney.getSportType().getId() == selectedSport.getId()) {
                         torneosList.add(tourney);
                     }
                 }
@@ -111,7 +112,8 @@ public void initialize(URL url, ResourceBundle rb) {
             sportList.addAll(sports);
         }
     }
-
+    
+  
     private List<Tourney> loadTourneyList() {
         @SuppressWarnings("unchecked")
         List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
