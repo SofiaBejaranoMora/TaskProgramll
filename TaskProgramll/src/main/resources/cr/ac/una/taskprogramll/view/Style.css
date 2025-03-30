@@ -103,9 +103,9 @@
     -fx-scale-y: 1.1;
 }
 
-.mfx-button:active{
+/*.mfx-button:active{
      -fx-background-color: #5DEAF1;
-}
+}*/
 
 #btnAccept{
     -fx-background-color: #1AFF1A;

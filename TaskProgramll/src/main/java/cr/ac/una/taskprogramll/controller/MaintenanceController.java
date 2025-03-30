@@ -61,7 +61,7 @@ public class MaintenanceController extends Controller implements Initializable {
 
     @FXML
     private void OnMouseClickedLobbyIcon(MouseEvent event) {
-//        FlowController.getInstance().goViewInStage("RegisterModify", (Stage) lobbyIcon.getScene().getWindow());
+        FlowController.getInstance().goViewInStage("Lobby", (Stage) lobbyIcon.getScene().getWindow());
     }
 
     @FXML
