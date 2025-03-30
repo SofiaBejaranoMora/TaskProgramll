@@ -14,13 +14,21 @@
 
 <AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="521.0" prefWidth="774.0" styleClass="StoreBackground" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.RegisterModifyController">
     <children>
-      <VBox alignment="CENTER" layoutX="-6.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="40.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+      <VBox alignment="CENTER" layoutX="-6.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
          <children>
-            <Label fx:id="labTitle" text="Registro/Mantenimiento">
+            <HBox alignment="TOP_RIGHT" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="664.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <ImageView fx:id="lobbyIcon" fitHeight="52.0" fitWidth="55.0" onMouseClicked="#OnMouseClickedLobbyIcon" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="29.0" prefWidth="664.0" styleClass="boxLightBlue" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
-            </Label>
+               <children>
+                  <Label fx:id="labTitle" text="Registro/Mantenimiento" />
+               </children>
+            </HBox>
             <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="5.0" VBox.vgrow="ALWAYS">
                <children>
                   <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="20.0" HBox.hgrow="ALWAYS">
@@ -36,7 +44,7 @@
                   <Separator orientation="VERTICAL" />
                   <VBox alignment="CENTER" layoutX="128.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="25.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <VBox fx:id="hbxImage" alignment="CENTER" styleClass="boxRose">
+                        <VBox fx:id="hbxImage" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="boxRose" VBox.vgrow="ALWAYS">
                            <children>
                               <ImageView fx:id="mgvImage" fitHeight="148.0" fitWidth="153.0" pickOnBounds="true" />
                            </children>
@@ -51,7 +59,7 @@
                   </VBox>
                </children>
                <VBox.margin>
-                  <Insets />
+                  <Insets top="40.0" />
                </VBox.margin>
             </HBox>
             <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" spacing="70.0" VBox.vgrow="ALWAYS">
@@ -63,7 +71,7 @@
             </HBox>
          </children>
          <padding>
-            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+            <Insets left="40.0" right="40.0" />
          </padding>
       </VBox>
    </children>

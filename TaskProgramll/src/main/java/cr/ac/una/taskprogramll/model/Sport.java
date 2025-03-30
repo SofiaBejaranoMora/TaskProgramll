@@ -5,6 +5,7 @@
 package cr.ac.una.taskprogramll.model;
 
 import java.io.File;
+import java.util.Objects;
 
 public class Sport {
 
@@ -66,6 +67,36 @@ public class Sport {
     @Override
     public String toString(){
         return name;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.name);
+        hash = 53 * hash + Objects.hashCode(this.nameBallImage);
+        hash = 53 * hash + this.id;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Sport other = (Sport) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        return Objects.equals(this.nameBallImage, other.nameBallImage);
     }
    
 

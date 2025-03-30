@@ -8,6 +8,7 @@ import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.util.AppContext;
+import cr.ac.una.taskprogramll.util.FlowController;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -24,14 +25,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author sofia
- */
 public class MaintenanceController extends Controller implements Initializable {
 
     private List<Sport> sportList = new ArrayList<>();
@@ -39,7 +37,6 @@ public class MaintenanceController extends Controller implements Initializable {
     private File file;
     private FileManager fileManeger = new FileManager();
     private Boolean isSport = false;
-
 
     @FXML
     private MFXTextField txtNameSearch;
@@ -59,9 +56,12 @@ public class MaintenanceController extends Controller implements Initializable {
     private TableColumn<Sport, Sport> tclSport;
     @FXML
     private Label labTitle;
+    @FXML
+    private ImageView lobbyIcon;
 
     @FXML
-    private void OnMouseClickedImgLobby(MouseEvent event) {
+    private void OnMouseClickedLobbyIcon(MouseEvent event) {
+//        FlowController.getInstance().goViewInStage("RegisterModify", (Stage) lobbyIcon.getScene().getWindow());
     }
 
     @FXML

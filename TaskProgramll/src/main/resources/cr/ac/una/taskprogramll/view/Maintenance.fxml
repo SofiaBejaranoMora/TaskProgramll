@@ -18,7 +18,7 @@
          <children>
             <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308">
                <children>
-                  <ImageView fitHeight="39.0" fitWidth="46.0" onMouseClicked="#OnMouseClickedImgLobby" pickOnBounds="true" preserveRatio="true" styleClass="LobbyIcon" />
+                  <ImageView fx:id="lobbyIcon" fitHeight="39.0" fitWidth="46.0" onMouseClicked="#OnMouseClickedLobbyIcon" pickOnBounds="true" preserveRatio="true" />
                </children>
                <VBox.margin>
                   <Insets />

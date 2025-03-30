@@ -11,7 +11,6 @@ import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.utils.SwingFXUtils;
 import java.awt.image.BufferedImage;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -31,7 +30,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -43,7 +44,7 @@ public class RegisterModifyController extends Controller implements Initializabl
     private Team newTeam = null;
     private List<Sport> sportList = new ArrayList<>();
     private List<Team> teamList = new ArrayList<>();
-    private final FileManager fileManeger = new FileManager();
+    private FileManager fileManeger = new FileManager();
     private File file;
     private Image image = null;
     private String ruteImage = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
@@ -83,6 +84,14 @@ public class RegisterModifyController extends Controller implements Initializabl
 
     @FXML
     private ImageView imgOther;
+
+    @FXML
+    private ImageView lobbyIcon;
+    
+   @FXML
+    private void OnMouseClickedLobbyIcon(MouseEvent event) {
+        FlowController.getInstance().goViewInStage("RegisterModify",  (Stage) lobbyIcon.getScene().getWindow());
+    }
 
     @FXML
     void OnActionAccept(ActionEvent event) {
@@ -166,7 +175,7 @@ public class RegisterModifyController extends Controller implements Initializabl
     }
 
     public void TeamRegistration(String name, Sport type) {
-        newTeam = new Team(name, type, CreateIdTeam());
+        newTeam = new Team(name, type.getId(), CreateIdTeam());
         teamList.add(newTeam);
         fileManeger.serialization(teamList, "Team");
         image = mgvImage.getImage();
@@ -179,7 +188,7 @@ public class RegisterModifyController extends Controller implements Initializabl
         String nameCurrentTeam;
         for (Team currentTeam : teamList) {
             nameCurrentTeam = currentTeam.getName().toUpperCase().replaceAll("\\s+", "");
-            if ((currentTeam.getSportType().getId() == sport.getId()) && (nameCurrentTeam.equals(name))) {
+            if ((currentTeam.getIdSportType() == sport.getId()) && (nameCurrentTeam.equals(name))) {
                 return true;
             }
         }

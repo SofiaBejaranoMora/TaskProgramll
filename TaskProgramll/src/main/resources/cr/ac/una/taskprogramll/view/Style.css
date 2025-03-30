@@ -44,7 +44,7 @@
     -fx-image: url("../resources/SelectIcon.png");
 }
 
-.LobbyIcon {
+#lobbyIcon {
     -fx-image: url("../resources/LobbyIcon.png");
 }
 
@@ -68,7 +68,7 @@
     -fx-image: url("../resources/SaveIcon.png");
 }
 
-ImageView{
+.ImageView{
     -fx-opacity:1;
 }
 
