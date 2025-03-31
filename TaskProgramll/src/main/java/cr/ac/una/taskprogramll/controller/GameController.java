@@ -98,7 +98,7 @@ public class GameController extends Controller implements Initializable {
     
 //Vista de  match en equipos y llaves del torneo
     private void distributionOnTable() {
-        if("Sin empezar".equals(actualTourney.getState())) {
+        if("Sin empezar".equals(actualTourney.returnState())) {
             matchTeams.clear();
             List<String> distributionTeams = new ArrayList<>();
             int roundSize = teamNames.size();

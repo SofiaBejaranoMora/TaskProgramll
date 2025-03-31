@@ -104,7 +104,7 @@ public class Tourney {
         }
     }
 
-    public String getState() {
+    public String returnState() {
         if (teamList.isEmpty() && !loosersList.isEmpty()) {
             return "Finalizado";
         } else if (loosersList.isEmpty() && !teamList.isEmpty()) {
@@ -116,7 +116,7 @@ public class Tourney {
         }
     }
 
-    public List<Team> getRanking() {
+    public List<Team> returnRanking() {
         List<Team> ranking = new ArrayList<>(loosersList);
         if (!teamList.isEmpty()) {
             ranking.addAll(teamList);
@@ -133,7 +133,7 @@ public class Tourney {
                 ", sportType=" + sportType +
                 ", teamList=" + teamList +
                 ", loosersList=" + loosersList +
-                ", state=" + getState() +
+                ", state=" + returnState()+
                 '}';
     }
 
