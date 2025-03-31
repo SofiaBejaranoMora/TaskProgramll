@@ -80,28 +80,51 @@ public class MaintenanceController extends Controller implements Initializable {
     @FXML
     private void OnActionCmbSportSearch(ActionEvent event) {
         teamList.clear();
-        teamList=SearchTeam();
+        teamList = filterTeam();
         TableInitialize();
     }
 
     @FXML
     private void OnKeyReleasedNameSearch(KeyEvent event) {
         if (!txtNameSearch.getText().isBlank()) {
-            teamList.clear();
-            List<Team> list = SearchTeam();
-            String nameSearch = txtNameSearch.getText().trim().toUpperCase();
-            for (Team currentTeam : list) {
-                if (currentTeam.getName().toUpperCase().startsWith(nameSearch)) {
-                    teamList.add(currentTeam);
-                }
+            if (isSport) {
+                SearchSport();
             }
-        } else {
-            teamList = SearchTeam();
+            else{
+                SearchTeam();
+            }
+        } else if (isSport) {
+           sportList=fileManeger.deserialization("Sport", Sport.class);
+        }
+        else{
+             teamList = filterTeam();
         }
         TableInitialize();
     }
 
-    public List<Team> SearchTeam() {
+    public void SearchTeam() {
+        teamList.clear();
+        List<Team> list = filterTeam();
+        String nameSearch = txtNameSearch.getText().trim().toUpperCase();
+        for (Team currentTeam : list) {
+            if (currentTeam.getName().toUpperCase().startsWith(nameSearch)) {
+                teamList.add(currentTeam);
+            }
+        }
+    }
+
+    public void SearchSport() {
+        sportList.clear();
+        List<Sport> list = fileManeger.deserialization("Sport", Sport.class);
+        String nameSearch = txtNameSearch.getText().trim().toUpperCase();
+        for (Sport currentSport : list) {
+            if (currentSport.getName().toUpperCase().startsWith(nameSearch)) {
+                sportList.add(currentSport);
+            }
+        }
+    }
+
+    public List<Team> filterTeam() {
         if (cmbSportSearch.getValue() != null) {
             List<Team> result = new ArrayList<>();
             List<Team> list = fileManeger.deserialization("Team", Team.class);
@@ -112,7 +135,7 @@ public class MaintenanceController extends Controller implements Initializable {
             }
             return result;
         } else {
-             return fileManeger.deserialization("Team", Team.class);
+            return fileManeger.deserialization("Team", Team.class);
         }
     }
 
@@ -178,4 +201,3 @@ public class MaintenanceController extends Controller implements Initializable {
         InitialConditionsPanel();
     }
 }
-

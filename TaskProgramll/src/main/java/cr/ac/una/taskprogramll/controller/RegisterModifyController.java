@@ -90,7 +90,9 @@ public class RegisterModifyController extends Controller implements Initializabl
     
    @FXML
     private void OnMouseClickedLobbyIcon(MouseEvent event) {
+        ClearPanel();
         FlowController.getInstance().goViewInStage("Lobby",  (Stage) lobbyIcon.getScene().getWindow());
+        
     }
 
     @FXML

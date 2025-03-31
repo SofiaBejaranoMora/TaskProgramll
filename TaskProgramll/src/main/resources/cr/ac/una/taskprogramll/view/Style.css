@@ -6,30 +6,28 @@
 
 .StoreBackground {
     -fx-background-image: url("../resources/StoreBackground.jpg");
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-    -fx-background-position: center center;
-    -fx-preserve-ratio: true;
+}
+
+.StadiumStandBackground {
+    -fx-background-image: url("../resources/StadiumStandBackground.jpg");
 }
 
 .BusStopBackground {
     -fx-background-image: url("../resources/BusStopBackground.jpg");
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-    -fx-background-position: center center;
-    -fx-preserve-ratio: true;
 }
 
 .LobbyBackground {
     -fx-background-image: url("../resources/LobbyBackground.jpg");
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-    -fx-background-position: center center;
-    -fx-preserve-ratio: true;
 }
 
 .GameBackground {
     -fx-background-image: url("../resources/GameBackground.jpg");
+}
+
+.StoreBackground,
+.BusStopBackground,
+.LobbyBackground,
+.GameBackground{
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-position: center center;
@@ -148,13 +146,27 @@
 }
 
 .TableViewLightdBlue{
-    -fx-background-radius: 10px;
     -fx-background-color: -fx-lightBlue-base-color;
-    -fx-opacity:0.70;
-    -fx-border-radius: 10px;
-    -fx-border-width: 2px;
 }
 
 TableViewLightdBlue:selected {
     -fx-background-color: #5DEAF1;
 }
+
+.TableViewRose{
+    -fx-background-color:-fx-rose-base-color;
+
+}
+
+TableViewRose:selected {
+    -fx-background-color: #FF72C7;
+}
+
+.TableViewLightdBlue,
+.TableViewRose {
+    -fx-background-radius: 10px;
+    -fx-opacity:0.80;
+    -fx-border-radius: 10px;
+    -fx-border-width: 2px;
+}
+
