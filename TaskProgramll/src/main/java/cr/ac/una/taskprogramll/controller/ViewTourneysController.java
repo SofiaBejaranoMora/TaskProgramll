@@ -16,8 +16,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.css.SimpleStyleableObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -41,7 +43,6 @@ public class ViewTourneysController extends Controller implements Initializable 
     private final FileManager fileManager = new FileManager();
     private ObservableList<Tourney> torneosList;
     private List<Sport> sportList = new ArrayList<>();
-    AppContext torneoElegido;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -50,7 +51,10 @@ public class ViewTourneysController extends Controller implements Initializable 
             tablaTorneos.setItems(torneosList);
 
             colTorneo.setCellValueFactory(new PropertyValueFactory<>("name"));
-            colEstado.setCellValueFactory(new PropertyValueFactory<>("state")); 
+            colEstado.setCellValueFactory(cellData->{
+                Tourney tourney=cellData.getValue();
+                return new SimpleStringProperty(tourney.returnState());
+            });
 
             loadSportList();
             comboDeportes.setItems(FXCollections.observableArrayList(sportList));
