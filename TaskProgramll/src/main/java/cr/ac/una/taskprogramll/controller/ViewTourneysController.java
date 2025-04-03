@@ -173,7 +173,7 @@ private void actualizarBotones(Tourney torneoSeleccionado) {
         if (seleccionado != null) {
           // Guardar el torneo seleccionado en el contexto de la aplicación
         AppContext.getInstance().set("SelectedTourney", seleccionado);
-        FlowController.getInstance().goViewInStage("Lobby", (Stage) btnInfo.getScene().getWindow());
+        FlowController.getInstance().goViewInStage("TourneysInfo", (Stage) btnInfo.getScene().getWindow());
         
         System.out.println("Mostrando info de: " + seleccionado.getName());
         }
