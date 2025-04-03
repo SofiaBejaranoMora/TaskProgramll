@@ -292,19 +292,35 @@ public class RegisterModifyController extends Controller implements Initializabl
         btnDelete.setVisible(enabled);
     }
 
-    public void initializeComponent() {
+    public void InitializeComponent() {
         labTitle.setText((String) AppContext.getInstance().get("Title"));
         EnabledMaintenance(isMaintenace);
         EnabledTeam(!isSport);
         mgvImage.fitHeightProperty().bind(hbxImage.heightProperty().multiply(0.85));
         mgvImage.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
         imgOther.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
+        if (isMaintenace) {
+            InitializeMaintenanceComponent();
+        }
     }
 
-    public void initializeController() {
-        isSport = (Boolean) AppContext.getInstance().get("isSport");
-        isMaintenace = (Boolean) AppContext.getInstance().get("isMaintenace");
-        initializeComponent();
+    public void InitializeMaintenanceComponent() {
+        if (isSport) {
+            newSport = (Sport) AppContext.getInstance().get("selectedSport");
+            txtName.setText(newSport.getName());
+            file = new File(newSport.RuteImage());
+            if (file.exists()) {
+                image = new Image(newSport.RuteImage());
+                mgvImage.setImage(image);
+            } else {
+                mgvImage.setImage(null);
+                
+            }
+        }
+
+    }
+
+    public void InitializeList() {
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
@@ -314,6 +330,14 @@ public class RegisterModifyController extends Controller implements Initializabl
         if ((file.exists()) && (file.length() > 0)) {
             teamList = fileManeger.deserialization("Team", Team.class);
         }
+    }
+
+    public void InitializeController() {
+        isSport = (Boolean) AppContext.getInstance().get("isSport");
+        isMaintenace = (Boolean) AppContext.getInstance().get("isMaintenace");
+        InitializeComponent();
+        InitializeList();
+
     }
 
     public void ClearPanel() {
@@ -328,12 +352,12 @@ public class RegisterModifyController extends Controller implements Initializabl
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        initializeController();
+        InitializeController();
     }
 
     @Override
     public void initialize() {
-        initializeController();
+        InitializeController();
     }
 
 }

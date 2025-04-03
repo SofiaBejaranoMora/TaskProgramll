@@ -73,14 +73,13 @@ public class MaintenanceController extends Controller implements Initializable {
 
     @FXML
     private void OnActionBtnModify(ActionEvent event) {
-        Sport selectedSport=tbvSport.getSelectionModel().getSelectedItem();
-        Team selectedTeam=tbvTeams.getSelectionModel().getSelectedItem();
-            if(isSport){
-                SelectSport(selectedSport);
-            }
-            else{
-                SelectTeam(selectedTeam);
-            }
+        Sport selectedSport = tbvSport.getSelectionModel().getSelectedItem();
+        Team selectedTeam = tbvTeams.getSelectionModel().getSelectedItem();
+        if (isSport) {
+            SelectSport(selectedSport);
+        } else {
+            SelectTeam(selectedTeam);
+        }
     }
 
     @FXML
@@ -91,7 +90,7 @@ public class MaintenanceController extends Controller implements Initializable {
     @FXML
     private void OnActionCmbSportSearch(ActionEvent event) {
         teamList.clear();
-        teamList = filterTeam();
+        teamList = ListLeakedTeams();
         TableInitialize();
     }
 
@@ -99,51 +98,46 @@ public class MaintenanceController extends Controller implements Initializable {
     private void OnKeyReleasedNameSearch(KeyEvent event) {
         if (!txtNameSearch.getText().isBlank()) {
             if (isSport) {
-                SearchSport();
-            }
-            else{
-                SearchTeam();
+                FilterSportName();
+            } else {
+                FilterTeamName();
             }
         } else if (isSport) {
-           sportList=fileManeger.deserialization("Sport", Sport.class);
-        }
-        else{
-             teamList = filterTeam();
+            sportList = fileManeger.deserialization("Sport", Sport.class);
+        } else {
+            teamList = ListLeakedTeams();
         }
         TableInitialize();
     }
-    
-    public void SelectTeam(Team selectedTeam){
-         if(selectedTeam!=null){
-             file=new File(selectedTeam.searchSportType().RuteImage());
-             if(file.exists()){
-                 FlowController.getInstance().goViewInStage("RegisterModify", (Stage) lobbyIcon.getScene().getWindow());
-                 AppContext.getInstance().set("selectedTeam", selectedTeam);
-             }
-             else{
-                 message.show(Alert.AlertType.CONFIRMATION, "Alerta", "El equipo no se puede modificar porque la imagen del balón del deporte " 
-                         + selectedTeam.getName() + " fue movida o eliminada. Primero, actualice este deporte "
-                                 + "con una nueva imagen del balón para poder modificar sus equipos.");
-             }
-        }
-        else {
+
+    public void SelectTeam(Team selectedTeam) {
+        if (selectedTeam != null) {
+            file = new File(selectedTeam.searchSportType().RuteImage());
+            if (file.exists()) {
+                AppContext.getInstance().set("selectedTeam", selectedTeam);
+                FlowController.getInstance().goViewInStage("RegisterModify", (Stage) lobbyIcon.getScene().getWindow());
+            } else {
+                message.show(Alert.AlertType.WARNING, "Alerta", "El equipo no se puede modificar porque la imagen del balón del deporte "
+                        + selectedTeam.getName() + " fue movida o eliminada. Primero, actualice este deporte "
+                        + "con una nueva imagen del balón para poder modificar sus equipos.");
+            }
+        } else {
             message.show(Alert.AlertType.WARNING, "Alerta", "No ha seleccionado ningun equipo para modificar");
         }
     }
-    
-    public void SelectSport(Sport selectedSport){
-        if(selectedSport!=null){
-            FlowController.getInstance().goViewInStage("RegisterModify", (Stage) lobbyIcon.getScene().getWindow());
+
+    public void SelectSport(Sport selectedSport) {
+        if (selectedSport != null) {
             AppContext.getInstance().set("selectedSport", selectedSport);
-        }
-        else {
+            FlowController.getInstance().goViewInStage("RegisterModify", (Stage) lobbyIcon.getScene().getWindow());
+        } else {
             message.show(Alert.AlertType.WARNING, "Alerta", "No ha seleccionado ningun deporte para modificar");
         }
-    }
-    
-    public void SearchTeam() {
+    } 
+
+    public void FilterTeamName() { 
         teamList.clear();
-        List<Team> list = filterTeam();
+        List<Team> list = ListLeakedTeams();
         String nameSearch = txtNameSearch.getText().trim().toUpperCase();
         for (Team currentTeam : list) {
             if (currentTeam.getName().toUpperCase().startsWith(nameSearch)) {
@@ -152,7 +146,7 @@ public class MaintenanceController extends Controller implements Initializable {
         }
     }
 
-    public void SearchSport() {
+    public void FilterSportName() {
         sportList.clear();
         List<Sport> list = fileManeger.deserialization("Sport", Sport.class);
         String nameSearch = txtNameSearch.getText().trim().toUpperCase();
@@ -161,10 +155,10 @@ public class MaintenanceController extends Controller implements Initializable {
                 sportList.add(currentSport);
             }
         }
-    }
+    }// cambiar nombre a FilterSport
 
-    public List<Team> filterTeam() {
-        if ((cmbSportSearch.getValue() != null)&&(!"Todos".equals(cmbSportSearch.getValue().getName()))) {
+    public List<Team> ListLeakedTeams() {
+        if ((cmbSportSearch.getValue() != null) && (!"Todos".equals(cmbSportSearch.getValue().getName()))) {
             List<Team> result = new ArrayList<>();
             List<Team> list = fileManeger.deserialization("Team", Team.class);
             for (Team currentTeam : list) {
@@ -180,7 +174,7 @@ public class MaintenanceController extends Controller implements Initializable {
 
     public void StartComboxSportType() {
         ObservableList<Sport> items = FXCollections.observableArrayList(sportList);
-        items.add(new Sport("Todos",0));
+        items.add(new Sport("Todos", 0));
         cmbSportSearch.setItems(items);
     }
 
