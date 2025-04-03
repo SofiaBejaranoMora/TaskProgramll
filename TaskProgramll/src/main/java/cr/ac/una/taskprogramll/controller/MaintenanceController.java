@@ -76,9 +76,9 @@ public class MaintenanceController extends Controller implements Initializable {
         Sport selectedSport = tbvSport.getSelectionModel().getSelectedItem();
         Team selectedTeam = tbvTeams.getSelectionModel().getSelectedItem();
         if (isSport) {
-            SelectSport(selectedSport);
+            SportSelectedModify(selectedSport);
         } else {
-            SelectTeam(selectedTeam);
+            TeamSelectedModify(selectedTeam);
         }
     }
 
@@ -110,12 +110,12 @@ public class MaintenanceController extends Controller implements Initializable {
         TableInitialize();
     }
 
-    public void SelectTeam(Team selectedTeam) {
+    public void TeamSelectedModify(Team selectedTeam) {
         if (selectedTeam != null) {
             file = new File(selectedTeam.searchSportType().RuteImage());
             if (file.exists()) {
                 AppContext.getInstance().set("selectedTeam", selectedTeam);
-                FlowController.getInstance().goViewInStage("RegisterModify", (Stage) lobbyIcon.getScene().getWindow());
+                FlowController.getInstance().goViewInStage("RegisterModify", (Stage) btnCancel.getScene().getWindow());
             } else {
                 message.show(Alert.AlertType.WARNING, "Alerta", "El equipo no se puede modificar porque la imagen del balón del deporte "
                         + selectedTeam.getName() + " fue movida o eliminada. Primero, actualice este deporte "
@@ -126,10 +126,10 @@ public class MaintenanceController extends Controller implements Initializable {
         }
     }
 
-    public void SelectSport(Sport selectedSport) {
+    public void SportSelectedModify(Sport selectedSport) {
         if (selectedSport != null) {
             AppContext.getInstance().set("selectedSport", selectedSport);
-            FlowController.getInstance().goViewInStage("RegisterModify", (Stage) lobbyIcon.getScene().getWindow());
+            FlowController.getInstance().goViewInStage("RegisterModify", (Stage) btnCancel.getScene().getWindow());
         } else {
             message.show(Alert.AlertType.WARNING, "Alerta", "No ha seleccionado ningun deporte para modificar");
         }
@@ -155,7 +155,7 @@ public class MaintenanceController extends Controller implements Initializable {
                 sportList.add(currentSport);
             }
         }
-    }// cambiar nombre a FilterSport
+    }
 
     public List<Team> ListLeakedTeams() {
         if ((cmbSportSearch.getValue() != null) && (!"Todos".equals(cmbSportSearch.getValue().getName()))) {
@@ -172,7 +172,7 @@ public class MaintenanceController extends Controller implements Initializable {
         }
     }
 
-    public void StartComboxSportType() {
+    public void InitializeComboxSportType() {
         ObservableList<Sport> items = FXCollections.observableArrayList(sportList);
         items.add(new Sport("Todos", 0));
         cmbSportSearch.setItems(items);
@@ -216,7 +216,7 @@ public class MaintenanceController extends Controller implements Initializable {
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
-            StartComboxSportType();
+            InitializeComboxSportType();
         }
         file = new File("Team.txt");
         if ((file.exists()) && (file.length() > 0)) {

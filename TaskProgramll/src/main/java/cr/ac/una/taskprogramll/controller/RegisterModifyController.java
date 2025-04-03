@@ -172,7 +172,7 @@ public class RegisterModifyController extends Controller implements Initializabl
         fileManeger.serialization(sportList, "Sport");
         image = mgvImage.getImage();// revisar y quitar si es necesario
         RelocateImage(name);
-        StartComboxSportType();
+        InitializeComboxSportType();
         ClearPanel();
     }
 
@@ -238,7 +238,7 @@ public class RegisterModifyController extends Controller implements Initializabl
         }
     }
 
-    public void StartComboxSportType() {
+    public void InitializeComboxSportType() {
         ObservableList<Sport> items = FXCollections.observableArrayList(sportList);
         cmbSport.setItems(items);
     }
@@ -310,21 +310,35 @@ public class RegisterModifyController extends Controller implements Initializabl
             txtName.setText(newSport.getName());
             file = new File(newSport.RuteImage());
             if (file.exists()) {
-                image = new Image(newSport.RuteImage());
+                image = new Image("file:"+newSport.RuteImage());
                 mgvImage.setImage(image);
             } else {
                 mgvImage.setImage(null);
-                
+                message.show(Alert.AlertType.INFORMATION, "Aviso", "La imagen del balón del deporte "
+                        + newSport.getName() + " fue movida o eliminada.Debera de seleccionar una nueva imegen.");
+            }
+        } else {
+            newTeam = (Team) AppContext.getInstance().get("selectedTeam");
+            txtName.setText(newTeam.getName());
+            cmbSport.setFloatingText("Deporte:"+newTeam.searchSportType().getName());
+            cmbSport.setDisable(true);
+            file = new File(newTeam.RuteImage());
+            if (file.exists()) {
+                image = new Image("file:"+ newTeam.RuteImage());
+                mgvImage.setImage(image);
+            } else {
+                mgvImage.setImage(null);
+                message.show(Alert.AlertType.INFORMATION, "Aviso", "La imagen del equipo "
+                        + newTeam.getName() + " fue movida o eliminada.Debera de seleccionar o tomar una nueva imegen.");
             }
         }
-
     }
 
     public void InitializeList() {
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
-            StartComboxSportType();
+            InitializeComboxSportType();
         }
         file = new File("Team.txt");
         if ((file.exists()) && (file.length() > 0)) {
