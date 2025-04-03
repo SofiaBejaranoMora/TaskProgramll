@@ -87,12 +87,12 @@ public class RegisterModifyController extends Controller implements Initializabl
 
     @FXML
     private ImageView lobbyIcon;
-    
-   @FXML
+
+    @FXML
     private void OnMouseClickedLobbyIcon(MouseEvent event) {
         ClearPanel();
-        FlowController.getInstance().goViewInStage("Lobby",  (Stage) lobbyIcon.getScene().getWindow());
-        
+        FlowController.getInstance().goViewInStage("Lobby", (Stage) lobbyIcon.getScene().getWindow());
+
     }
 
     @FXML
@@ -206,12 +206,6 @@ public class RegisterModifyController extends Controller implements Initializabl
         return false;
     }
 
-    public void EnabledMaintenance(Boolean enabled) {
-        btnDelete.setDisable(!enabled);
-        btnDelete.setManaged(enabled);
-        btnDelete.setVisible(enabled);
-    }
-
     public void SelectImage() {
         JFileChooser jFileChooser = new JFileChooser();
         FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("PNG", "png");
@@ -292,15 +286,25 @@ public class RegisterModifyController extends Controller implements Initializabl
         btnPhoto.setVisible(enabled);
     }
 
-    public void InitialConditionsPanel() {
+    public void EnabledMaintenance(Boolean enabled) {
+        btnDelete.setDisable(!enabled);
+        btnDelete.setManaged(enabled);
+        btnDelete.setVisible(enabled);
+    }
+
+    public void initializeComponent() {
         labTitle.setText((String) AppContext.getInstance().get("Title"));
-        isSport = (Boolean) AppContext.getInstance().get("isSport");
-        isMaintenace = (Boolean) AppContext.getInstance().get("isMaintenace");
         EnabledMaintenance(isMaintenace);
         EnabledTeam(!isSport);
         mgvImage.fitHeightProperty().bind(hbxImage.heightProperty().multiply(0.85));
         mgvImage.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
         imgOther.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
+    }
+
+    public void initializeController() {
+        isSport = (Boolean) AppContext.getInstance().get("isSport");
+        isMaintenace = (Boolean) AppContext.getInstance().get("isMaintenace");
+        initializeComponent();
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
@@ -324,12 +328,12 @@ public class RegisterModifyController extends Controller implements Initializabl
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        InitialConditionsPanel();
+        initializeController();
     }
 
     @Override
     public void initialize() {
-        InitialConditionsPanel();
+        initializeController();
     }
 
 }
