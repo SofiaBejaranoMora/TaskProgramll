@@ -9,6 +9,7 @@ import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
+import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -23,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -39,6 +41,7 @@ public class MaintenanceController extends Controller implements Initializable {
     private FileManager fileManeger = new FileManager();
     private Boolean isSport = false;
     private File file;
+    private Mensaje message = new Mensaje();
 
     @FXML
     private MFXTextField txtNameSearch;
@@ -70,6 +73,14 @@ public class MaintenanceController extends Controller implements Initializable {
 
     @FXML
     private void OnActionBtnModify(ActionEvent event) {
+        Sport selectedSport=tbvSport.getSelectionModel().getSelectedItem();
+        Team selectedTeam=tbvTeams.getSelectionModel().getSelectedItem();
+            if(isSport){
+                SelectSport(selectedSport);
+            }
+            else{
+                SelectTeam(selectedTeam);
+            }
     }
 
     @FXML
@@ -101,7 +112,35 @@ public class MaintenanceController extends Controller implements Initializable {
         }
         TableInitialize();
     }
-
+    
+    public void SelectTeam(Team selectedTeam){
+         if(selectedTeam!=null){
+             file=new File(selectedTeam.searchSportType().RuteImage());
+             if(file.exists()){
+                 FlowController.getInstance().goViewInStage("RegisterModify", (Stage) lobbyIcon.getScene().getWindow());
+                 AppContext.getInstance().set("selectedTeam", selectedTeam);
+             }
+             else{
+                 message.show(Alert.AlertType.CONFIRMATION, "Alerta", "El equipo no se puede modificar porque la imagen del balón del deporte " 
+                         + selectedTeam.getName() + " fue movida o eliminada. Primero, actualice este deporte "
+                                 + "con una nueva imagen del balón para poder modificar sus equipos.");
+             }
+        }
+        else {
+            message.show(Alert.AlertType.WARNING, "Alerta", "No ha seleccionado ningun equipo para modificar");
+        }
+    }
+    
+    public void SelectSport(Sport selectedSport){
+        if(selectedSport!=null){
+            FlowController.getInstance().goViewInStage("RegisterModify", (Stage) lobbyIcon.getScene().getWindow());
+            AppContext.getInstance().set("selectedSport", selectedSport);
+        }
+        else {
+            message.show(Alert.AlertType.WARNING, "Alerta", "No ha seleccionado ningun deporte para modificar");
+        }
+    }
+    
     public void SearchTeam() {
         teamList.clear();
         List<Team> list = filterTeam();
@@ -125,7 +164,7 @@ public class MaintenanceController extends Controller implements Initializable {
     }
 
     public List<Team> filterTeam() {
-        if (cmbSportSearch.getValue() != null) {
+        if ((cmbSportSearch.getValue() != null)&&(!"Todos".equals(cmbSportSearch.getValue().getName()))) {
             List<Team> result = new ArrayList<>();
             List<Team> list = fileManeger.deserialization("Team", Team.class);
             for (Team currentTeam : list) {
@@ -141,6 +180,7 @@ public class MaintenanceController extends Controller implements Initializable {
 
     public void StartComboxSportType() {
         ObservableList<Sport> items = FXCollections.observableArrayList(sportList);
+        items.add(new Sport("Todos",0));
         cmbSportSearch.setItems(items);
     }
 

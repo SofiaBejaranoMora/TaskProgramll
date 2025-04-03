@@ -104,20 +104,20 @@ public class RegisterModifyController extends Controller implements Initializabl
                 if (!CheckedExistsSport(name)) {
                     Sport(name);
                 } else {
-                    message.show(Alert.AlertType.WARNING, "Alerta", "Ya hay un deporte registrado con el mismo nombre");
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "Ya hay un deporte registrado con el mismo nombre");
                 }
             } else if (cmbSport.getValue() != null) {
                 Sport type = cmbSport.getValue();
                 if (!CheckedExistsTeam(name, type)) {
                     Team(name, type);
                 } else {
-                    message.show(Alert.AlertType.WARNING, "Alerta", "Ya hay un equipo registrado con el mismo nombre");
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "Ya hay un equipo registrado con el mismo nombre");
                 }
             } else {
-                message.show(Alert.AlertType.WARNING, "Aviso", "No se ha seleccionado un deporte");
+                message.show(Alert.AlertType.WARNING, "Alerta", "No se ha seleccionado un deporte");
             }
         } else {
-            message.show(Alert.AlertType.INFORMATION, "Aviso", "No se a registrado nombre o imagen");
+            message.show(Alert.AlertType.WARNING, "Alerta", "No se a registrado nombre o imagen");
         }
     }
 
