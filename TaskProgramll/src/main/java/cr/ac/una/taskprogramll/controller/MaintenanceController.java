@@ -9,6 +9,7 @@ import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
+import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -23,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -39,6 +41,7 @@ public class MaintenanceController extends Controller implements Initializable {
     private FileManager fileManeger = new FileManager();
     private Boolean isSport = false;
     private File file;
+    private Mensaje message = new Mensaje();
 
     @FXML
     private MFXTextField txtNameSearch;
@@ -70,6 +73,13 @@ public class MaintenanceController extends Controller implements Initializable {
 
     @FXML
     private void OnActionBtnModify(ActionEvent event) {
+        Sport selectedSport = tbvSport.getSelectionModel().getSelectedItem();
+        Team selectedTeam = tbvTeams.getSelectionModel().getSelectedItem();
+        if (isSport) {
+            SportSelectedModify(selectedSport);
+        } else {
+            TeamSelectedModify(selectedTeam);
+        }
     }
 
     @FXML
@@ -80,7 +90,7 @@ public class MaintenanceController extends Controller implements Initializable {
     @FXML
     private void OnActionCmbSportSearch(ActionEvent event) {
         teamList.clear();
-        teamList = filterTeam();
+        teamList = ListLeakedTeams();
         TableInitialize();
     }
 
@@ -88,23 +98,46 @@ public class MaintenanceController extends Controller implements Initializable {
     private void OnKeyReleasedNameSearch(KeyEvent event) {
         if (!txtNameSearch.getText().isBlank()) {
             if (isSport) {
-                SearchSport();
-            }
-            else{
-                SearchTeam();
+                FilterSportName();
+            } else {
+                FilterTeamName();
             }
         } else if (isSport) {
-           sportList=fileManeger.deserialization("Sport", Sport.class);
-        }
-        else{
-             teamList = filterTeam();
+            sportList = fileManeger.deserialization("Sport", Sport.class);
+        } else {
+            teamList = ListLeakedTeams();
         }
         TableInitialize();
     }
 
-    public void SearchTeam() {
+    public void TeamSelectedModify(Team selectedTeam) {
+        if (selectedTeam != null) {
+            file = new File(selectedTeam.searchSportType().RuteImage());
+            if (file.exists()) {
+                AppContext.getInstance().set("selectedTeam", selectedTeam);
+                FlowController.getInstance().goViewInStage("RegisterModify", (Stage) btnCancel.getScene().getWindow());
+            } else {
+                message.show(Alert.AlertType.WARNING, "Alerta", "El equipo no se puede modificar porque la imagen del balón del deporte "
+                        + selectedTeam.getName() + " fue movida o eliminada. Primero, actualice este deporte "
+                        + "con una nueva imagen del balón para poder modificar sus equipos.");
+            }
+        } else {
+            message.show(Alert.AlertType.WARNING, "Alerta", "No ha seleccionado ningun equipo para modificar");
+        }
+    }
+
+    public void SportSelectedModify(Sport selectedSport) {
+        if (selectedSport != null) {
+            AppContext.getInstance().set("selectedSport", selectedSport);
+            FlowController.getInstance().goViewInStage("RegisterModify", (Stage) btnCancel.getScene().getWindow());
+        } else {
+            message.show(Alert.AlertType.WARNING, "Alerta", "No ha seleccionado ningun deporte para modificar");
+        }
+    } 
+
+    public void FilterTeamName() { 
         teamList.clear();
-        List<Team> list = filterTeam();
+        List<Team> list = ListLeakedTeams();
         String nameSearch = txtNameSearch.getText().trim().toUpperCase();
         for (Team currentTeam : list) {
             if (currentTeam.getName().toUpperCase().startsWith(nameSearch)) {
@@ -113,7 +146,7 @@ public class MaintenanceController extends Controller implements Initializable {
         }
     }
 
-    public void SearchSport() {
+    public void FilterSportName() {
         sportList.clear();
         List<Sport> list = fileManeger.deserialization("Sport", Sport.class);
         String nameSearch = txtNameSearch.getText().trim().toUpperCase();
@@ -124,8 +157,8 @@ public class MaintenanceController extends Controller implements Initializable {
         }
     }
 
-    public List<Team> filterTeam() {
-        if (cmbSportSearch.getValue() != null) {
+    public List<Team> ListLeakedTeams() {
+        if ((cmbSportSearch.getValue() != null) && (!"Todos".equals(cmbSportSearch.getValue().getName()))) {
             List<Team> result = new ArrayList<>();
             List<Team> list = fileManeger.deserialization("Team", Team.class);
             for (Team currentTeam : list) {
@@ -139,8 +172,9 @@ public class MaintenanceController extends Controller implements Initializable {
         }
     }
 
-    public void StartComboxSportType() {
+    public void InitializeComboxSportType() {
         ObservableList<Sport> items = FXCollections.observableArrayList(sportList);
+        items.add(new Sport("Todos", 0));
         cmbSportSearch.setItems(items);
     }
 
@@ -182,7 +216,7 @@ public class MaintenanceController extends Controller implements Initializable {
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
-            StartComboxSportType();
+            InitializeComboxSportType();
         }
         file = new File("Team.txt");
         if ((file.exists()) && (file.length() > 0)) {
