@@ -12,11 +12,19 @@
    <children>
       <VBox layoutX="221.0" layoutY="87.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
-            <TableView fx:id="tblPlayersTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" opacity="0.75" prefHeight="372.0" prefWidth="571.0" styleClass="TableViewLightdBlue" stylesheets="@Style.css" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tblPlayersTable" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" opacity="0.75" prefHeight="372.0" prefWidth="571.0" styleClass="TableViewLightdBlue" stylesheets="@Style.css" VBox.vgrow="ALWAYS">
                <columns>
-                  <TableColumn prefWidth="82.66665649414062" text="Round 1" />
-                  <TableColumn prefWidth="78.0" text="Round 2" />
+                  <TableColumn fx:id="clmnRound1" maxWidth="1.0E22" text="Round 1" />
+                  <TableColumn fx:id="clmnRound2" maxWidth="1.0E22" text="Round 2" />
+                  <TableColumn fx:id="clmnRound3" maxWidth="1.0E22" text="Round 3" />
+                  <TableColumn fx:id="clmnRound4" maxWidth="1.0E22" text="Round 4" />
+                  <TableColumn fx:id="clmnRound5" maxWidth="1.0E22" text="Round 5" />
+                  <TableColumn fx:id="clmnRound6" maxWidth="1.0E22" text="Round 6" />
+                  <TableColumn fx:id="clmnFinal" maxWidth="1.0E22" text="Ganador" />
                </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
             </TableView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                <children>

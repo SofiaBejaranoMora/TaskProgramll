@@ -18,14 +18,14 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <ToolBar prefHeight="40.0" prefWidth="231.0" VBox.vgrow="ALWAYS">
+            <ToolBar prefHeight="40.0" prefWidth="231.0" styleClass="boxRose" stylesheets="@Style.css" VBox.vgrow="ALWAYS">
                <items>
                   <Label fx:id="lblFirstTeam" alignment="CENTER" contentDisplay="CENTER" text="0">
                      <padding>
                         <Insets right="5.0" />
                      </padding>
                   </Label>
-                  <Label fx:id="lblSecondTeam" text="0">
+                  <Label fx:id="lblSecondTeam" alignment="CENTER" text="0">
                      <padding>
                         <Insets left="7.0" />
                      </padding>
@@ -54,12 +54,12 @@
                   </ImageView>
                </children>
             </HBox>
-            <Label text="Cronometro" VBox.vgrow="ALWAYS">
+            <Label styleClass="boxLightBlue" stylesheets="@Style.css" text="Cronometro" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets bottom="5.0" left="15.0" right="15.0" top="15.0" />
                </VBox.margin>
             </Label>
-            <Label fx:id="lblTimer" text="0:00" VBox.vgrow="ALWAYS">
+            <Label fx:id="lblTimer" styleClass="boxLightBlue" stylesheets="@Style.css" text="0:00" VBox.vgrow="ALWAYS">
                <VBox.margin>
                   <Insets bottom="15.0" left="15.0" right="15.0" />
                </VBox.margin>
