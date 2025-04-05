@@ -87,12 +87,12 @@ public class RegisterModifyController extends Controller implements Initializabl
 
     @FXML
     private ImageView lobbyIcon;
-    
-   @FXML
+
+    @FXML
     private void OnMouseClickedLobbyIcon(MouseEvent event) {
         ClearPanel();
-        FlowController.getInstance().goViewInStage("Lobby",  (Stage) lobbyIcon.getScene().getWindow());
-        
+        FlowController.getInstance().goViewInStage("Lobby", (Stage) lobbyIcon.getScene().getWindow());
+
     }
 
     @FXML
@@ -104,20 +104,20 @@ public class RegisterModifyController extends Controller implements Initializabl
                 if (!CheckedExistsSport(name)) {
                     Sport(name);
                 } else {
-                    message.show(Alert.AlertType.WARNING, "Alerta", "Ya hay un deporte registrado con el mismo nombre");
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "Ya hay un deporte registrado con el mismo nombre");
                 }
             } else if (cmbSport.getValue() != null) {
                 Sport type = cmbSport.getValue();
                 if (!CheckedExistsTeam(name, type)) {
                     Team(name, type);
                 } else {
-                    message.show(Alert.AlertType.WARNING, "Alerta", "Ya hay un equipo registrado con el mismo nombre");
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "Ya hay un equipo registrado con el mismo nombre");
                 }
             } else {
-                message.show(Alert.AlertType.WARNING, "Aviso", "No se ha seleccionado un deporte");
+                message.show(Alert.AlertType.WARNING, "Alerta", "No se ha seleccionado un deporte");
             }
         } else {
-            message.show(Alert.AlertType.INFORMATION, "Aviso", "No se a registrado nombre o imagen");
+            message.show(Alert.AlertType.WARNING, "Alerta", "No se a registrado nombre o imagen");
         }
     }
 
@@ -172,7 +172,7 @@ public class RegisterModifyController extends Controller implements Initializabl
         fileManeger.serialization(sportList, "Sport");
         image = mgvImage.getImage();// revisar y quitar si es necesario
         RelocateImage(name);
-        StartComboxSportType();
+        InitializeComboxSportType();
         ClearPanel();
     }
 
@@ -204,12 +204,6 @@ public class RegisterModifyController extends Controller implements Initializabl
             }
         }
         return false;
-    }
-
-    public void EnabledMaintenance(Boolean enabled) {
-        btnDelete.setDisable(!enabled);
-        btnDelete.setManaged(enabled);
-        btnDelete.setVisible(enabled);
     }
 
     public void SelectImage() {
@@ -244,7 +238,7 @@ public class RegisterModifyController extends Controller implements Initializabl
         }
     }
 
-    public void StartComboxSportType() {
+    public void InitializeComboxSportType() {
         ObservableList<Sport> items = FXCollections.observableArrayList(sportList);
         cmbSport.setItems(items);
     }
@@ -292,24 +286,72 @@ public class RegisterModifyController extends Controller implements Initializabl
         btnPhoto.setVisible(enabled);
     }
 
-    public void InitialConditionsPanel() {
+    public void EnabledMaintenance(Boolean enabled) {
+        btnDelete.setDisable(!enabled);
+        btnDelete.setManaged(enabled);
+        btnDelete.setVisible(enabled);
+    }
+
+    public void InitializeComponent() {
         labTitle.setText((String) AppContext.getInstance().get("Title"));
-        isSport = (Boolean) AppContext.getInstance().get("isSport");
-        isMaintenace = (Boolean) AppContext.getInstance().get("isMaintenace");
         EnabledMaintenance(isMaintenace);
         EnabledTeam(!isSport);
         mgvImage.fitHeightProperty().bind(hbxImage.heightProperty().multiply(0.85));
         mgvImage.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
         imgOther.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
+        if (isMaintenace) {
+            InitializeMaintenanceComponent();
+        }
+    }
+
+    public void InitializeMaintenanceComponent() {
+        if (isSport) {
+            newSport = (Sport) AppContext.getInstance().get("selectedSport");
+            txtName.setText(newSport.getName());
+            file = new File(newSport.RuteImage());
+            if (file.exists()) {
+                image = new Image("file:"+newSport.RuteImage());
+                mgvImage.setImage(image);
+            } else {
+                mgvImage.setImage(null);
+                message.show(Alert.AlertType.INFORMATION, "Aviso", "La imagen del balón del deporte "
+                        + newSport.getName() + " fue movida o eliminada.Debera de seleccionar una nueva imegen.");
+            }
+        } else {
+            newTeam = (Team) AppContext.getInstance().get("selectedTeam");
+            txtName.setText(newTeam.getName());
+            cmbSport.setFloatingText("Deporte:"+newTeam.searchSportType().getName());
+            cmbSport.setDisable(true);
+            file = new File(newTeam.RuteImage());
+            if (file.exists()) {
+                image = new Image("file:"+ newTeam.RuteImage());
+                mgvImage.setImage(image);
+            } else {
+                mgvImage.setImage(null);
+                message.show(Alert.AlertType.INFORMATION, "Aviso", "La imagen del equipo "
+                        + newTeam.getName() + " fue movida o eliminada.Debera de seleccionar o tomar una nueva imegen.");
+            }
+        }
+    }
+
+    public void InitializeList() {
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
-            StartComboxSportType();
+            InitializeComboxSportType();
         }
         file = new File("Team.txt");
         if ((file.exists()) && (file.length() > 0)) {
             teamList = fileManeger.deserialization("Team", Team.class);
         }
+    }
+
+    public void InitializeController() {
+        isSport = (Boolean) AppContext.getInstance().get("isSport");
+        isMaintenace = (Boolean) AppContext.getInstance().get("isMaintenace");
+        InitializeComponent();
+        InitializeList();
+
     }
 
     public void ClearPanel() {
@@ -324,12 +366,12 @@ public class RegisterModifyController extends Controller implements Initializabl
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        InitialConditionsPanel();
+        InitializeController();
     }
 
     @Override
     public void initialize() {
-        InitialConditionsPanel();
+        InitializeController();
     }
 
 }

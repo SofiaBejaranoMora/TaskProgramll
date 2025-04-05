@@ -14,10 +14,12 @@ public class Tourney {
     private Sport sportType;
     private List<Team> teamList;
     private List<Team> loosersList;
+    private int goals;
 
     public Tourney() {
         this.teamList = new ArrayList<>();
         this.loosersList = new ArrayList<>();
+        goals=0;
     }
 
     public Tourney(int id, String name, int time, Sport sportType, List<Team> teamList) {
@@ -27,6 +29,7 @@ public class Tourney {
         this.sportType = sportType;
         this.teamList = (teamList == null) ? new ArrayList<>() : new ArrayList<>(teamList);
         this.loosersList = new ArrayList<>();
+        goals=0;
     }
 
     // Getters

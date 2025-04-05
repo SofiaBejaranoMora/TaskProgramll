@@ -29,9 +29,8 @@
 .LobbyBackground,
 .GameBackground{
     -fx-background-repeat: no-repeat;
-    -fx-background-size: cover;
-    -fx-background-position: center center;
-    -fx-preserve-ratio: true;
+    -fx-background-size: 100% 100%;
+    -fx-background-position: center center;   
 }
 
 .CameraIcon {

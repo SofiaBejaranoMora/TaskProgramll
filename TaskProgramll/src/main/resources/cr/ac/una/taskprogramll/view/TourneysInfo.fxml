@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.TourneysInfoController">
+   <!-- Contenedor principal -->
+   <StackPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+      <!-- Fondo general (opcional, puedes usar un fondo oscuro como en Celeste) -->
+      <ImageView fx:id="background" fitHeight="600" fitWidth="800" preserveRatio="true">
+         <image>
+            <Image url="@../resources/StadiumStandBackground.jpg" />
+         </image>
+      </ImageView>
+
+      <!-- Contenedor para centrar los tickets -->
+      <StackPane maxHeight="400" maxWidth="600" AnchorPane.bottomAnchor="50" AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50" AnchorPane.topAnchor="50">
+         <!-- Ticket Inferior (ticketBackground1) -->
+         <StackPane fx:id="ticketInferior" onMouseClicked="#slideBackTicket">
+            <ImageView fx:id="ticketBackground1" fitHeight="400" fitWidth="600" preserveRatio="true">
+               <image>
+                  <Image url="@../resources/tiqueteInterno.jpg" />
+               </image>
+            </ImageView>
+            <VBox alignment="TOP_CENTER" style="-fx-background-color: transparent;">
+               <children>
+                  <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="0.0" VBox.vgrow="ALWAYS" />
+                  <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </VBox>
+                        <VBox alignment="TOP_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="200.0" VBox.vgrow="ALWAYS">
+                                 <children>
+                                    <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="8.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="101.0" spacing="10" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <ImageView fitHeight="63.0" fitWidth="60.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../resources/estrella.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Ganador:" HBox.hgrow="ALWAYS" />
+                                                <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Team" HBox.hgrow="ALWAYS" />
+                                                <MFXButton text="Certificado">
+                                                   <graphic>
+                                                      <ImageView fitHeight="44.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../resources/Impresora.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </MFXButton>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <ImageView fitHeight="44.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../resources/ajedrez.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <Label alignment="CENTER" text="Equipos" />
+                                                <Label fx:id="lblRondas1" text="Cantidad" />
+                                                <MFXButton text="Ver Equipos">
+                                                   <graphic>
+                                                      <ImageView fitHeight="38.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../resources/lupa.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </MFXButton>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0">
+                                             <children>
+                                                <ImageView fitHeight="43.0" fitWidth="63.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../resources/TroupheyWithKeys.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <Label alignment="CENTER" text="Rounds" />
+                                                <Label fx:id="lblRondas11" text="Cantidad" />
+                                                <MFXButton text="Ver Llaves">
+                                                   <graphic>
+                                                      <ImageView fitHeight="38.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../resources/lupa.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </MFXButton>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="0.0" VBox.vgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </VBox>
+               </children>
+            </VBox>
+         </StackPane>
+
+                        <!-- Ticket Superior (ticketBackground) -->
+         <StackPane fx:id="ticketSuperior" onMouseClicked="#slideTicket">
+            <ImageView fx:id="ticketBackground" fitHeight="400" fitWidth="600" preserveRatio="true">
+               <image>
+                  <Image url="@../resources/tiqueteMejorad.jpg" />
+               </image>
+            </ImageView>
+            <VBox alignment="TOP_CENTER" style="-fx-background-color: transparent;">
+               <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="0.0" VBox.vgrow="ALWAYS" />
+               <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                  <children>
+                     <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS">
+                        <HBox.margin>
+                           <Insets />
+                        </HBox.margin>
+                     </VBox>
+                     <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS">
+                        <children>
+                           <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="90.0" VBox.vgrow="ALWAYS">
+                              <ImageView fitHeight="110.0" fitWidth="153.0" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../resources/trophy.png" />
+                                 </image>
+                              </ImageView>
+                              <VBox alignment="TOP_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="105.0" spacing="18" HBox.hgrow="ALWAYS">
+                                 <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefWidth="101.0" spacing="2.0" VBox.vgrow="ALWAYS">
+                                    <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Nombre: " HBox.hgrow="ALWAYS" />
+                                    <Label fx:id="lblPuntos" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="TourneyName" HBox.hgrow="ALWAYS" />
+                                 </HBox>
+                                 <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" spacing="10" VBox.vgrow="ALWAYS">
+                                    <Label text="Estado: " />
+                                    <Label fx:id="lblRondas" text="State" />
+                                 </HBox>
+                              </VBox>
+                           </HBox>
+                           <HBox alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="0.0" spacing="10.0" VBox.vgrow="ALWAYS">
+                              <VBox alignment="TOP_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="85.0" prefWidth="106.0" HBox.hgrow="ALWAYS" />
+                              <ImageView fitHeight="45.0" fitWidth="57.0" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../resources/time-and-date.png" />
+                                 </image>
+                              </ImageView>
+                              <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="77.0" prefWidth="89.0" text="Minutes: " HBox.hgrow="ALWAYS" />
+                              <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="85.0" prefWidth="90.0" text="Time" HBox.hgrow="ALWAYS" />
+                           </HBox>
+                        </children>
+                     </VBox>
+                     <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="0.0" HBox.hgrow="ALWAYS" />
+                  </children>
+               </HBox>
+               <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="0.0" VBox.vgrow="ALWAYS">
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin>
+               </VBox>
+            </VBox>
+         </StackPane>
+      </StackPane>
+   </StackPane>
+
+   <!-- Back Button, positioned outside the ticket area -->
+   <MFXButton fx:id="btnBack" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#goBack" text="Volver" AnchorPane.bottomAnchor="30" AnchorPane.leftAnchor="30" AnchorPane.topAnchor="395.33333333333337" />
+</AnchorPane>
