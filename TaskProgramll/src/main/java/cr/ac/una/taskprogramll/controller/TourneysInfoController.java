@@ -13,71 +13,55 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.scene.image.ImageView;
 
 public class TourneysInfoController extends Controller implements Initializable {
 
-    // FXML-injected fields for the two tickets
-    @FXML
-    private StackPane ticketSuperior;
+    @FXML private StackPane ticketSuperior;
+    @FXML private StackPane ticketInferior;
+    @FXML private MFXButton btnBack;
+    @FXML private Label lblWinner;
+    @FXML private Label lblTeams;
+    @FXML private Label lblRounds;
+    @FXML private Label lblTourney;
+    @FXML private Label lblState;
+    @FXML private Label lblTime;
+    @FXML private MFXButton btnShowCertificate;
+    @FXML private MFXButton btnShowTeams;
+    @FXML private MFXButton btnShowKeys;
 
-    @FXML
-    private StackPane ticketInferior;
-
-    // FXML-injected fields for the labels in ticketSuperior
-    @FXML
-    private Label lblPuntos;
-
-    @FXML
-    private Label lblRondas;
-
-    // FXML-injected fields for the labels in ticketInferior
-    @FXML
-    private Label lblRondas1;
-
-    @FXML
-    private Label lblRondas11;
-
-    // FXML-injected fields for image views
-    @FXML
-    private ImageView background;
-
-    @FXML
-    private ImageView ticketBackground1;
-
-    @FXML
-    private ImageView ticketBackground;
-
-    @FXML
-    private MFXButton btnBack;
-
-    // State to track which ticket is in front and whether it's slid
-    private boolean isSuperiorInFront = true; // true: ticketSuperior in front, false: ticketInferior in front
-    private boolean isSlid = false; // true: the front ticket is slid to the right
-
-    // The selected Tourney from AppContext
+    private boolean isSuperiorInFront = true;
+    private boolean isSlid = false;
     private Tourney selectedTourney;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Ensure ticketSuperior is on top initially
         ticketSuperior.toFront();
         isSuperiorInFront = true;
         isSlid = false;
 
-        // Load the selected Tourney from AppContext
         selectedTourney = (Tourney) AppContext.getInstance().get("SelectedTourney");
         if (selectedTourney != null) {
-            // Update ticketSuperior labels with Tourney data
-            lblPuntos.setText(selectedTourney.getName());
-            lblRondas.setText(selectedTourney.returnState());
+            lblTourney.setText(selectedTourney.getName());
+            lblState.setText(selectedTourney.returnState());
+            lblTime.setText(String.valueOf(selectedTourney.getTime()));
+            
+            if (selectedTourney.returnState() == "Finalizado") {
+                lblWinner.setText("Determinado");
+            } else {
+                lblWinner.setText("Sin determinar");
+            }
 
-            // Update ticketInferior labels with placeholder data (adjust as needed)
-            lblRondas1.setText(String.valueOf(selectedTourney.getTeamList() != null ? selectedTourney.getTeamList().size() : 0));
-            lblRondas11.setText(String.valueOf(selectedTourney.getTime() != 0 ? selectedTourney.getTime() : 0));
+            int teamCount = 0;
+            if (selectedTourney.getTeamList() != null) {
+                teamCount += selectedTourney.getTeamList().size();
+            }
+            if (selectedTourney.getLoosersList() != null) {
+                teamCount += selectedTourney.getLoosersList().size();
+            }
+            lblTeams.setText(String.valueOf(teamCount));
+            lblRounds.setText(String.valueOf(teamCount / 2));
         } else {
             System.err.println("No Tourney selected in AppContext");
         }
@@ -103,55 +87,45 @@ public class TourneysInfoController extends Controller implements Initializable 
 
     private void toggleSlideSuperior() {
         if (!isSlid) {
-            // First click: slide ticketSuperior to the right, keep it in front
             TranslateTransition transition = new TranslateTransition(Duration.millis(300), ticketSuperior);
             transition.setToX(300);
             transition.setOnFinished(e -> ticketSuperior.toFront());
             transition.play();
             isSlid = true;
         } else {
-            // Second click: slide ticketSuperior further to the right, then back to 0 while moving to the back
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), ticketSuperior);
-            slideOut.setToX(600); // Slide further to the right to clear ticketInferior
-
+            slideOut.setToX(600);
             TranslateTransition slideBack = new TranslateTransition(Duration.millis(300), ticketSuperior);
-            slideBack.setToX(0); // Slide back to original position
+            slideBack.setToX(0);
             slideBack.setOnFinished(e -> {
-                ticketSuperior.toBack(); // Move to the back to "tuck under"
-                ticketInferior.toFront(); // Ensure ticketInferior is in front
-                isSuperiorInFront = false; // Switch to ticketInferior being in front
+                ticketSuperior.toBack();
+                ticketInferior.toFront();
+                isSuperiorInFront = false;
             });
-
-            SequentialTransition sequentialTransition = new SequentialTransition(slideOut, slideBack);
-            sequentialTransition.play();
+            new SequentialTransition(slideOut, slideBack).play();
             isSlid = false;
         }
     }
 
     private void toggleSlideInferior() {
         if (!isSlid) {
-            // First click: slide ticketInferior to the right, keep it in front
-            ticketSuperior.setTranslateX(0); // Reset ticketSuperior's position
+            ticketSuperior.setTranslateX(0);
             TranslateTransition transition = new TranslateTransition(Duration.millis(300), ticketInferior);
             transition.setToX(300);
             transition.setOnFinished(e -> ticketInferior.toFront());
             transition.play();
             isSlid = true;
         } else {
-            // Second click: slide ticketInferior further to the right, then back to 0 while moving to the back
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), ticketInferior);
-            slideOut.setToX(600); // Slide further to the right to clear ticketSuperior
-
+            slideOut.setToX(600);
             TranslateTransition slideBack = new TranslateTransition(Duration.millis(300), ticketInferior);
-            slideBack.setToX(0); // Slide back to original position
+            slideBack.setToX(0);
             slideBack.setOnFinished(e -> {
-                ticketInferior.toBack(); // Move to the back to "tuck under"
-                ticketSuperior.toFront(); // Ensure ticketSuperior is in front
-                isSuperiorInFront = true; // Switch to ticketSuperior being in front
+                ticketInferior.toBack();
+                ticketSuperior.toFront();
+                isSuperiorInFront = true;
             });
-
-            SequentialTransition sequentialTransition = new SequentialTransition(slideOut, slideBack);
-            sequentialTransition.play();
+            new SequentialTransition(slideOut, slideBack).play();
             isSlid = false;
         }
     }
@@ -161,7 +135,18 @@ public class TourneysInfoController extends Controller implements Initializable 
         FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) ticketSuperior.getScene().getWindow());
     }
 
-    @Override
-    public void initialize() {
+    private void showCertificate() {
+        System.out.println("Show certificate for " + selectedTourney.getName());
     }
+
+    private void showTeams() {
+        System.out.println("Show teams for " + selectedTourney.getName());
+    }
+
+    private void showKeys() {
+        System.out.println("Show keys for " + selectedTourney.getName());
+    }
+
+    @Override
+    public void initialize() {}
 }

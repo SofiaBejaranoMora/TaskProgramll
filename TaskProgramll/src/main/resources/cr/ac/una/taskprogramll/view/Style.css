@@ -169,3 +169,74 @@ TableViewRose:selected {
     -fx-border-width: 2px;
 }
 
+* {
+    -fx-lightBlue-base-color: #BBF6F9;
+    -fx-rose-base-color: #FFA5DB;
+}
+
+.InteractiveVBox {
+    -fx-opacity: 1;
+    -fx-transition: 0.3s ease-in-out;
+}
+
+.InteractiveVBox:hover {
+    -fx-scale-x: 1.1; 
+    -fx-scale-y: 1.1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 2);
+}
+
+.ImageView {
+    -fx-opacity: 1;
+}
+
+.StarIcon {
+    -fx-opacity: 1;
+    -fx-transition: 0.5s ease-in-out;
+}
+
+.StarIcon:hover {
+    -fx-rotate: 360;
+    -fx-scale-x: 1.2; 
+    -fx-scale-y: 1.2; 
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 12, 0, 0, 3);
+}
+
+.LargeLabel {
+    -fx-font-size: 24px;
+    -fx-text-fill: #444444;
+    -fx-font-weight: bold;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1); 
+}
+
+.LargeLabel:hover {
+    -fx-text-fill: #FF72C7;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 7, 0, 0, 2); 
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.SmallLabel {
+    -fx-font-size: 16px; 
+    -fx-text-fill: #6C6FAE;
+    -fx-font-weight: normal;
+    -fx-padding: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
+
+.SmallLabel:hover {
+    -fx-text-fill: #444444;
+    -fx-scale-x: 1.05; 
+    -fx-scale-y: 1.05;
+}
+
+.mfx-button {
+    -fx-background-color: #FF72C7;
+    -mfx-button-type: RAISED;
+}
+
+.mfx-button:hover {
+    -fx-background-color: -fx-rose-base-color;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
