@@ -14,12 +14,10 @@ public class Tourney {
     private Sport sportType;
     private List<Team> teamList;
     private List<Team> loosersList;
-    private int goals;
 
     public Tourney() {
         this.teamList = new ArrayList<>();
         this.loosersList = new ArrayList<>();
-        goals=0;
     }
 
     public Tourney(int id, String name, int time, Sport sportType, List<Team> teamList) {
@@ -29,7 +27,6 @@ public class Tourney {
         this.sportType = sportType;
         this.teamList = (teamList == null) ? new ArrayList<>() : new ArrayList<>(teamList);
         this.loosersList = new ArrayList<>();
-        goals=0;
     }
 
     // Getters
@@ -107,6 +104,21 @@ public class Tourney {
         }
     }
 
+    public void winnerAndLooser(String winner, int winnerGoals, int extraPoints, String looser, int looserGoals){
+        for(int i = 0; i < teamList.size(); i++) {
+            if(winner == null ? teamList.get(i).getName() == null : winner.equals(teamList.get(i).getName())) {
+                teamList.get(i).setWins(1);
+                teamList.get(i).setGoals(winnerGoals);
+                teamList.get(i).setPoints(winnerGoals + extraPoints);
+            }
+            else if (looser == null ? teamList.get(i).getName() == null : looser.equals(teamList.get(i).getName())) {
+                teamList.get(i).setGoals(looserGoals);
+                teamList.get(i).setPoints(looserGoals);
+                moveTeamToLoosers(teamList.get(i));
+            }
+        }
+    }
+    
     public String returnState() {
         if (teamList.isEmpty() && !loosersList.isEmpty()) {
             return "Finalizado";

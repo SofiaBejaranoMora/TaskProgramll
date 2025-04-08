@@ -15,6 +15,8 @@ public class Team {
     private int idSportType;
     private int draw;
     private int wins;
+    private int goals;
+    private int points;
     private boolean isQualified;
     private int id;
 
@@ -86,9 +88,25 @@ public class Team {
     }
 
     public void setWins(int wins) {
-        this.wins = wins;
+        this.wins += wins;
     }
 
+    public int getGoals() {
+        return goals;
+    }
+
+    public void setGoals(int goals) {
+        this.goals += goals;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points += points;
+    }
+    
     public boolean isIsQualified() {
         return isQualified;
     }
