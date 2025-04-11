@@ -27,7 +27,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 
 /** FXML Controller class ** @author ashly */
 public class GameController extends Controller implements Initializable {
@@ -71,7 +70,7 @@ public class GameController extends Controller implements Initializable {
     private Tourney actualTourney;
     private int timeLimit;
     private int index = 0;
-    private int round = discoverRounds();
+    private int round = 1;
     private List<Team> teamNames; //Tenemos las listas desde acá.
     private List<String> choosenNames = new ArrayList<>();
     private ObservableList<Team> round1 = FXCollections.observableArrayList();
@@ -119,7 +118,7 @@ public class GameController extends Controller implements Initializable {
         mgvBall.setCursor(Cursor.CLOSED_HAND);
         if(!timerStarted){
             timerStarted = true;
-            timer(timeLimit);
+            timer();
         }
     }
 
@@ -159,15 +158,23 @@ public class GameController extends Controller implements Initializable {
    }
 
     private void encounter() {
+        while(teamNames.get(index) != null){
             Image firstImage = new Image("file:" + teamNames.get(index).RuteImage());
             mgvFirstTeam.setImage(firstImage);
             nameFirstTeam = teamNames.get(index).getName();
             
-            if(teamNames.get(index + 1) != null) {
+            if(teamNames.get(index + 1) != null && round % 2 != 0) {
                 Image secondImage = new Image("file:" + teamNames.get(index + 1).RuteImage());
                 mgvSecondTeam.setImage(secondImage);
                 nameSecondTeam = teamNames.get(index + 1).getName();
-            } else ; 
+            } 
+            else if (teamNames.get(index - 1) != null && round % 2 == 0) {
+                Image secondImage = new Image("file:" + teamNames.get(index - 1).RuteImage());
+                mgvSecondTeam.setImage(secondImage);
+                nameSecondTeam = teamNames.get(index - 1).getName();
+            }
+            else adjustingTable(teamNames.get(index));
+        } if(teamNames.get(index) == null) round++;
     }
     
     private int discoverRounds(){
@@ -185,77 +192,72 @@ public class GameController extends Controller implements Initializable {
     }   
     
     private void organizeRounds(){
-        switch (round) {
-            case 1:
+        switch (discoverRounds()) {
+            case 1 -> {
                 clmnRound2.setVisible(false);
                 clmnRound3.setVisible(false);
                 clmnRound4.setVisible(false);
                 clmnRound5.setVisible(false);
-                clmnRound6.setVisible(false); 
-                break;
-            case 2:
+                clmnRound6.setVisible(false);
+            }
+            case 2 -> {
                 clmnRound3.setVisible(false);
                 clmnRound4.setVisible(false);
                 clmnRound5.setVisible(false);
-                clmnRound6.setVisible(false);              
-                break;
-            case 3:
+                clmnRound6.setVisible(false);
+            }
+            case 3 -> {
                 clmnRound4.setVisible(false);
                 clmnRound5.setVisible(false);
-                clmnRound6.setVisible(false); 
-                break;
-            case 4:
+                clmnRound6.setVisible(false);
+            }
+            case 4 -> {
                 clmnRound5.setVisible(false);
-                clmnRound6.setVisible(false); 
-                break;
-            case 5:
-                clmnRound6.setVisible(false); 
-                break;
-            case 6:
-                System.out.println("Hola profe, me saque esto con un excel, me gusto mucho");
-                break;
+                clmnRound6.setVisible(false);
+            }
+            case 5 -> clmnRound6.setVisible(false);
+            case 6 -> System.out.println("Hola profe, me saque esto con un excel, me gusto mucho");
         }
     }
     
     private void adjustingTable(Team winnerTeam){ //Problemas para editar la ganadora
         switch (round) {
-            case 1:
+            case 1 -> {
                 winner.add(winnerTeam);
                 clmnFinal.setCellValueFactory(new PropertyValueFactory<>("name"));
                 tblPlayersTable.setItems(winner);
-                 break;
-            case 2:
-                round2.add(winnerTeam);
+            }
+            case 2 -> {
+                round2.addLast(winnerTeam);
                 clmnRound2.setCellValueFactory(new PropertyValueFactory<>("name"));
                 tblPlayersTable.setItems(round2);
-                break;
-            case 3:
+            }
+            case 3 -> {
                 round3.add(winnerTeam);
                 clmnRound3.setCellValueFactory(new PropertyValueFactory<>("name"));
                 tblPlayersTable.setItems(round3);
-                break;
-            case 4:
-                round4.add(winnerTeam);
+            }
+            case 4 -> {
+                round4.addLast(winnerTeam);
                 clmnRound4.setCellValueFactory(new PropertyValueFactory<>("name"));
                 tblPlayersTable.setItems(round4);
-                break;
-            case 5:
+            }
+            case 5 -> {
                 round5.add(winnerTeam);
                 clmnRound5.setCellValueFactory(new PropertyValueFactory<>("name"));
                 tblPlayersTable.setItems(round5);
-                break;
-            case 6:
-                round6.add(winnerTeam);
+            }
+            case 6 -> {
+                round6.addLast(winnerTeam);
                 clmnRound6.setCellValueFactory(new PropertyValueFactory<>("name"));
                 tblPlayersTable.setItems(round6);
-                break;
-            default:
-                throw new AssertionError();
+            }
+            default -> throw new AssertionError();
         }
     }
     
 //A partir de acá se trabaja con la vista Game
-    private void timer(int time) {
+    private void timer() {
         timeLine = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             if(timeCalculate <= timeLimit){
                 timeCalculate++;
@@ -290,26 +292,25 @@ public class GameController extends Controller implements Initializable {
             System.out.println("Falla de limites en imagenes...");
     }
     
-    private void winnerAnimatic(String winner, String looser) {
-        
+    private void winnerAnimatic() {
+
     }
     
     private void afterGame() {
-        if(counterFirstTeam > counterSecondTeam)
-            winnerAnimatic(nameFirstTeam, nameSecondTeam);
-        else if (counterFirstTeam < counterSecondTeam) 
-            winnerAnimatic(nameSecondTeam, nameFirstTeam);
-        else {}
+        if(counterFirstTeam > counterSecondTeam){
+            actualTourney.winnerAndLooser(nameFirstTeam, counterFirstTeam, 3, nameSecondTeam, counterSecondTeam);
+            adjustingTable(teamNames.get(index));
+        } else if (counterFirstTeam < counterSecondTeam) { 
+            actualTourney.winnerAndLooser(nameSecondTeam, counterFirstTeam, 3, nameFirstTeam, counterSecondTeam);
+            adjustingTable(teamNames.get(index + 1));
+        } else {}
             //Animatica empate moneda
-            
-            //Divicion de puntos para los historiales
-            //Pase de nombre a siguiente columna
-            //
+       resetGame();
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//Inicializador completo   
+    //Inicializador completo   
         initializeFromAppContext();
     }    
 
@@ -322,19 +323,17 @@ public class GameController extends Controller implements Initializable {
         this.teamNames = actualTourney.getTeamList();
         this.timeLimit = actualTourney.getTime();
         this.selectedSport = actualTourney.getSportType();
-        if ("Sin empezar".equals(actualTourney.returnState()))
-            startGameParameters();
-        else if ("En proceso".equals(actualTourney.returnState()))
-            continueGameParameters();
-        else
-            continueGameParameters();
+        switch (actualTourney.returnState()) {
+            case "Sin empezar" -> startGameParameters();
+            case "En proceso" -> continueGameParameters();
+            default ->  throw new AssertionError();
+        }
     }
     
      private void startGameParameters() {
         organizeRounds();
         distributionOnTable();
         encounter();
-        timer(timeLimit);
     }
        
     private void continueGameParameters() {
@@ -347,7 +346,6 @@ public class GameController extends Controller implements Initializable {
     
     private void resetGame() {
         clearAppContext();
-        round1.clear();
         lblTimer.setText("00:00");
         lblFirstTeam.setText("0");
         lblSecondTeam.setText("0");
