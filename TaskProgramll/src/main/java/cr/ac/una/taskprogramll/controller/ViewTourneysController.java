@@ -160,7 +160,7 @@ private void actualizarBotones(Tourney torneoSeleccionado) {
             // Lógica para jugar/continuar torneo
             AppContext.getInstance().set("SelectedTourney", seleccionado);
             // Navegar a la vista de información 
-            FlowController.getInstance().goViewInStage("Game",(Stage) btnPlay.getScene().getWindow());
+            FlowController.getInstance().goViewInStage("MatchTeams",(Stage) btnPlay.getScene().getWindow());
             System.out.println("Iniciando torneo: " + seleccionado.getName());
         }
     }

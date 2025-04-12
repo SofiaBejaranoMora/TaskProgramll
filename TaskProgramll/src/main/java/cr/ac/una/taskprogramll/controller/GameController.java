@@ -266,7 +266,8 @@ public class GameController extends Controller implements Initializable {
                 timeLine.stop();
                 lblTimer.setText("0:00");
                 afterGame();
-                index += 2;
+                if (round % 2 != 0) index += 2;
+                else index -=2;
             }
         }));
         timeLine.setCycleCount(timeLimit);
@@ -280,11 +281,11 @@ public class GameController extends Controller implements Initializable {
         if(mgvBall.getBoundsInLocal() != null && mgvFirstTeam.getBoundsInLocal() != null && mgvSecondTeam.getBoundsInLocal() != null) {
              if(mgvBall.getBoundsInLocal().contains(mgvFirstTeam.getBoundsInLocal().getCenterX(), mgvFirstTeam.getBoundsInLocal().getCenterY())) {
                 counterFirstTeam++;
-                lblFirstTeam.setText("" + counterFirstTeam);
+                lblFirstTeam.setText("" + counterFirstTeam); System.out.println("El balón toca equipo1...");
                 
             } else if (mgvBall.getBoundsInLocal().contains(mgvSecondTeam.getBoundsInLocal().getCenterX(), mgvSecondTeam.getBoundsInLocal().getCenterY())) {
                 counterSecondTeam++;
-                lblSecondTeam.setText("" + counterSecondTeam);
+                lblSecondTeam.setText("" + counterSecondTeam); System.out.println("El balón toca equipo2...");
                 
             } else 
                  System.out.println("El balón no toca los equipos...");
@@ -294,6 +295,10 @@ public class GameController extends Controller implements Initializable {
     
     private void winnerAnimatic() {
 
+    }
+    
+    private void drawAnimatic() {
+        
     }
     
     private void afterGame() {
@@ -311,7 +316,7 @@ public class GameController extends Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     //Inicializador completo   
-        initializeFromAppContext();
+        initializeFromAppContext(); //Posee un error, pero creo que está relacionado a que no hay equipos calificados
     }    
 
     @Override
@@ -319,14 +324,15 @@ public class GameController extends Controller implements Initializable {
     }
                 
     public void initializeFromAppContext() {
-        this.actualTourney = (Tourney) AppContext.getInstance().get("actualTourney");
+        this.actualTourney = (Tourney) AppContext.getInstance().get("SelectedTourney");
         this.teamNames = actualTourney.getTeamList();
         this.timeLimit = actualTourney.getTime();
         this.selectedSport = actualTourney.getSportType();
         switch (actualTourney.returnState()) {
-            case "Sin empezar" -> startGameParameters();
-            case "En proceso" -> continueGameParameters();
-            default ->  throw new AssertionError();
+            case "Sin Empezar" -> startGameParameters();
+            case "En Proceso" -> continueGameParameters();
+            case "Finalizado" -> viewGameTable();
+            default ->  continueGameParameters(); 
         }
     }
     
@@ -339,9 +345,13 @@ public class GameController extends Controller implements Initializable {
     private void continueGameParameters() {
         
     }
-     
+    
+    private void viewGameTable(){
+        
+    }
+    
     public void clearAppContext() {
-        AppContext.getInstance().delete("actualTourney");
+        AppContext.getInstance().delete("SelectedTourney");
     }
     
     private void resetGame() {
