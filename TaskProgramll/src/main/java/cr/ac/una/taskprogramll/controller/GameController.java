@@ -24,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -222,11 +223,6 @@ public class GameController extends Controller implements Initializable {
     
     private void adjustingTable(Team winnerTeam){ //Problemas para editar la ganadora
         switch (round) {
-            case 1 -> {
-                winner.add(winnerTeam);
-                clmnFinal.setCellValueFactory(new PropertyValueFactory<>("name"));
-                tblPlayersTable.setItems(winner);
-            }
             case 2 -> {
                 round2.addLast(winnerTeam);
                 clmnRound2.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -251,6 +247,11 @@ public class GameController extends Controller implements Initializable {
                 round6.addLast(winnerTeam);
                 clmnRound6.setCellValueFactory(new PropertyValueFactory<>("name"));
                 tblPlayersTable.setItems(round6);
+            }
+            case 7 -> {
+                winner.add(winnerTeam);
+                clmnFinal.setCellValueFactory(new PropertyValueFactory<>("name"));
+                tblPlayersTable.setItems(winner);
             }
             default -> throw new AssertionError();
         }
@@ -293,8 +294,24 @@ public class GameController extends Controller implements Initializable {
             System.out.println("Falla de limites en imagenes...");
     }
     
-    private void winnerAnimatic() {
-
+    private void winnerAnimatic(ImageView winner) {
+        Image toRize = winner.getImage();
+        winner.setFitWidth(toRize.getWidth() * 1.15);
+        winner.setFitHeight(toRize.getHeight() * 1.15);
+        ColorAdjust greenTone = new ColorAdjust();
+        greenTone.setHue(0.3); // Ajuste de tono hacia verde
+        greenTone.setBrightness(0.2); // Aclarado leve
+        winner.setEffect(greenTone);
+    }
+    
+    private void looserAnimatic(ImageView looser){
+        Image toRize = looser.getImage();
+        looser.setFitWidth(toRize.getWidth() * 0.85);
+        looser.setFitHeight(toRize.getHeight() * 0.85);
+        ColorAdjust redTone = new ColorAdjust();
+        redTone.setHue(-0.55); // Ajuste de tono hacia verde
+        redTone.setBrightness(0.2); // Aclarado leve
+        looser.setEffect(redTone);
     }
     
     private void drawAnimatic() {
@@ -305,9 +322,15 @@ public class GameController extends Controller implements Initializable {
         if(counterFirstTeam > counterSecondTeam){
             actualTourney.winnerAndLooser(nameFirstTeam, counterFirstTeam, 3, nameSecondTeam, counterSecondTeam);
             adjustingTable(teamNames.get(index));
+            winnerAnimatic(mgvFirstTeam);
+            looserAnimatic(mgvSecondTeam);
+            
         } else if (counterFirstTeam < counterSecondTeam) { 
             actualTourney.winnerAndLooser(nameSecondTeam, counterFirstTeam, 3, nameFirstTeam, counterSecondTeam);
             adjustingTable(teamNames.get(index + 1));
+            winnerAnimatic(mgvSecondTeam);
+            looserAnimatic(mgvFirstTeam);
+            
         } else {}
             //Animatica empate moneda
        resetGame();
