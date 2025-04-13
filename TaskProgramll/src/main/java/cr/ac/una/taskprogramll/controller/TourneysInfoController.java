@@ -47,7 +47,7 @@ public class TourneysInfoController extends Controller implements Initializable 
             lblState.setText(selectedTourney.returnState());
             lblTime.setText(String.valueOf(selectedTourney.getTime()));
             
-            if (selectedTourney.returnState() == "Finalizado") {
+            if ("Finalizado".equals(selectedTourney.returnState())) {
                 lblWinner.setText("Determinado");
             } else {
                 lblWinner.setText("Sin determinar");

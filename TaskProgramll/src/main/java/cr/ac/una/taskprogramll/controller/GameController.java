@@ -5,6 +5,7 @@ import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
+import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import java.net.URL;
 import javafx.util.Duration;
@@ -20,13 +21,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 /** FXML Controller class ** @author ashly */
 public class GameController extends Controller implements Initializable {
@@ -67,6 +71,7 @@ public class GameController extends Controller implements Initializable {
     private ImageView mgvSecondTeam;
     
 //Variables de MatchTeams           
+    private final Mensaje message = new Mensaje();
     private Tourney actualTourney;
     private int timeLimit;
     private int index = 0;
@@ -92,18 +97,19 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     void onActionBtnOut(ActionEvent event) {
-        FlowController.getInstance().goView("PlayersTable");
+        FlowController.getInstance().goViewInStage("PlayersTable", (Stage) btnOut.getScene().getWindow());
         timeLine.pause();
     }
     
     @FXML
     void onActionBtnBack(ActionEvent event) {
-        FlowController.getInstance().goView("ViewTourneys");
+        FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
     }
 
     @FXML
     void onActionBtnStart(ActionEvent event) {
-        FlowController.getInstance().goView("Game");
+        FlowController.getInstance().goViewInStage("Game", (Stage) btnStart.getScene().getWindow());
+        encounter();
     }
     
     @FXML
@@ -144,7 +150,8 @@ public class GameController extends Controller implements Initializable {
         round1.setAll(distributionTeams);
         clmnRound1.setCellValueFactory(new PropertyValueFactory<>("name"));
         tblPlayersTable.setItems(round1); //Respuesta a mi duda con tablas, descubierta, para que sea funcional se le hace el property value al tipo de datoque se desea obtener, by Michigam
-        Image BallonImage = new Image("file:" + selectedSport.RuteImage());
+        String nameImage = "file:" + selectedSport.RuteImage();
+        Image BallonImage = new Image(nameImage);
         mgvFirstTeam.setImage(BallonImage);
     }
     
@@ -174,7 +181,10 @@ public class GameController extends Controller implements Initializable {
                 nameSecondTeam = teamNames.get(index - 1).getName();
             }
             else adjustingTable(teamNames.get(index));
-        } if(teamNames.get(index) == null) round++;
+        } 
+        if(teamNames.get(index) == null && teamNames.get(index + 1) != null) 
+            adjustingTable(teamNames.get(index+1));
+        else round++;
     }
     
     private int discoverRounds(){
@@ -222,11 +232,6 @@ public class GameController extends Controller implements Initializable {
     
     private void adjustingTable(Team winnerTeam){ //Problemas para editar la ganadora
         switch (round) {
-            case 1 -> {
-                winner.add(winnerTeam);
-                clmnFinal.setCellValueFactory(new PropertyValueFactory<>("name"));
-                tblPlayersTable.setItems(winner);
-            }
             case 2 -> {
                 round2.addLast(winnerTeam);
                 clmnRound2.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -252,6 +257,11 @@ public class GameController extends Controller implements Initializable {
                 clmnRound6.setCellValueFactory(new PropertyValueFactory<>("name"));
                 tblPlayersTable.setItems(round6);
             }
+            case 7 -> {
+                winner.add(winnerTeam);
+                clmnFinal.setCellValueFactory(new PropertyValueFactory<>("name"));
+                tblPlayersTable.setItems(winner);
+            }
             default -> throw new AssertionError();
         }
     }
@@ -266,7 +276,8 @@ public class GameController extends Controller implements Initializable {
                 timeLine.stop();
                 lblTimer.setText("0:00");
                 afterGame();
-                index += 2;
+                if (round % 2 != 0) index += 2;
+                else index -=2;
             }
         }));
         timeLine.setCycleCount(timeLimit);
@@ -280,11 +291,11 @@ public class GameController extends Controller implements Initializable {
         if(mgvBall.getBoundsInLocal() != null && mgvFirstTeam.getBoundsInLocal() != null && mgvSecondTeam.getBoundsInLocal() != null) {
              if(mgvBall.getBoundsInLocal().contains(mgvFirstTeam.getBoundsInLocal().getCenterX(), mgvFirstTeam.getBoundsInLocal().getCenterY())) {
                 counterFirstTeam++;
-                lblFirstTeam.setText("" + counterFirstTeam);
+                lblFirstTeam.setText("" + counterFirstTeam); System.out.println("El balón toca equipo1...");
                 
             } else if (mgvBall.getBoundsInLocal().contains(mgvSecondTeam.getBoundsInLocal().getCenterX(), mgvSecondTeam.getBoundsInLocal().getCenterY())) {
                 counterSecondTeam++;
-                lblSecondTeam.setText("" + counterSecondTeam);
+                lblSecondTeam.setText("" + counterSecondTeam); System.out.println("El balón toca equipo2...");
                 
             } else 
                  System.out.println("El balón no toca los equipos...");
@@ -292,17 +303,43 @@ public class GameController extends Controller implements Initializable {
             System.out.println("Falla de limites en imagenes...");
     }
     
-    private void winnerAnimatic() {
-
+    private void winnerAnimatic(ImageView winner) {
+        Image toRize = winner.getImage();
+        winner.setFitWidth(toRize.getWidth() * 1.15);
+        winner.setFitHeight(toRize.getHeight() * 1.15);
+        ColorAdjust greenTone = new ColorAdjust();
+        greenTone.setHue(0.3); // Ajuste de tono hacia verde
+        greenTone.setBrightness(0.2); // Aclarado leve
+        winner.setEffect(greenTone);
+    }
+    
+    private void looserAnimatic(ImageView looser){
+        Image toRize = looser.getImage();
+        looser.setFitWidth(toRize.getWidth() * 0.85);
+        looser.setFitHeight(toRize.getHeight() * 0.85);
+        ColorAdjust redTone = new ColorAdjust();
+        redTone.setHue(-0.55); // Ajuste de tono hacia verde
+        redTone.setBrightness(0.2); // Aclarado leve
+        looser.setEffect(redTone);
+    }
+    
+    private void drawAnimatic() {
+        
     }
     
     private void afterGame() {
         if(counterFirstTeam > counterSecondTeam){
             actualTourney.winnerAndLooser(nameFirstTeam, counterFirstTeam, 3, nameSecondTeam, counterSecondTeam);
             adjustingTable(teamNames.get(index));
+            winnerAnimatic(mgvFirstTeam);
+            looserAnimatic(mgvSecondTeam);
+            
         } else if (counterFirstTeam < counterSecondTeam) { 
             actualTourney.winnerAndLooser(nameSecondTeam, counterFirstTeam, 3, nameFirstTeam, counterSecondTeam);
             adjustingTable(teamNames.get(index + 1));
+            winnerAnimatic(mgvSecondTeam);
+            looserAnimatic(mgvFirstTeam);
+            
         } else {}
             //Animatica empate moneda
        resetGame();
@@ -310,8 +347,11 @@ public class GameController extends Controller implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-    //Inicializador completo   
-        initializeFromAppContext();
+    try {//Inicializador completo   
+        initializeFromAppContext(); //Posee un error, pero creo que está relacionado a que no hay equipos calificados
+        } catch (Exception e) {
+            message.show(Alert.AlertType.ERROR, "Error de Inicialización", "No se pudo inicializar la vista: " + e.getMessage());
+        }
     }    
 
     @Override
@@ -319,29 +359,34 @@ public class GameController extends Controller implements Initializable {
     }
                 
     public void initializeFromAppContext() {
-        this.actualTourney = (Tourney) AppContext.getInstance().get("actualTourney");
+        this.actualTourney = (Tourney) AppContext.getInstance().get("SelectedTourney");
         this.teamNames = actualTourney.getTeamList();
         this.timeLimit = actualTourney.getTime();
         this.selectedSport = actualTourney.getSportType();
         switch (actualTourney.returnState()) {
-            case "Sin empezar" -> startGameParameters();
-            case "En proceso" -> continueGameParameters();
-            default ->  throw new AssertionError();
+            case "Sin Empezar" -> startGameParameters();
+            case "En Proceso" -> continueGameParameters();
+            case "Finalizado" -> viewGameTable();
+            default ->  continueGameParameters(); 
         }
     }
     
      private void startGameParameters() {
         organizeRounds();
         distributionOnTable();
-        encounter();
     }
        
     private void continueGameParameters() {
         
     }
-     
+    
+    private void viewGameTable(){
+        btnStart.setManaged(false);
+        btnStart.setVisible(false);
+    }
+    
     public void clearAppContext() {
-        AppContext.getInstance().delete("actualTourney");
+        AppContext.getInstance().delete("SelectedTourney");
     }
     
     private void resetGame() {
