@@ -1,1 +1,1 @@
-[]
+[{"name":"Los verdes","nameTeamImage":"Los verdes.png","idSportType":3421,"draw":0,"wins":0,"goals":0,"points":0,"isQualified":false,"id":2754},{"name":"los tigres","nameTeamImage":"los tigres.png","idSportType":3421,"draw":0,"wins":0,"goals":0,"points":0,"isQualified":false,"id":532},{"name":"Los pipis","nameTeamImage":"Los pipis.png","idSportType":9031,"draw":0,"wins":0,"goals":0,"points":0,"isQualified":false,"id":4658},{"name":"Los dragones","nameTeamImage":"Los dragones.png","idSportType":9031,"draw":0,"wins":0,"goals":0,"points":0,"isQualified":false,"id":7468}]
