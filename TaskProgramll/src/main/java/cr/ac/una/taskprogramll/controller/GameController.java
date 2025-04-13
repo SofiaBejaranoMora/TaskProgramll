@@ -5,6 +5,7 @@ import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
+import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import java.net.URL;
 import javafx.util.Duration;
@@ -20,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -28,6 +30,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 /** FXML Controller class ** @author ashly */
 public class GameController extends Controller implements Initializable {
@@ -68,6 +71,7 @@ public class GameController extends Controller implements Initializable {
     private ImageView mgvSecondTeam;
     
 //Variables de MatchTeams           
+    private final Mensaje message = new Mensaje();
     private Tourney actualTourney;
     private int timeLimit;
     private int index = 0;
@@ -93,18 +97,19 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     void onActionBtnOut(ActionEvent event) {
-        FlowController.getInstance().goView("PlayersTable");
+        FlowController.getInstance().goViewInStage("PlayersTable", (Stage) btnOut.getScene().getWindow());
         timeLine.pause();
     }
     
     @FXML
     void onActionBtnBack(ActionEvent event) {
-        FlowController.getInstance().goView("ViewTourneys");
+        FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
     }
 
     @FXML
     void onActionBtnStart(ActionEvent event) {
-        FlowController.getInstance().goView("Game");
+        FlowController.getInstance().goViewInStage("Game", (Stage) btnStart.getScene().getWindow());
+        encounter();
     }
     
     @FXML
@@ -145,7 +150,8 @@ public class GameController extends Controller implements Initializable {
         round1.setAll(distributionTeams);
         clmnRound1.setCellValueFactory(new PropertyValueFactory<>("name"));
         tblPlayersTable.setItems(round1); //Respuesta a mi duda con tablas, descubierta, para que sea funcional se le hace el property value al tipo de datoque se desea obtener, by Michigam
-        Image BallonImage = new Image("file:" + selectedSport.RuteImage());
+        String nameImage = "file:" + selectedSport.RuteImage();
+        Image BallonImage = new Image(nameImage);
         mgvFirstTeam.setImage(BallonImage);
     }
     
@@ -175,7 +181,10 @@ public class GameController extends Controller implements Initializable {
                 nameSecondTeam = teamNames.get(index - 1).getName();
             }
             else adjustingTable(teamNames.get(index));
-        } if(teamNames.get(index) == null) round++;
+        } 
+        if(teamNames.get(index) == null && teamNames.get(index + 1) != null) 
+            adjustingTable(teamNames.get(index+1));
+        else round++;
     }
     
     private int discoverRounds(){
@@ -338,8 +347,11 @@ public class GameController extends Controller implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-    //Inicializador completo   
+    try {//Inicializador completo   
         initializeFromAppContext(); //Posee un error, pero creo que está relacionado a que no hay equipos calificados
+        } catch (Exception e) {
+            message.show(Alert.AlertType.ERROR, "Error de Inicialización", "No se pudo inicializar la vista: " + e.getMessage());
+        }
     }    
 
     @Override
@@ -362,7 +374,6 @@ public class GameController extends Controller implements Initializable {
      private void startGameParameters() {
         organizeRounds();
         distributionOnTable();
-        encounter();
     }
        
     private void continueGameParameters() {
@@ -370,7 +381,8 @@ public class GameController extends Controller implements Initializable {
     }
     
     private void viewGameTable(){
-        
+        btnStart.setManaged(false);
+        btnStart.setVisible(false);
     }
     
     public void clearAppContext() {
