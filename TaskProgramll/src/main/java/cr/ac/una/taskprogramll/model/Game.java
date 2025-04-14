@@ -19,13 +19,13 @@ public class Game {
     private List<Team> winner;
 
     public Game() {
-        this.round1 = new ArrayList<Team>();
-        this.round2 = new ArrayList<Team>();
-        this.round3 = new ArrayList<Team>();
-        this.round4 = new ArrayList<Team>();
-        this.round5 = new ArrayList<Team>();
-        this.round6 = new ArrayList<Team>();
-        this.winner = new ArrayList<Team>();
+        this.round1 = new ArrayList<>();
+        this.round2 = new ArrayList<>();
+        this.round3 = new ArrayList<>();
+        this.round4 = new ArrayList<>();
+        this.round5 = new ArrayList<>();
+        this.round6 = new ArrayList<>();
+        this.winner = new ArrayList<>();
     }
 
     public int getContinueTeam() {
