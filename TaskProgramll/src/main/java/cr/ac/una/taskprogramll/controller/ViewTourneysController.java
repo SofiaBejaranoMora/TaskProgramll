@@ -31,126 +31,135 @@ import javafx.stage.Stage;
 
 public class ViewTourneysController extends Controller implements Initializable {
 
-    @FXML private MFXComboBox<Sport> comboDeportes;
-    @FXML private TableView<Tourney> tablaTorneos;
-    @FXML private TableColumn<Tourney, String> colTorneo;
-    @FXML private TableColumn<Tourney, String> colEstado;
-    @FXML private MFXButton btnBack;
-    @FXML private VBox imgTrophey;
-    @FXML private MFXButton btnPlay;
-    @FXML private MFXButton btnInfo;
+    @FXML
+    private MFXComboBox<Sport> comboDeportes;
+    @FXML
+    private TableView<Tourney> tablaTorneos;
+    @FXML
+    private TableColumn<Tourney, String> colTorneo;
+    @FXML
+    private TableColumn<Tourney, String> colEstado;
+    @FXML
+    private MFXButton btnBack;
+    @FXML
+    private VBox imgTrophey;
+    @FXML
+    private MFXButton btnPlay;
+    @FXML
+    private MFXButton btnInfo;
 
     private final FileManager fileManager = new FileManager();
     private ObservableList<Tourney> torneosList;
     private List<Sport> sportList = new ArrayList<>();
 
-@Override
-public void initialize(URL url, ResourceBundle rb) {
-    try {
-        torneosList = FXCollections.observableArrayList();
-        tablaTorneos.setItems(torneosList);
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        try {
+            torneosList = FXCollections.observableArrayList();
+            tablaTorneos.setItems(torneosList);
 
-        colTorneo.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colEstado.setCellValueFactory(cellData -> {
-            Tourney tourney = cellData.getValue();
-            return new SimpleStringProperty(tourney.returnState());
-        });
+            colTorneo.setCellValueFactory(new PropertyValueFactory<>("name"));
+            colEstado.setCellValueFactory(cellData -> {
+                Tourney tourney = cellData.getValue();
+                return new SimpleStringProperty(tourney.returnState());
+            });
 
-        // Inicialmente deshabilitados
-        btnPlay.setDisable(true);
-        btnInfo.setDisable(true);
-        tablaTorneos.setVisible(false);
+            // Inicialmente deshabilitados
+            btnPlay.setDisable(true);
+            btnInfo.setDisable(true);
+            tablaTorneos.setVisible(false);
 
-        loadSportList();
-        comboDeportes.setItems(FXCollections.observableArrayList(sportList));
+            loadSportList();
+            comboDeportes.setItems(FXCollections.observableArrayList(sportList));
 
-        tablaTorneos.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                System.out.println("Torneo seleccionado: " + newVal.getName() + " - Estado: " + newVal.returnState());
-                actualizarBotones(newVal);
-            } else {
-                btnPlay.setDisable(true);
-                btnInfo.setDisable(true);
-            }
-        });
+            tablaTorneos.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null) {
+                    System.out.println("Torneo seleccionado: " + newVal.getName() + " - Estado: " + newVal.returnState());
+                    actualizarBotones(newVal);
+                } else {
+                    btnPlay.setDisable(true);
+                    btnInfo.setDisable(true);
+                }
+            });
 
-    } catch (Exception e) {
-        System.err.println("Error en initialize: " + e.getMessage());
-        e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error en initialize: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
-}
 
- @FXML
-private void mostrarTorneos(ActionEvent event) {
-    Sport selectedSport = comboDeportes.getSelectionModel().getSelectedItem();
-    if (selectedSport != null) {
-        imgTrophey.setVisible(false);
-        imgTrophey.setManaged(false);
-        
-        torneosList.clear();
-        List<Tourney> tourneys = loadTourneyList();
-        if (tourneys != null) {
-            for (Tourney tourney : tourneys) {
-                if (tourney.getSportType() != null && tourney.getSportType().getId() == selectedSport.getId()) {
-                    torneosList.add(tourney);
+    @FXML
+    private void mostrarTorneos(ActionEvent event) {
+        Sport selectedSport = comboDeportes.getSelectionModel().getSelectedItem();
+        if (selectedSport != null) {
+            imgTrophey.setVisible(false);
+            imgTrophey.setManaged(false);
+
+            torneosList.clear();
+            List<Tourney> tourneys = loadTourneyList();
+            if (tourneys != null) {
+                for (Tourney tourney : tourneys) {
+                    if (tourney.getSportType() != null && tourney.getSportType().getId() == selectedSport.getId()) {
+                        torneosList.add(tourney);
+                    }
                 }
             }
+
+            boolean hayTorneos = !torneosList.isEmpty();
+            tablaTorneos.setVisible(hayTorneos);
+
+            // Forzar actualización de la interfaz
+            Platform.runLater(() -> {
+                tablaTorneos.refresh();
+                if (hayTorneos) {
+                    // Seleccionar el primer elemento automáticamente
+                    tablaTorneos.getSelectionModel().selectFirst();
+                }
+            });
+
+        } else {
+            imgTrophey.setVisible(true);
+            imgTrophey.setManaged(true);
+            torneosList.clear();
+            tablaTorneos.setVisible(false);
+            btnPlay.setDisable(true);
+            btnInfo.setDisable(true);
         }
-        
-        boolean hayTorneos = !torneosList.isEmpty();
-        tablaTorneos.setVisible(hayTorneos);
-        
-        // Forzar actualización de la interfaz
-        Platform.runLater(() -> {
-            tablaTorneos.refresh();
-            if (hayTorneos) {
-                // Seleccionar el primer elemento automáticamente
-                tablaTorneos.getSelectionModel().selectFirst();
-            }
-        });
-        
-    } else {
-        imgTrophey.setVisible(true);
-        imgTrophey.setManaged(true);
-        torneosList.clear();
-        tablaTorneos.setVisible(false);
-        btnPlay.setDisable(true);
-        btnInfo.setDisable(true);
-    }
-}
-
-private void actualizarBotones(Tourney torneoSeleccionado) {
-    if (torneoSeleccionado == null) {
-        btnPlay.setDisable(true);
-        btnInfo.setDisable(true);
-        return;
     }
 
-    String estado = torneoSeleccionado.returnState();
-    System.out.println("Actualizando botones para estado: " + estado); // Debug
-    
-    btnInfo.setDisable(false);
-    
-    switch(estado) {
-        case "Sin Empezar":
-            btnPlay.setDisable(false);
-            btnPlay.setText("Jugar");
-            break;
-        case "En Proceso":
-            btnPlay.setDisable(false);
-            btnPlay.setText("Continuar");
-            break;
-        case "Finalizado":
+    private void actualizarBotones(Tourney torneoSeleccionado) {
+        if (torneoSeleccionado == null) {
             btnPlay.setDisable(true);
-            btnPlay.setText("Finalizado");
-            break;
-        default:
-            btnPlay.setDisable(true);
+            btnInfo.setDisable(true);
+            return;
+        }
+
+        String estado = torneoSeleccionado.returnState();
+        System.out.println("Actualizando botones para estado: " + estado); // Debug
+
+        btnInfo.setDisable(false);
+
+        switch (estado) {
+            case "Sin Empezar":
+                btnPlay.setDisable(false);
+                btnPlay.setText("Jugar");
+                break;
+            case "En Proceso":
+                btnPlay.setDisable(false);
+                btnPlay.setText("Continuar");
+                break;
+            case "Finalizado":
+                btnPlay.setDisable(true);
+                btnPlay.setText("Finalizado");
+                break;
+            default:
+                btnPlay.setDisable(true);
+        }
     }
-}
+
     @FXML
     private void goBack(ActionEvent event) {
-        FlowController.getInstance().goView("Lobby");
+        FlowController.getInstance().goViewInStage("Lobby", (Stage) btnBack.getScene().getWindow());
     }
 
     @FXML
@@ -160,22 +169,20 @@ private void actualizarBotones(Tourney torneoSeleccionado) {
             // Lógica para jugar/continuar torneo
             AppContext.getInstance().set("SelectedTourney", seleccionado);
             // Navegar a la vista de información 
-            FlowController.getInstance().goViewInStage("MatchTeams",(Stage) btnPlay.getScene().getWindow());
+            FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnPlay.getScene().getWindow());
             System.out.println("Iniciando torneo: " + seleccionado.getName());
         }
     }
 
-
-    
     @FXML
     private void showInfo(ActionEvent event) {
         Tourney seleccionado = tablaTorneos.getSelectionModel().getSelectedItem();
         if (seleccionado != null) {
-          // Guardar el torneo seleccionado en el contexto de la aplicación
-        AppContext.getInstance().set("SelectedTourney", seleccionado);
-        FlowController.getInstance().goViewInStage("TourneysInfo", (Stage) btnInfo.getScene().getWindow());
-        
-        System.out.println("Mostrando info de: " + seleccionado.getName());
+            // Guardar el torneo seleccionado en el contexto de la aplicación
+            AppContext.getInstance().set("SelectedTourney", seleccionado);
+            FlowController.getInstance().goViewInStage("TourneysInfo", (Stage) btnInfo.getScene().getWindow());
+
+            System.out.println("Mostrando info de: " + seleccionado.getName());
         }
     }
 

@@ -85,6 +85,7 @@ public class GameController extends Controller implements Initializable {
     private ObservableList<Team>round5 = FXCollections.observableArrayList();
     private ObservableList<Team>round6 =FXCollections.observableArrayList();
     private ObservableList<Team>winner =FXCollections.observableArrayList();
+    
 //Variables de Game    
     private Timeline timeLine;
     private Boolean timerStarted = false;
@@ -97,7 +98,7 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     void onActionBtnOut(ActionEvent event) {
-        FlowController.getInstance().goViewInStage("PlayersTable", (Stage) btnOut.getScene().getWindow());
+        FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
         timeLine.pause();
     }
     
@@ -135,7 +136,30 @@ public class GameController extends Controller implements Initializable {
     }
     
 //Vista de  match en equipos y llaves del torneo
-    private void distributionOnTable() {
+    private Boolean choosed(String name){ 
+       if (choosenNames.contains(name)) {
+           return true;
+       } else {
+            choosenNames.add(name);
+            return false;
+       }
+   }
+    
+    private int discoverRounds(){
+        if (teamNames.size() == 2) 
+            return 1;
+        else if (teamNames.size() > 2 && teamNames.size() < 4)
+            return 2;
+        else if (teamNames.size() > 5 && teamNames.size() < 8)
+            return 3;
+        else if (teamNames.size() > 9 && teamNames.size() < 16)
+            return 4;
+        else if (teamNames.size() > 17 && teamNames.size() < 32)
+            return 5;
+        else return 6;
+    }   
+    
+     private void distributionOnTable() {
     List<Team> distributionTeams = new ArrayList<>();
           int roundSize = teamNames.size();
 
@@ -154,15 +178,6 @@ public class GameController extends Controller implements Initializable {
         Image BallonImage = new Image(nameImage);
         mgvFirstTeam.setImage(BallonImage);
     }
-    
-    private Boolean choosed(String name){ 
-       if (choosenNames.contains(name)) {
-           return true;
-       } else {
-            choosenNames.add(name);
-            return false;
-       }
-   }
 
     private void encounter() {
         while(teamNames.get(index) != null){
@@ -186,21 +201,7 @@ public class GameController extends Controller implements Initializable {
             adjustingTable(teamNames.get(index+1));
         else round++;
     }
-    
-    private int discoverRounds(){
-        if (teamNames.size() == 2) 
-            return 1;
-        else if (teamNames.size() > 2 && teamNames.size() < 4)
-            return 2;
-        else if (teamNames.size() > 5 && teamNames.size() < 8)
-            return 3;
-        else if (teamNames.size() > 9 && teamNames.size() < 16)
-            return 4;
-        else if (teamNames.size() > 17 && teamNames.size() < 32)
-            return 5;
-        else return 6;
-    }   
-    
+   
     private void organizeRounds(){
         switch (discoverRounds()) {
             case 1 -> {
@@ -267,7 +268,11 @@ public class GameController extends Controller implements Initializable {
     }
     
 //A partir de acá se trabaja con la vista Game
-    private void timer() {
+   private String timeFormat(int totalSeconds) {
+        return String.format("%02d:%02d", (totalSeconds / 60), (totalSeconds % 60));
+    }
+
+   private void timer() {
         timeLine = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             if(timeCalculate <= timeLimit){
                 timeCalculate++;
@@ -281,11 +286,7 @@ public class GameController extends Controller implements Initializable {
             }
         }));
         timeLine.setCycleCount(timeLimit);
-    }   
-    
-    private String timeFormat(int totalSeconds) {
-        return String.format("%02d:%02d", (totalSeconds / 60), (totalSeconds % 60));
-    }
+    } 
     
     private void counterPoints() {
         if(mgvBall.getBoundsInLocal() != null && mgvFirstTeam.getBoundsInLocal() != null && mgvSecondTeam.getBoundsInLocal() != null) {
