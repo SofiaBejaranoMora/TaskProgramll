@@ -434,8 +434,6 @@ public class RegistrationModifyController extends Controller implements Initiali
         newSport = null;
         newTeam = null;
         image = null;
-        isSport=null;
-        isMaintenace=null;
     }
 
     @Override
