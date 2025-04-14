@@ -3,6 +3,7 @@ package cr.ac.una.taskprogramll.controller;
 import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
+import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.Mensaje;
@@ -34,17 +35,18 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
-import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.bridj.util.Tuple;
 
-public class RegisterModifyController extends Controller implements Initializable {
+public class RegistrationModifyController extends Controller implements Initializable {
 
     private File selectedImage = null;
     private Sport newSport = null;
     private Team newTeam = null;
     private List<Sport> sportList = new ArrayList<>();
     private List<Team> teamList = new ArrayList<>();
+    private List<Tourney> tourneyList = new ArrayList<>();
     private FileManager fileManeger = new FileManager();
     private File file;
     private Image image = null;
@@ -86,14 +88,6 @@ public class RegisterModifyController extends Controller implements Initializabl
     @FXML
     private ImageView imgOther;
 
-    @FXML
-    private ImageView lobbyIcon;
-
-    @FXML
-    private void OnMouseClickedLobbyIcon(MouseEvent event) {
-        ClearPanel();
-        FlowController.getInstance().goViewInStage("Lobby", (Stage) lobbyIcon.getScene().getWindow());
-    }
 
     @FXML
     void OnActionAccept(ActionEvent event) {
@@ -101,9 +95,10 @@ public class RegisterModifyController extends Controller implements Initializabl
         if ((!name.isEmpty()) && (mgvImage.getImage() != null)) {
             name = txtName.getText();
             if (isSport) {
-                if (((isMaintenace)&& (newSport.getName().trim().toUpperCase().replaceAll("\\s+", "").equals(name.toUpperCase().replaceAll("\\s+", "")))) 
+                if (((isMaintenace) && (newSport.getName().trim().toUpperCase().replaceAll("\\s+", "").equals(name.toUpperCase().replaceAll("\\s+", ""))))
                         || (!CheckedExistsSport(name))) {
                     Sport(name);
+                    ClearPanel();
                 } else {
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "Ya hay un deporte registrado con el mismo nombre");
                 }
@@ -112,6 +107,7 @@ public class RegisterModifyController extends Controller implements Initializabl
                 if (((isMaintenace) && (newTeam.getName().trim().toUpperCase().replaceAll("\\s+", "").equals(name.toUpperCase().replaceAll("\\s+", ""))))
                         || (!CheckedExistsTeam(name, type))) {
                     Team(name, type);
+                    ClearPanel();
                 } else {
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "Ya hay un equipo registrado con el mismo nombre o posee el nombre de un deporte");
                 }
@@ -193,7 +189,6 @@ public class RegisterModifyController extends Controller implements Initializabl
         fileManeger.serialization(teamList, "Team");
         image = mgvImage.getImage();
         SaveImage(name);
-        ClearPanel();
     }
 
     public void SportDelete(String name) {
@@ -232,6 +227,15 @@ public class RegisterModifyController extends Controller implements Initializabl
         }
         return false;
     }
+    
+    /*public Boolean HasTourney() {
+        for (Tourney currentTeam : tourneyList) {
+            if ((currentTeam.() == newSport.getId())) {
+                return false;
+            }
+        }
+        return false;
+    }*/
 
     public Boolean CheckedExistsTeam(String name, Sport sport) {
         name = name.toUpperCase().replaceAll("\\s+", "");
@@ -288,7 +292,7 @@ public class RegisterModifyController extends Controller implements Initializabl
         }
     }
 
-    public <T> T findObject(T object, List<T> list) {
+    public <T> T FindObject(T object, List<T> list) {
         for (T item : list) {
             if (item.equals(object)) {
                 return item;
@@ -371,7 +375,7 @@ public class RegisterModifyController extends Controller implements Initializabl
             if (file.exists()) {
                 image = new Image("file:" + newSport.RuteImage());
                 mgvImage.setImage(image);
-                newSport = findObject(newSport, sportList);
+                newSport = FindObject(newSport, sportList);
             } else {
                 mgvImage.setImage(null);
                 message.show(Alert.AlertType.INFORMATION, "Aviso", "La imagen del balón del deporte "
@@ -386,7 +390,7 @@ public class RegisterModifyController extends Controller implements Initializabl
             if (file.exists()) {
                 image = new Image("file:" + newTeam.RuteImage());
                 mgvImage.setImage(image);
-                newTeam = findObject(newTeam, teamList);
+                newTeam = FindObject(newTeam, teamList);
             } else {
                 mgvImage.setImage(null);
                 message.show(Alert.AlertType.INFORMATION, "Aviso", "La imagen del equipo "
@@ -407,6 +411,12 @@ public class RegisterModifyController extends Controller implements Initializabl
                 teamList = fileManeger.deserialization("Team", Team.class);
             }
         }
+        if(isMaintenace){
+            file = new File("Tourney.txt");
+            if ((file.exists()) && (file.length() > 0)) {
+                tourneyList = fileManeger.deserialization("Tourney", Tourney.class);
+            }
+        }
     }
 
     public void InitializeController() {
@@ -424,15 +434,19 @@ public class RegisterModifyController extends Controller implements Initializabl
         newSport = null;
         newTeam = null;
         image = null;
+        isSport=null;
+        isMaintenace=null;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        ClearPanel();
         InitializeController();
     }
 
     @Override
     public void initialize() {
+        ClearPanel();
         InitializeController();
     }
 

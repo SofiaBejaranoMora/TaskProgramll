@@ -7,7 +7,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -16,14 +15,6 @@
    <children>
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
          <children>
-            <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308">
-               <children>
-                  <ImageView fx:id="lobbyIcon" fitHeight="39.0" fitWidth="46.0" onMouseClicked="#OnMouseClickedLobbyIcon" pickOnBounds="true" preserveRatio="true" />
-               </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </HBox>
             <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="boxLightBlue" VBox.vgrow="ALWAYS">
                <children>
                   <Label fx:id="labTitle" text="Label" />

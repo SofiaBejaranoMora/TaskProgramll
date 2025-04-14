@@ -21,7 +21,7 @@ public class LobbyController extends Controller implements Initializable {
     private MFXComboBox<String> cmbMenu;
 
     public void comboxInitializer() {
-        cmbMenu.getItems().addAll("Registro Deporte", "Registro Equipo", "Mantenimiento de Deporte", "Mantenimiento de Equipo", "Crear Torneo", "Ver Torneos");
+        cmbMenu.getItems().addAll("Registro y Mantenimiento", "Crear Torneo", "Ver Torneos");
     }
 
     public void clean() {
@@ -33,34 +33,12 @@ public class LobbyController extends Controller implements Initializable {
     private void OnActionCmbMenu(ActionEvent event) {
         String menu = cmbMenu.getValue();
         switch (menu) {
-            case "Registro Deporte":
-                AppContext.getInstance().set("isSport", true);
-                AppContext.getInstance().set("isMaintenace", false);
-                AppContext.getInstance().set("Title", menu);
-                FlowController.getInstance().goViewInStage("RegisterModify", (Stage) cmbMenu.getScene().getWindow());
-                break;
-            case "Registro Equipo":
-                AppContext.getInstance().set("isSport", false);
-                AppContext.getInstance().set("isMaintenace", false);
-                AppContext.getInstance().set("Title", menu);
-                FlowController.getInstance().goViewInStage("RegisterModify", (Stage) cmbMenu.getScene().getWindow());
-                break;
-            case "Mantenimiento de Deporte":
-                AppContext.getInstance().set("isSport", true);
-                AppContext.getInstance().set("isMaintenace", true);
-                AppContext.getInstance().set("Title", menu);
-                FlowController.getInstance().goViewInStage("Maintenance", (Stage) cmbMenu.getScene().getWindow());
-                break;
-            case "Mantenimiento de Equipo":
-                AppContext.getInstance().set("isSport", false);
-                AppContext.getInstance().set("isMaintenace", true);
-                AppContext.getInstance().set("Title", menu);
-                FlowController.getInstance().goViewInStage("Maintenance", (Stage) cmbMenu.getScene().getWindow());
+            case "Registro y Mantenimiento":
+                FlowController.getInstance().goMain();
                 break;
             case "Crear Torneo":
                 FlowController.getInstance().goViewInStage("CreateTourney", (Stage) cmbMenu.getScene().getWindow());
                 break;
-
             case "Ver Torneos":
                 FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) cmbMenu.getScene().getWindow());
                 break;
@@ -78,6 +56,7 @@ public class LobbyController extends Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         comboxInitializer();
+        clean();
     }
 
     @Override
