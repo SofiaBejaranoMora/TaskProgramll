@@ -1,0 +1,35 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package cr.ac.una.taskprogramll.util;
+
+/**
+ *
+ * @author Michelle Wittingham
+ */
+public class ResourceUtil {
+    
+    private static final String BASE_PATH = "/cr/ac/una/taskprogramll/resources/";
+    
+    /**
+     * Devuelve la URL de una imagen en src/main/resources/cr/ac/una/taskprogramll/resources/.
+     * @param imageName Nombre del archivo (e.g., "stillBack.png").
+     * @return URL como String para Image, o null si no se encuentra.
+     */
+    
+    public static String getImagePath(String imageName) {
+        try {
+            String path = BASE_PATH + imageName;
+            if (ResourceUtil.class.getResource(path) == null) {
+                System.err.println("No se encontró la imagen: " + path);
+                return null;
+            }
+            return ResourceUtil.class.getResource(path).toExternalForm();
+        } catch (Exception e) {
+            System.err.println("Error cargando imagen " + imageName + ": " + e.getMessage());
+            return null;
+        }
+    }
+    
+}
