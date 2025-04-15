@@ -32,13 +32,13 @@ import javafx.stage.Stage;
 public class ViewTourneysController extends Controller implements Initializable {
 
     @FXML
-    private MFXComboBox<Sport> comboDeportes;
+    private MFXComboBox<Sport> sportsComboBox;
     @FXML
-    private TableView<Tourney> tablaTorneos;
+    private TableView<Tourney> tourneysTable;
     @FXML
-    private TableColumn<Tourney, String> colTorneo;
+    private TableColumn<Tourney, String> colTourney;
     @FXML
-    private TableColumn<Tourney, String> colEstado;
+    private TableColumn<Tourney, String> colState;
     @FXML
     private MFXButton btnBack;
     @FXML
@@ -56,10 +56,10 @@ public class ViewTourneysController extends Controller implements Initializable 
     public void initialize(URL url, ResourceBundle rb) {
         try {
             torneosList = FXCollections.observableArrayList();
-            tablaTorneos.setItems(torneosList);
+            tourneysTable.setItems(torneosList);
 
-            colTorneo.setCellValueFactory(new PropertyValueFactory<>("name"));
-            colEstado.setCellValueFactory(cellData -> {
+            colTourney.setCellValueFactory(new PropertyValueFactory<>("name"));
+            colState.setCellValueFactory(cellData -> {
                 Tourney tourney = cellData.getValue();
                 return new SimpleStringProperty(tourney.returnState());
             });
@@ -67,12 +67,12 @@ public class ViewTourneysController extends Controller implements Initializable 
             // Inicialmente deshabilitados
             btnPlay.setDisable(true);
             btnInfo.setDisable(true);
-            tablaTorneos.setVisible(false);
+            tourneysTable.setVisible(false);
 
             loadSportList();
-            comboDeportes.setItems(FXCollections.observableArrayList(sportList));
+            sportsComboBox.setItems(FXCollections.observableArrayList(sportList));
 
-            tablaTorneos.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            tourneysTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal != null) {
                     System.out.println("Torneo seleccionado: " + newVal.getName() + " - Estado: " + newVal.returnState());
                     actualizarBotones(newVal);
@@ -90,7 +90,7 @@ public class ViewTourneysController extends Controller implements Initializable 
 
     @FXML
     private void mostrarTorneos(ActionEvent event) {
-        Sport selectedSport = comboDeportes.getSelectionModel().getSelectedItem();
+        Sport selectedSport = sportsComboBox.getSelectionModel().getSelectedItem();
         if (selectedSport != null) {
             imgTrophey.setVisible(false);
             imgTrophey.setManaged(false);
@@ -105,15 +105,15 @@ public class ViewTourneysController extends Controller implements Initializable 
                 }
             }
 
-            boolean hayTorneos = !torneosList.isEmpty();
-            tablaTorneos.setVisible(hayTorneos);
+            boolean state = !torneosList.isEmpty();
+            tourneysTable.setVisible(state);
 
             // Forzar actualización de la interfaz
             Platform.runLater(() -> {
-                tablaTorneos.refresh();
-                if (hayTorneos) {
+                tourneysTable.refresh();
+                if (state) {
                     // Seleccionar el primer elemento automáticamente
-                    tablaTorneos.getSelectionModel().selectFirst();
+                    tourneysTable.getSelectionModel().selectFirst();
                 }
             });
 
@@ -121,25 +121,25 @@ public class ViewTourneysController extends Controller implements Initializable 
             imgTrophey.setVisible(true);
             imgTrophey.setManaged(true);
             torneosList.clear();
-            tablaTorneos.setVisible(false);
+            tourneysTable.setVisible(false);
             btnPlay.setDisable(true);
             btnInfo.setDisable(true);
         }
     }
 
-    private void actualizarBotones(Tourney torneoSeleccionado) {
-        if (torneoSeleccionado == null) {
+    private void actualizarBotones(Tourney selectedTourney) {
+        if (selectedTourney == null) {
             btnPlay.setDisable(true);
             btnInfo.setDisable(true);
             return;
         }
 
-        String estado = torneoSeleccionado.returnState();
-        System.out.println("Actualizando botones para estado: " + estado); // Debug
+        String state = selectedTourney.returnState();
+        System.out.println("Actualizando botones para estado: " + state); // Debug
 
         btnInfo.setDisable(false);
 
-        switch (estado) {
+        switch (state) {
             case "Sin Empezar":
                 btnPlay.setDisable(false);
                 btnPlay.setText("Jugar");
@@ -164,25 +164,25 @@ public class ViewTourneysController extends Controller implements Initializable 
 
     @FXML
     private void goPlay(ActionEvent event) {
-        Tourney seleccionado = tablaTorneos.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
+        Tourney selectedTourney = tourneysTable.getSelectionModel().getSelectedItem();
+        if (selectedTourney != null) {
             // Lógica para jugar/continuar torneo
-            AppContext.getInstance().set("SelectedTourney", seleccionado);
+            AppContext.getInstance().set("SelectedTourney", selectedTourney);
             // Navegar a la vista de información 
             FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnPlay.getScene().getWindow());
-            System.out.println("Iniciando torneo: " + seleccionado.getName());
+            System.out.println("Iniciando torneo: " + selectedTourney.getName());
         }
     }
 
     @FXML
     private void showInfo(ActionEvent event) {
-        Tourney seleccionado = tablaTorneos.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
+        Tourney selectedTourney = tourneysTable.getSelectionModel().getSelectedItem();
+        if (selectedTourney != null) {
             // Guardar el torneo seleccionado en el contexto de la aplicación
-            AppContext.getInstance().set("SelectedTourney", seleccionado);
+            AppContext.getInstance().set("SelectedTourney", selectedTourney);
             FlowController.getInstance().goViewInStage("TourneysInfo", (Stage) btnInfo.getScene().getWindow());
 
-            System.out.println("Mostrando info de: " + seleccionado.getName());
+            System.out.println("Mostrando info de: " + selectedTourney.getName());
         }
     }
 
