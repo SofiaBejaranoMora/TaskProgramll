@@ -1,75 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane id="AnchorPane" fx:id="ncpRoot" prefHeight="400.0" prefWidth="600.0" styleClass="GameBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.GameController">
+<AnchorPane fx:id="ncpRoot" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.GameController">
    <children>
-      <VBox alignment="TOP_CENTER" layoutX="221.0" layoutY="62.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+      <VBox alignment="TOP_CENTER" prefHeight="560.0" prefWidth="760.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
-            <Label text="Marcador" VBox.vgrow="ALWAYS">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </VBox.margin>
+            <!-- Tournament Table -->
+            <TableView fx:id="tblPlayersTable" prefHeight="200.0" prefWidth="760.0">
+               <columns>
+                  <TableColumn fx:id="clmnRound1" text="Round 1" prefWidth="108.0" />
+                  <TableColumn fx:id="clmnRound2" text="Round 2" prefWidth="108.0" />
+                  <TableColumn fx:id="clmnRound3" text="Round 3" prefWidth="108.0" />
+                  <TableColumn fx:id="clmnRound4" text="Round 4" prefWidth="108.0" />
+                  <TableColumn fx:id="clmnRound5" text="Round 5" prefWidth="108.0" />
+                  <TableColumn fx:id="clmnRound6" text="Round 6" prefWidth="108.0" />
+                  <TableColumn fx:id="clmnFinal" text="Final" prefWidth="108.0" />
+               </columns>
+            </TableView>
+            <!-- Game Controls -->
+            <Label text="Marcador" style="-fx-font-weight: bold;">
+               <padding>
+                  <Insets top="10.0" right="10.0" bottom="10.0" left="10.0" />
+               </padding>
             </Label>
-            <ToolBar prefHeight="40.0" prefWidth="231.0" styleClass="boxRose" stylesheets="@Style.css" VBox.vgrow="NEVER">
-               <items>
-                  <Label fx:id="lblFirstTeam" alignment="CENTER" contentDisplay="CENTER" text="0">
-                     <padding>
-                        <Insets right="13.0" />
-                     </padding>
-                  </Label>
-                  <Label fx:id="lblSecondTeam" alignment="CENTER" text="0">
-                     <padding>
-                        <Insets left="13.0" />
-                     </padding>
-                  </Label>
-               </items>
-               <VBox.margin>
-                  <Insets left="250.0" right="250.0" />
-               </VBox.margin>
-            </ToolBar>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER" prefHeight="40.0" prefWidth="760.0">
                <children>
-                  <ImageView fx:id="mgvFirstTeam" fitHeight="110.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
+                  <Label fx:id="lblFirstTeam" alignment="CENTER" text="0" prefWidth="100.0" />
+                  <Label fx:id="lblSecondTeam" alignment="CENTER" text="0" prefWidth="100.0" />
+               </children>
+               <padding>
+                  <Insets left="20.0" right="20.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="200.0" prefWidth="760.0">
+               <children>
+                  <ImageView fx:id="mgvFirstTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
-                        <Insets left="10.0" right="40.0" />
+                        <Insets left="20.0" right="40.0" />
                      </HBox.margin>
                   </ImageView>
-                  <ImageView fx:id="mgvBall" fitHeight="47.0" fitWidth="57.0" onMouseDragged="#onMouseDraggedMgvBall" onMousePressed="#onMousePressedMgvBall" onMouseReleased="#onMouseReleasedMgvBall" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
+                  <ImageView fx:id="mgvBall" fitHeight="50.0" fitWidth="50.0" onMouseDragged="#onMouseDraggedMgvBall" onMousePressed="#onMousePressedMgvBall" onMouseReleased="#onMouseReleasedMgvBall" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
                         <Insets left="40.0" right="40.0" />
                      </HBox.margin>
                   </ImageView>
-                  <ImageView fx:id="mgvSecondTeam" fitHeight="110.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
+                  <ImageView fx:id="mgvSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
-                        <Insets left="40.0" right="10.0" />
+                        <Insets left="40.0" right="20.0" />
                      </HBox.margin>
                   </ImageView>
                </children>
             </HBox>
-            <Label styleClass="boxLightBlue" stylesheets="@Style.css" text="Cronometro" VBox.vgrow="ALWAYS">
-               <VBox.margin>
-                  <Insets bottom="5.0" left="15.0" right="15.0" top="15.0" />
-               </VBox.margin>
+            <Label text="Cronómetro" style="-fx-font-weight: bold;">
+               <padding>
+                  <Insets top="10.0" right="15.0" bottom="5.0" left="15.0" />
+               </padding>
             </Label>
-            <Label fx:id="lblTimer" styleClass="boxLightBlue" stylesheets="@Style.css" text="0:00" VBox.vgrow="ALWAYS">
-               <VBox.margin>
+            <Label fx:id="lblTimer" text="0:00">
+               <padding>
                   <Insets bottom="15.0" left="15.0" right="15.0" />
-               </VBox.margin>
+               </padding>
             </Label>
-            <HBox alignment="BOTTOM_RIGHT" maxHeight="40.0" prefHeight="59.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER" prefHeight="40.0" prefWidth="760.0">
                <children>
-                  <MFXButton fx:id="btnOut" onAction="#onActionBtnOut" styleClass="mfx-button" stylesheets="@Style.css" text="Salir" HBox.hgrow="ALWAYS" />
+                  <MFXButton fx:id="btnBack" text="Back" onAction="#onActionBtnBack" prefWidth="100.0" />
+                  <MFXButton fx:id="btnStart" text="Start" onAction="#onActionBtnStart" prefWidth="100.0" />
+                  <MFXButton fx:id="btnOut" text="Salir" onAction="#onActionBtnOut" prefWidth="100.0" />
                </children>
+               <padding>
+                  <Insets top="10.0" bottom="10.0" />
+               </padding>
             </HBox>
          </children>
+         <padding>
+            <Insets top="10.0" right="10.0" bottom="10.0" left="10.0" />
+         </padding>
       </VBox>
    </children>
 </AnchorPane>
