@@ -31,13 +31,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import org.bridj.util.Tuple;
 
 public class RegistrationModifyController extends Controller implements Initializable {
 
@@ -88,7 +85,6 @@ public class RegistrationModifyController extends Controller implements Initiali
     @FXML
     private ImageView imgOther;
 
-
     @FXML
     void OnActionAccept(ActionEvent event) {
         String name = txtName.getText().trim();
@@ -105,7 +101,7 @@ public class RegistrationModifyController extends Controller implements Initiali
             } else if ((cmbSport.getValue() != null) || (isMaintenace)) {
                 Sport type = cmbSport.getValue();
                 if (((isMaintenace) && (newTeam.getName().trim().toUpperCase().replaceAll("\\s+", "").equals(name.toUpperCase().replaceAll("\\s+", ""))))
-                        || (!CheckedExistsTeam(name, type))) {
+                        || ((!CheckedExistsTeam(name,type)) &&(!CheckedExistsSport(name)))) {
                     Team(name, type);
                     ClearPanel();
                 } else {
@@ -158,6 +154,8 @@ public class RegistrationModifyController extends Controller implements Initiali
             newTeam.ChangeName(name);
             SaveImage(name);
             fileManeger.serialization(teamList, "Team");
+            ClearPanel();
+            FlowController.getInstance().goView("Maintenance");
         } else {
             TeamRegistration(name, type);
         }
@@ -168,6 +166,8 @@ public class RegistrationModifyController extends Controller implements Initiali
             newSport.ChangeName(name);
             SaveImage(name);
             fileManeger.serialization(teamList, "Team");
+            ClearPanel();
+            FlowController.getInstance().goView("Maintenance");
         } else {
             SportRegistration(name);
         }
@@ -189,16 +189,18 @@ public class RegistrationModifyController extends Controller implements Initiali
         fileManeger.serialization(teamList, "Team");
         image = mgvImage.getImage();
         SaveImage(name);
+        ClearPanel();
     }
 
     public void SportDelete(String name) {
-        if (HasTeam()) {
+        if (!HasTeam()) {
             file = new File(newSport.RuteImage());
             name = newSport.getName();
             if ((sportList.remove(newSport)) && (file.delete())) {
                 fileManeger.serialization(sportList, "Sport");
-                message.show(Alert.AlertType.INFORMATION, "Confirmacion", "El deporte " + name + " se elimino con exito.");
+                message.show(Alert.AlertType.CONFIRMATION, "Confirmacion", "El deporte " + name + " se elimino con exito.");
                 ClearPanel();
+                FlowController.getInstance().goView("Maintenance");
             } else {
                 message.show(Alert.AlertType.INFORMATION, "Confirmacion", "El deporte " + name + " no se pudo eliminar.");
             }
@@ -212,22 +214,23 @@ public class RegistrationModifyController extends Controller implements Initiali
         name = newTeam.getName();
         if ((teamList.remove(newTeam)) && (file.delete())) {
             fileManeger.serialization(teamList, "Team");
-            message.show(Alert.AlertType.INFORMATION, "Confirmacion", "El equipo " + name + " se elimino con exito.");
+            message.show(Alert.AlertType.CONFIRMATION, "Confirmacion", "El equipo " + name + " se elimino con exito.");
             ClearPanel();
+            FlowController.getInstance().goView("Maintenance");
         } else {
-            message.show(Alert.AlertType.INFORMATION, "Confirmacion", "El equipo " + name + " no se pudo eliminar.");
+            message.show(Alert.AlertType.INFORMATION, "Aviso", "El equipo " + name + " no se pudo eliminar.");
         }
     }
 
     public Boolean HasTeam() {
         for (Team currentTeam : teamList) {
             if ((currentTeam.getIdSportType() == newSport.getId())) {
-                return false;
+                return true;
             }
         }
         return false;
     }
-    
+
     /*public Boolean HasTourney() {
         for (Tourney currentTeam : tourneyList) {
             if ((currentTeam.() == newSport.getId())) {
@@ -236,16 +239,13 @@ public class RegistrationModifyController extends Controller implements Initiali
         }
         return false;
     }*/
-
     public Boolean CheckedExistsTeam(String name, Sport sport) {
         name = name.toUpperCase().replaceAll("\\s+", "");
         String nameCurrentTeam;
-        if (!CheckedExistsSport(name)) {
-            for (Team currentTeam : teamList) {
-                nameCurrentTeam = currentTeam.getName().toUpperCase().replaceAll("\\s+", "");
-                if ((currentTeam.getIdSportType() == sport.getId()) && (nameCurrentTeam.equals(name))) {
-                    return true;
-                }
+        for (Team currentTeam : teamList) {
+            nameCurrentTeam = currentTeam.getName().toUpperCase().replaceAll("\\s+", "");
+            if ((currentTeam.getIdSportType() == sport.getId()) && (nameCurrentTeam.equals(name))) {
+                return true;
             }
         }
         return false;
@@ -411,7 +411,7 @@ public class RegistrationModifyController extends Controller implements Initiali
                 teamList = fileManeger.deserialization("Team", Team.class);
             }
         }
-        if(isMaintenace){
+        if (isMaintenace) {
             file = new File("Tourney.txt");
             if ((file.exists()) && (file.length() > 0)) {
                 tourneyList = fileManeger.deserialization("Tourney", Tourney.class);
