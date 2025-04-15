@@ -4,6 +4,7 @@
  */
 package cr.ac.una.taskprogramll.model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,4 +181,18 @@ public class Tourney {
                 '}';
     }
 
+    public Sport searchSportType() {
+    FileManager fileManager = new FileManager();
+    File file = new File("Sport.txt");
+    
+    if (file.exists() && file.length() > 0) {
+        List<Sport> sportList = fileManager.deserialization("Sport", Sport.class);
+        for (Sport currentSport : sportList) {
+            if (currentSport.getId() == this.sportTypeId) {  
+                return currentSport;
+            }
+        }
+    }
+    return null;
+}
 }
