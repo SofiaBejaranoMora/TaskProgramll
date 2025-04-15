@@ -15,72 +15,52 @@ import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-
 public class LobbyController extends Controller implements Initializable {
 
     @FXML
     private MFXComboBox<String> cmbMenu;
-    
-    public void comboxInitializer(){
-        cmbMenu.setValue(null);
+
+    public void comboxInitializer() {
+        cmbMenu.getItems().addAll("Registro y Mantenimiento", "Crear Torneo", "Ver Torneos");
+    }
+
+    public void clean() {
         cmbMenu.getSelectionModel().clearSelection();
-        cmbMenu.getItems().addAll("Registro Deporte", "Registro Equipo", "Mantenimiento de Deporte", "Mantenimiento de Equipo", "Crear Torneo", "Ver Torneos");
+        cmbMenu.setValue(null);
     }
 
     @FXML
     private void OnActionCmbMenu(ActionEvent event) {
-        String menu= cmbMenu.getValue();
-         switch (menu) {
-            case "Registro Deporte":
-                AppContext.getInstance().set("isSport", true);
-                AppContext.getInstance().set("isMaintenace", false);
-                AppContext.getInstance().set("Title",menu);
-                FlowController.getInstance().goViewInStage("RegisterModify",  (Stage) cmbMenu.getScene().getWindow());
-                break;
-            case "Registro Equipo":            
-                AppContext.getInstance().set("isSport", false);
-                AppContext.getInstance().set("isMaintenace", false);
-                AppContext.getInstance().set("Title",menu);
-                FlowController.getInstance().goViewInStage("RegisterModify",  (Stage) cmbMenu.getScene().getWindow());
-                break;
-            case "Mantenimiento de Deporte":
-                AppContext.getInstance().set("isSport", true);
-                AppContext.getInstance().set("isMaintenace", true);
-                AppContext.getInstance().set("Title",menu);
-                FlowController.getInstance().goViewInStage("Maintenance",  (Stage) cmbMenu.getScene().getWindow());
-                break;
-            case "Mantenimiento de Equipo":
-                AppContext.getInstance().set("isSport", false);
-                AppContext.getInstance().set("isMaintenace", true);
-                AppContext.getInstance().set("Title",menu);
-                FlowController.getInstance().goViewInStage("Maintenance",  (Stage) cmbMenu.getScene().getWindow());
+        String menu = cmbMenu.getValue();
+        switch (menu) {
+            case "Registro y Mantenimiento":
+                FlowController.getInstance().goMain();
                 break;
             case "Crear Torneo":
                 FlowController.getInstance().goViewInStage("CreateTourney", (Stage) cmbMenu.getScene().getWindow());
                 break;
-                
             case "Ver Torneos":
                 FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) cmbMenu.getScene().getWindow());
                 break;
-                
+
             default:
                 throw new AssertionError();
         }
     }
-    
-       @FXML
+
+    @FXML
     private void OnMouseClickedImgExit(MouseEvent event) {
         FlowController.getInstance().salir();
     }
-    
-        @Override
+
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
         comboxInitializer();
-        
-    }    
+        clean();
+    }
 
     @Override
     public void initialize() {
-        comboxInitializer();
+        clean();
     }
 }

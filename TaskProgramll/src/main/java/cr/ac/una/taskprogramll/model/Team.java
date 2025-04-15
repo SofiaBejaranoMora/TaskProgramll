@@ -144,13 +144,9 @@ public class Team {
 
     @Override
     public int hashCode() {
-        int hash = 3;
+        int hash = 7;
         hash = 97 * hash + Objects.hashCode(this.name);
-        hash = 97 * hash + Objects.hashCode(this.nameTeamImage);
-        hash = 97 * hash + Objects.hashCode(this.idSportType);
-        hash = 97 * hash + this.draw;
-        hash = 97 * hash + this.wins;
-        hash = 97 * hash + (this.isQualified ? 1 : 0);
+        hash = 97 * hash + this.idSportType;
         hash = 97 * hash + this.id;
         return hash;
     }
@@ -167,29 +163,15 @@ public class Team {
             return false;
         }
         final Team other = (Team) obj;
-        if (this.draw != other.draw) {
-            return false;
-        }
-        if (this.wins != other.wins) {
-            return false;
-        }
-        if (this.isQualified != other.isQualified) {
+        if (this.idSportType != other.idSportType) {
             return false;
         }
         if (this.id != other.id) {
             return false;
         }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.nameTeamImage, other.nameTeamImage)) {
-            return false;
-        }
-        return Objects.equals(this.idSportType, other.idSportType);
+        return Objects.equals(this.name, other.name);
     }
-
-    @Override
-    public String toString() {
-        return name + "Deporte: " +searchSportType().getId();
-    }
+    
+    
+    
 }

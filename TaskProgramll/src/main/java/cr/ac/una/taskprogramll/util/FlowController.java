@@ -18,6 +18,9 @@ import javafx.stage.WindowEvent;
 import cr.ac.una.taskprogramll.controller.Controller;
 import io.github.palexdev.materialfx.css.themes.MFXThemeManager;
 import io.github.palexdev.materialfx.css.themes.Themes;
+import javafx.scene.Node;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
 
 public class FlowController {
 
@@ -78,7 +81,7 @@ public class FlowController {
 
     public void goMain() {
         try {
-            this.mainStage.setScene(new Scene(FXMLLoader.load(App.class.getResource("view/Lobby.fxml"), this.idioma)));
+            this.mainStage.setScene(new Scene(FXMLLoader.load(App.class.getResource("view/RegistrationMaintenance.fxml"), this.idioma)));
             MFXThemeManager.addOn(this.mainStage.getScene(), Themes.DEFAULT, Themes.LEGACY);
             this.mainStage.show();
         } catch (IOException ex) {
@@ -97,19 +100,27 @@ public class FlowController {
     public void goView(String viewName, String location, String accion) { // es para border panel, ademas el accion es para pasar informacion
         FXMLLoader loader = getLoader(viewName);
         Controller controller = loader.getController();
-        //controller.setAccion(accion);
+        controller.setAccion(accion);
         controller.initialize();
         Stage stage = controller.getStage();
         if (stage == null) {
             stage = this.mainStage;
             controller.setStage(stage);
-        }
+        } controller.setStage(stage);
         switch (location) {
             case "Center": // esto es lo mismo para todas las partes(arriba,abajo,la izquierda y derecha)
-                BorderPane borderPane = (BorderPane) stage.getScene().getRoot();
-                VBox vBox = (VBox)borderPane.getCenter(); // esto cambia segundo lo que tengamos, si tenemos un vbox se cambia el hbox por el vbox
-                vBox.getChildren().clear();
-                vBox.getChildren().add(loader.getRoot());
+                Node loadedContent = loader.getRoot();
+
+                if (loadedContent instanceof AnchorPane anchorPane) {
+                    VBox vBox = (VBox) ((BorderPane) stage.getScene().getRoot()).getCenter();
+                    vBox.getChildren().clear();
+                    vBox.getChildren().add(anchorPane);
+                    VBox.setVgrow(anchorPane, Priority.ALWAYS);
+                } else {
+                    VBox vBox = (VBox) ((BorderPane) stage.getScene().getRoot()).getCenter();
+                    vBox.getChildren().clear();
+                    vBox.getChildren().add(loadedContent);
+                }
                         
                 /*VBox vBox = ((VBox) ((BorderPane) stage.getScene().getRoot()).getCenter());
                 vBox.getChildren().clear();

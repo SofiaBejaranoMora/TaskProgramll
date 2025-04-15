@@ -98,6 +98,5 @@ public class Sport {
         }
         return Objects.equals(this.nameBallImage, other.nameBallImage);
     }
-   
-
+ 
 }

@@ -29,10 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
 
 public class MaintenanceController extends Controller implements Initializable {
 
@@ -62,14 +59,7 @@ public class MaintenanceController extends Controller implements Initializable {
     @FXML
     private Label labTitle;
     @FXML
-    private ImageView lobbyIcon;
-    @FXML
     private TableColumn<Team, String> tclTeamSportType;
-
-    @FXML
-    private void OnMouseClickedLobbyIcon(MouseEvent event) {
-        FlowController.getInstance().goViewInStage("Lobby", (Stage) lobbyIcon.getScene().getWindow());
-    }
 
     @FXML
     private void OnActionBtnModify(ActionEvent event) {
@@ -115,7 +105,7 @@ public class MaintenanceController extends Controller implements Initializable {
             file = new File(selectedTeam.searchSportType().RuteImage());
             if (file.exists()) {
                 AppContext.getInstance().set("selectedTeam", selectedTeam);
-                FlowController.getInstance().goViewInStage("RegisterModify", (Stage) btnCancel.getScene().getWindow());
+                FlowController.getInstance().goView("RegistrationModify");
             } else {
                 message.show(Alert.AlertType.WARNING, "Alerta", "El equipo no se puede modificar porque la imagen del balón del deporte "
                         + selectedTeam.getName() + " fue movida o eliminada. Primero, actualice este deporte "
@@ -129,7 +119,7 @@ public class MaintenanceController extends Controller implements Initializable {
     public void SportSelectedModify(Sport selectedSport) {
         if (selectedSport != null) {
             AppContext.getInstance().set("selectedSport", selectedSport);
-            FlowController.getInstance().goViewInStage("RegisterModify", (Stage) btnCancel.getScene().getWindow());
+            FlowController.getInstance().goView("RegistrationModify");
         } else {
             message.show(Alert.AlertType.WARNING, "Alerta", "No ha seleccionado ningun deporte para modificar");
         }
