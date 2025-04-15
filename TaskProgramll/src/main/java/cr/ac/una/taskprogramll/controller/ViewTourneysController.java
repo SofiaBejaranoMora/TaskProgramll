@@ -99,7 +99,7 @@ public class ViewTourneysController extends Controller implements Initializable 
             List<Tourney> tourneys = loadTourneyList();
             if (tourneys != null) {
                 for (Tourney tourney : tourneys) {
-                    if (tourney.getSportType() != null && tourney.getSportType().getId() == selectedSport.getId()) {
+                    if (tourney.getSportTypeId()== selectedSport.getId()) {
                         torneosList.add(tourney);
                     }
                 }

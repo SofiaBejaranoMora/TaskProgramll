@@ -11,7 +11,7 @@ public class Tourney {
     private int id;
     private String name; // Nuevo campo
     private int time;
-    private Sport sportType;
+    private int sportTypeId;
     private List<Team> teamList;
     private List<Team> loosersList;
 
@@ -20,13 +20,41 @@ public class Tourney {
         this.loosersList = new ArrayList<>();
     }
 
-    public Tourney(int id, String name, int time, Sport sportType, List<Team> teamList) {
+    public Tourney(int id, String name, int time, int sportType, List<Team> teamList) {
         this.id = id;
-        this.name = name;
-        this.time = time;
-        this.sportType = sportType;
-        this.teamList = (teamList == null) ? new ArrayList<>() : new ArrayList<>(teamList);
+        if(name!=null){
+        this.name=name;
+        }else{
+            this.name= "";
+        }
+      
+
+        // Validación para time (no negativo)
+        if (time < 0) {
+            this.time = 0;
+        } else {
+            this.time = time;
+        }
+
+        // Validación para sportTypeId (no negativo)
+        if (sportType < 0) {
+            this.sportTypeId = 0;
+        } else {
+            this.sportTypeId = sportType;
+        }
+
+        // Inicialización segura de listas
+        this.teamList = new ArrayList<>();
         this.loosersList = new ArrayList<>();
+
+        // Agregar equipos de manera segura
+        if (teamList != null) {
+            for (Team team : teamList) {
+                if (team != null) {
+                    this.teamList.add(team);
+                }
+            }
+        }
     }
 
     // Getters
@@ -42,8 +70,8 @@ public class Tourney {
         return time;
     }
 
-    public Sport getSportType() {
-        return sportType;
+    public int getSportTypeId() {
+        return sportTypeId;
     }
 
     public List<Team> getTeamList() {
@@ -67,8 +95,8 @@ public class Tourney {
         this.time = time;
     }
 
-    public void setSportType(Sport sportType) {
-        this.sportType = sportType;
+    public void setSportTypeId(int sportType) {
+        this.sportTypeId = sportType;
     }
 
    public void setTeamList(List<Team> teamList) {
@@ -145,7 +173,7 @@ public class Tourney {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", time=" + time +
-                ", sportType=" + sportType +
+                ", sportType=" + sportTypeId +
                 ", teamList=" + teamList +
                 ", loosersList=" + loosersList +
                 ", state=" + returnState()+

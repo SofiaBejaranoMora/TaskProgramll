@@ -243,7 +243,7 @@ public class CreateTourneyController extends Controller implements Initializable
             }
 
             int id = GenerateTourneyId();
-            Tourney newTourney = new Tourney(id, tourneyName, Integer.parseInt(matchTime), selectedSport, new ArrayList<>(selectedTeams));
+            Tourney newTourney = new Tourney(id, tourneyName, Integer.parseInt(matchTime), selectedSport.getId(), new ArrayList<>(selectedTeams));
             List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
             if (tourneys == null) {
                 tourneys = new ArrayList<>();
