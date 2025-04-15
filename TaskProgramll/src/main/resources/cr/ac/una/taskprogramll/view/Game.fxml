@@ -18,7 +18,6 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </Label>
-            <ImageView fx:id="prueba" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
             <ToolBar prefHeight="40.0" prefWidth="231.0" styleClass="boxRose" stylesheets="@Style.css" VBox.vgrow="NEVER">
                <items>
                   <Label fx:id="lblFirstTeam" alignment="CENTER" contentDisplay="CENTER" text="0">

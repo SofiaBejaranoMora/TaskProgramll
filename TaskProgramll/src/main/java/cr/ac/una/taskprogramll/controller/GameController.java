@@ -7,7 +7,6 @@ import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import java.io.File;
 import java.net.URL;
 import javafx.util.Duration;
 import java.util.ArrayList;
@@ -31,56 +30,56 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class ** @author ashly
- */
+/** * FXML Controller class ** @author ashly */
 public class GameController extends Controller implements Initializable {
 
     @FXML
-    private MFXButton btnOut;
+    private TableView<Team> tblPlayersTable;
+    @FXML
+    private TableColumn<Team, ?> clmnRound1;
+    @FXML
+    private TableColumn<Team, ?> clmnRound2;
+    @FXML
+    private TableColumn<Team, ?> clmnRound3;
+    @FXML
+    private TableColumn<Team, ?> clmnRound4;
+    @FXML
+    private TableColumn<Team, ?> clmnRound5;
+    @FXML
+    private TableColumn<Team, ?> clmnRound6;
+    @FXML
+    private TableColumn<Team, ?> clmnFinal;
     @FXML
     private MFXButton btnBack;
     @FXML
     private MFXButton btnStart;
-    @FXML
-    private TableColumn<Team, String> clmnFinal;
-    @FXML
-    private TableColumn<Team, String> clmnRound1;
-    @FXML
-    private TableColumn<Team, String> clmnRound2;
-    @FXML
-    private TableColumn<Team, String> clmnRound3;
-    @FXML
-    private TableColumn<Team, String> clmnRound4;
-    @FXML
-    private TableColumn<Team, String> clmnRound5;
-    @FXML
-    private TableColumn<Team, String> clmnRound6;
-    @FXML
-    private TableView<Team> tblPlayersTable;
+     @FXML
+    private AnchorPane ncpRoot;
     @FXML
     private Label lblFirstTeam;
     @FXML
     private Label lblSecondTeam;
     @FXML
-    private Label lblTimer;
+    private ImageView mgvFirstTeam;
     @FXML
     private ImageView mgvBall;
     @FXML
-    private ImageView mgvFirstTeam;
-    @FXML
     private ImageView mgvSecondTeam;
     @FXML
-    private ImageView pruebas;
+    private Label lblTimer;
+    @FXML
+    private MFXButton btnOut;
     
 //Variables de MatchTeams           
     private final Mensaje message = new Mensaje();
     private Tourney actualTourney;
     private int timeLimit;
     private int index = 0;
-    private int round = 1;
+    private int round = 1;  
+    private Sport selectedSport;
     private List<Team> teamNames; //Tenemos las listas desde acá.
     private List<String> choosenNames = new ArrayList<>();
     private ObservableList<Team> round1 = FXCollections.observableArrayList();
@@ -99,7 +98,6 @@ public class GameController extends Controller implements Initializable {
     private int counterFirstTeam = 0;
     private String nameSecondTeam = "";
     private int counterSecondTeam = 0;
-    private Sport selectedSport;
 
     @FXML
     void onActionBtnOut(ActionEvent event) {
@@ -165,7 +163,16 @@ public class GameController extends Controller implements Initializable {
         }
     }
 
+    private void disableFilterOrSelection() {
+    tblPlayersTable.setEditable(false); 
+    tblPlayersTable.getSelectionModel().clearSelection(); 
+    tblPlayersTable.getSelectionModel().setCellSelectionEnabled(false); 
+    for (TableColumn<Team, ?> column : tblPlayersTable.getColumns())
+        column.setSortable(false); 
+}
+    
     private void distributionOnTable() {
+        disableFilterOrSelection();
         List<Team> distributionTeams = new ArrayList<>();
         int roundSize = teamNames.size();
 
@@ -178,18 +185,10 @@ public class GameController extends Controller implements Initializable {
 
         round1.setAll(distributionTeams);
         clmnRound1.setCellValueFactory(new PropertyValueFactory<>("name"));
-        tblPlayersTable.setItems(round1); 
-        File file = new File(selectedSport.RuteImage());
-            if (file.exists()) {
-                String nameImage = "file:" + selectedSport.RuteImage();
-                Image ballonImage = new Image(nameImage);
-                if (ballonImage.isError()) {
-                    System.out.println("Error al cargar la imagen: " + ballonImage.getException());
-                } else {
-                    mgvBall.setImage(ballonImage);
-                }
-            }
-            else System.out.println("No existe");
+        tblPlayersTable.setItems(round1);
+        String nameImage = "file" + selectedSport.RuteImage();
+        Image ball = new Image(nameImage);
+        mgvBall.setImage(ball);
     }
 
     private void encounter() {
