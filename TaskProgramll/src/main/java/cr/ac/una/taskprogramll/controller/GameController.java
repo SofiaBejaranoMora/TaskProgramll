@@ -25,7 +25,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /** * FXML Controller class * * @author ashly */
-public class GameController implements Initializable {
+public class GameController extends Controller implements Initializable {
 
     private Tourney currentTourney;
     private List<Team> currentTeamList;
@@ -84,6 +84,19 @@ public class GameController implements Initializable {
         FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
     }
     
+    private void chargeImages() {
+        mgvBall.setImage(new Image(currentSport.RuteImage()));
+        mgvFirstTeam.setImage(new Image(currentTeamList.get(index).RuteImage()));
+
+        if (currentRound % 2 != 0) {
+            mgvSecondTeam.setImage(new Image(currentTeamList.get(index + 1).RuteImage()));
+
+        } else {
+            mgvSecondTeam.setImage(new Image(currentTeamList.get(index - 1).RuteImage()));
+
+        }
+    }
+    
     private String timerFormat(int totalSeconds) {
         return String.format("%02d:%02d", (totalSeconds / 60), (totalSeconds % 60));
     }
@@ -108,10 +121,12 @@ public class GameController implements Initializable {
                 counterGoalsFirstTeam++;
                 lblFirstTeam.setText("" + counterGoalsFirstTeam);
                 System.out.println("\nEl balon toca al equipo #1\n");
+                
             } else if (mgvBall.getBoundsInLocal().contains(mgvSecondTeam.getBoundsInLocal().getCenterX(), mgvSecondTeam.getBoundsInLocal().getCenterY())) {
                 counterGoalsSecondTeam++;
                 lblSecondTeam.setText("" + counterGoalsSecondTeam);
                 System.out.println("\nEl balon toca al equipo #2\n");
+                
             } else System.out.println("\nEl balon no toca los equipos...\n");
         } else System.out.println("\nFalla de limites en imagenes...\n");
     }
@@ -163,15 +178,21 @@ public class GameController implements Initializable {
     }
     
     private void InitializeFromAppContext() {
-        this.currentTourney = (Tourney) AppContext.getInstance().get("SelectedTourney");
+        this.currentTourney = (Tourney) AppContext.getInstance().get("CurrentTourney");
         this.currentTeamList = currentTourney.getTeamList();
+        this.index = currentTourney.getContinueGame().getContinueIndexTeam();
+        this.currentRound = currentTourney.getContinueGame().getCurrentRound();
         this.timeLimit = currentTourney.getTime();
-        this.currentSport = currentTourney.getSportType();
+        this.currentSport = currentTourney.searchSportType();
+        chargeImages();
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        InitializeFromAppContext();
     }    
+
+    @Override
+    public void initialize() {}
 
 }

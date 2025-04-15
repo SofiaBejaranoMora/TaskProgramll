@@ -29,6 +29,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     private List<String> randomChooseTeam = new ArrayList<>();
     private int index = 0;
     private int currentRound = 2;
+    private int globalSize;
     private ObservableList<Team> round1 = FXCollections.observableArrayList();
     private ObservableList<Team> round2 = FXCollections.observableArrayList();
     private ObservableList<Team> round3 = FXCollections.observableArrayList();
@@ -65,6 +66,8 @@ public class MatchTeamsController extends Controller implements Initializable {
 
     @FXML
     private void onActionBtnStart(ActionEvent event) {
+        encounter();
+        AppContext.getInstance().set("CurrentTourney", currentTourney);
         FlowController.getInstance().goViewInStage("Game", (Stage) btnStart.getScene().getWindow());
     }
     
@@ -77,11 +80,11 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
     
      private int discoverRounds() {
-        if (currentTeamList.size() == 2) return 1;
-        else if (currentTeamList.size() >= 3 && currentTeamList.size() <= 4) return 2;
-        else if (currentTeamList.size() >= 5 && currentTeamList.size() <= 8) return 3;
-        else if (currentTeamList.size() >= 9 && currentTeamList.size() <= 16) return 4;
-        else if (currentTeamList.size() >= 17 && currentTeamList.size() <= 32) return 5;
+        if (globalSize == 2) return 1;
+        else if (globalSize >= 3 && globalSize <= 4) return 2;
+        else if (globalSize >= 5 && globalSize <= 8) return 3;
+        else if (globalSize >= 9 && globalSize <= 16) return 4;
+        else if (globalSize >= 17 && globalSize <= 32) return 5;
         else return 6;
     } 
      
@@ -140,50 +143,76 @@ public class MatchTeamsController extends Controller implements Initializable {
          }
      }
      
+     private void encounter() {
+         if (currentTeamList.get(index) != null){
+             currentTourney.getContinueGame().setContinueIndexTeam(index);
+             currentTourney.getContinueGame().setCurrentRound(currentRound);
+         } else {     
+             if (currentTeamList.get(index + 1) == null && currentRound % 2 != 0) {
+                 adjustingTable(currentTeamList.get(index));
+             } else if (currentTeamList.get(index - 1) == null && currentRound % 2 == 0) {
+                 adjustingTable(currentTeamList.get(index));
+             }
+         }
+     }
+     
      private void adjustingTable(Team winnerTeam){
          switch (currentRound) {
-             case 2:
+             case 2 -> {
                  round2.addLast(winnerTeam);
                  clmnRound2.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round2);
-                 break;
-             case 3:
+            }
+             case 3 -> {
                  round3.addLast(winnerTeam);
                  clmnRound3.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round3);
-                 break;
-             case 4:
+            }
+             case 4 -> {
                  round4.addLast(winnerTeam);
                  clmnRound4.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round4);
-                 break;
-             case 5:
+            }
+             case 5 -> {
                  round5.addLast(winnerTeam);
                  clmnRound5.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round5);
-                 break;
-             case 6:
+            }
+             case 6 -> {
                  round6.addLast(winnerTeam);
                  clmnRound6.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round6);
-                 break;
-             case 7:
+            }
+             case 7 -> {
                  winner.addLast(winnerTeam);
                  clmnFinal.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(winner);
-                 break;
-             default:
-                 throw new AssertionError();
+            }
+             default -> throw new AssertionError();
          }
      }
      
      private void startGameParameters() {
+         globalSize = currentTeamList.size();
+         index = globalSize - 1;
+         currentTourney.getContinueGame().setGlobalSize(globalSize);
          organizedRound();
          distributionOnTable();
      }
      
      private void continueGameParameters() {
-         
+         organizedRound();
+         round1.setAll(currentTourney.getContinueGame().getRound1());
+         round2.setAll(currentTourney.getContinueGame().getRound2());
+         round3.setAll(currentTourney.getContinueGame().getRound3());
+         round4.setAll(currentTourney.getContinueGame().getRound4());
+         round5.setAll(currentTourney.getContinueGame().getRound5());
+         round6.setAll(currentTourney.getContinueGame().getRound6());
+         winner.setAll(currentTourney.getContinueGame().getWinner());
+         index = currentTourney.getContinueGame().getContinueIndexTeam();
+         if (currentTeamList.get(index).getId() != currentTourney.getContinueGame().getContinueIdTeam()){
+             
+         }
      }
      
      private void viewGameTable(){

@@ -13,12 +13,14 @@ public class Tourney {
     private String name; // Nuevo campo
     private int time;
     private int sportTypeId;
+    private Game continueGame;
     private List<Team> teamList;
     private List<Team> loosersList;
 
     public Tourney() {
         this.teamList = new ArrayList<>();
         this.loosersList = new ArrayList<>();
+        this.continueGame = new Game();
     }
 
     public Tourney(int id, String name, int time, int sportType, List<Team> teamList) {
@@ -56,6 +58,8 @@ public class Tourney {
                 }
             }
         }
+        
+        this.continueGame = new Game();
     }
 
     // Getters
@@ -75,6 +79,10 @@ public class Tourney {
         return sportTypeId;
     }
 
+    public Game getContinueGame() {
+        return continueGame;
+    }
+  
     public List<Team> getTeamList() {
         return new ArrayList<>(teamList);
     }

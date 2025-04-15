@@ -6,10 +6,13 @@ import java.util.List;
 /** * * @author ashly*/
 public class Game {
     
-    private int continueTeam;
+    private int continueIdTeam;
+    private int continueIndexTeam;
     private int remainingTime;
     private int goalsTeam1;
     private int goalsTeam2;
+    private int globalSize;
+    private int currentRound;
     private List<Team> round1;
     private List<Team> round2;
     private List<Team> round3;
@@ -28,14 +31,22 @@ public class Game {
         this.winner = new ArrayList<>();
     }
 
-    public int getContinueTeam() {
-        return continueTeam;
+    public int getContinueIdTeam() {
+        return continueIdTeam;
     }
 
-    public void setContinueTeam(int continueTeam) {
-        this.continueTeam = continueTeam;
+    public void setContinueIdTeam(int continueIdTeam) {
+        this.continueIdTeam = continueIdTeam;
     }
 
+    public int getContinueIndexTeam() {
+        return continueIndexTeam;
+    }
+
+    public void setContinueIndexTeam(int continueIndexTeam) {
+        this.continueIndexTeam = continueIndexTeam;
+    }
+    
     public int getRemainingTime() {
         return remainingTime;
     }
@@ -58,6 +69,22 @@ public class Game {
 
     public void setGoalsTeam2(int goalsTeam2) {
         this.goalsTeam2 = goalsTeam2;
+    }
+
+    public int getGlobalSize() {
+        return globalSize;
+    }
+
+    public void setGlobalSize(int globalSize) {
+        this.globalSize = globalSize;
+    }
+
+    public int getCurrentRound() {
+        return currentRound;
+    }
+
+    public void setCurrentRound(int currentRound) {
+        this.currentRound = currentRound;
     }
     
     public List<Team> getRound1() {
