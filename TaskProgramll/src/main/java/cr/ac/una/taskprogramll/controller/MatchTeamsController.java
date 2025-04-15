@@ -28,7 +28,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     private List<Team> currentTeamList;
     private List<String> randomChooseTeam = new ArrayList<>();
     private int index = 0;
-    private int currentRound = 2;
+    private int currentRound = 1;
     private int globalSize;
     private ObservableList<Team> round1 = FXCollections.observableArrayList();
     private ObservableList<Team> round2 = FXCollections.observableArrayList();
@@ -61,6 +61,8 @@ public class MatchTeamsController extends Controller implements Initializable {
 
     @FXML
     private void onActionBtnBack(ActionEvent event) {
+        currentTourney.getContinueGame().setContinueIndexTeam(index);
+        currentTourney.getContinueGame().setContinueIdTeam(currentTeamList.get(index).getId());
         FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
     }
 
@@ -145,45 +147,39 @@ public class MatchTeamsController extends Controller implements Initializable {
      
      private void encounter() {
          if (currentTeamList.get(index) != null){
-             currentTourney.getContinueGame().setContinueIndexTeam(index);
-             currentTourney.getContinueGame().setCurrentRound(currentRound);
-         } else {     
-             if (currentTeamList.get(index + 1) == null && currentRound % 2 != 0) {
-                 adjustingTable(currentTeamList.get(index));
-             } else if (currentTeamList.get(index - 1) == null && currentRound % 2 == 0) {
-                 adjustingTable(currentTeamList.get(index));
-             }
-         }
+             
+             
+         } else currentRound++;
      }
      
      private void adjustingTable(Team winnerTeam){
          switch (currentRound) {
-             case 2 -> {
+             case 1 -> {
                  round2.addLast(winnerTeam);
                  clmnRound2.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round2);
             }
-             case 3 -> {
+             case 2 -> {
                  round3.addLast(winnerTeam);
                  clmnRound3.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round3);
             }
-             case 4 -> {
+             case 3 -> {
                  round4.addLast(winnerTeam);
                  clmnRound4.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round4);
             }
-             case 5 -> {
+             case 4 -> {
                  round5.addLast(winnerTeam);
                  clmnRound5.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round5);
             }
-             case 6 -> {
+             case 5 -> {
                  round6.addLast(winnerTeam);
                  clmnRound6.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round6);
             }
-             case 7 -> {
+             case 6 -> {
                  winner.addLast(winnerTeam);
                  clmnFinal.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(winner);
@@ -194,7 +190,7 @@ public class MatchTeamsController extends Controller implements Initializable {
      
      private void startGameParameters() {
          globalSize = currentTeamList.size();
-         index = globalSize - 1;
+         index = globalSize;
          currentTourney.getContinueGame().setGlobalSize(globalSize);
          organizedRound();
          distributionOnTable();
