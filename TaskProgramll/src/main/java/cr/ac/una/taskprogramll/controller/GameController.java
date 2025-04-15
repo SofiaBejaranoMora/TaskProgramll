@@ -6,6 +6,7 @@ import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.Mensaje;
+import cr.ac.una.taskprogramll.util.ResourceUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import java.net.URL;
 import javafx.util.Duration;
@@ -33,7 +34,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-/** * FXML Controller class ** @author ashly */
+/**
+ * * FXML Controller class ** @author ashly
+ */
 public class GameController extends Controller implements Initializable {
 
     @FXML
@@ -56,7 +59,7 @@ public class GameController extends Controller implements Initializable {
     private MFXButton btnBack;
     @FXML
     private MFXButton btnStart;
-     @FXML
+    @FXML
     private AnchorPane ncpRoot;
     @FXML
     private Label lblFirstTeam;
@@ -72,13 +75,13 @@ public class GameController extends Controller implements Initializable {
     private Label lblTimer;
     @FXML
     private MFXButton btnOut;
-    
+
 //Variables de MatchTeams           
     private final Mensaje message = new Mensaje();
     private Tourney actualTourney;
     private int timeLimit;
     private int index = 0;
-    private int round = 1;  
+    private int round = 1;
     private Sport selectedSport;
     private List<Team> teamNames; //Tenemos las listas desde acá.
     private List<String> choosenNames = new ArrayList<>();
@@ -164,13 +167,14 @@ public class GameController extends Controller implements Initializable {
     }
 
     private void disableFilterOrSelection() {
-    tblPlayersTable.setEditable(false); 
-    tblPlayersTable.getSelectionModel().clearSelection(); 
-    tblPlayersTable.getSelectionModel().setCellSelectionEnabled(false); 
-    for (TableColumn<Team, ?> column : tblPlayersTable.getColumns())
-        column.setSortable(false); 
-}
-    
+        tblPlayersTable.setEditable(false);
+        tblPlayersTable.getSelectionModel().clearSelection();
+        tblPlayersTable.getSelectionModel().setCellSelectionEnabled(false);
+        for (TableColumn<Team, ?> column : tblPlayersTable.getColumns()) {
+            column.setSortable(false);
+        }
+    }
+
     private void distributionOnTable() {
         disableFilterOrSelection();
         List<Team> distributionTeams = new ArrayList<>();
@@ -179,39 +183,72 @@ public class GameController extends Controller implements Initializable {
         while (distributionTeams.size() != teamNames.size()) {
             Random randomTeam = new Random();
             int choosenTeam = randomTeam.nextInt(roundSize);
-            if (!choosed(teamNames.get(choosenTeam).getName()))
+            if (!choosed(teamNames.get(choosenTeam).getName())) {
                 distributionTeams.add(teamNames.get(choosenTeam));
+            }
         }
 
         round1.setAll(distributionTeams);
         clmnRound1.setCellValueFactory(new PropertyValueFactory<>("name"));
         tblPlayersTable.setItems(round1);
-        String nameImage = "file" + selectedSport.RuteImage();
-        Image ball = new Image(nameImage);
-        mgvBall.setImage(ball);
+//        String nameImage = "file" + selectedSport.RuteImage();
+//        Image ball = new Image(nameImage);
+//        mgvBall.setImage(ball);
+        String ball = ResourceUtil.getImagePath("Futbol.png");
+        if (ball != null) {
+            mgvBall.setImage(new Image(ball));
+            System.out.println("Imagen inicial cargada: " + selectedSport.getName());
+        } else {
+            System.err.println("No se pudo cargar la imagen: " + selectedSport.getName());
+        }
     }
 
     private void encounter() {
         while (teamNames.get(index) != null) {
-            Image firstImage = new Image("file:" + teamNames.get(index).RuteImage());
-            mgvFirstTeam.setImage(firstImage);
+//            Image firstImage = new Image("file:" + teamNames.get(index).RuteImage());
+//            mgvFirstTeam.setImage(firstImage);
+            String firstTeam = ResourceUtil.getImagePath(teamNames.get(index).getName() + ".png");
+            if (firstTeam != null) {
+                mgvFirstTeam.setImage(new Image(firstTeam));
+                System.out.println("Imagen inicial cargada: " + teamNames.get(index).getName());
+            } else {
+                System.err.println("No se pudo cargar la imagen: " + teamNames.get(index).getName());
+            }
             nameFirstTeam = teamNames.get(index).getName();
 
             if (teamNames.get(index + 1) != null && round % 2 != 0) {
-                Image secondImage = new Image("file:" + teamNames.get(index + 1).RuteImage());
-                mgvSecondTeam.setImage(secondImage);
+//                Image secondImage = new Image("file:" + teamNames.get(index + 1).RuteImage());
+//                mgvSecondTeam.setImage(secondImage);
+                String secondTeam = ResourceUtil.getImagePath(teamNames.get(index + 1).getName() + ".png");
+                if (secondTeam != null) {
+                    mgvSecondTeam.setImage(new Image(secondTeam));
+                    System.out.println("Imagen inicial cargada: " + teamNames.get(index).getName());
+                } else {
+                    System.err.println("No se pudo cargar la imagen: " + teamNames.get(index).getName());
+                }
                 nameSecondTeam = teamNames.get(index + 1).getName();
-                
+
             } else if (teamNames.get(index - 1) != null && round % 2 == 0) {
-                Image secondImage = new Image("file:" + teamNames.get(index - 1).RuteImage());
-                mgvSecondTeam.setImage(secondImage);
+//                Image secondImage = new Image("file:" + teamNames.get(index - 1).RuteImage());
+//                mgvSecondTeam.setImage(secondImage);
+                String secondTeam = ResourceUtil.getImagePath(teamNames.get(index - 1).getName() + ".png");
+                if (secondTeam != null) {
+                    mgvSecondTeam.setImage(new Image(secondTeam));
+                    System.out.println("Imagen inicial cargada: " + teamNames.get(index).getName());
+                } else {
+                    System.err.println("No se pudo cargar la imagen: " + teamNames.get(index).getName());
+                }
                 nameSecondTeam = teamNames.get(index - 1).getName();
-                
-            } else adjustingTable(teamNames.get(index));
+
+            } else {
+                adjustingTable(teamNames.get(index));
+            }
         }
-        if (teamNames.get(index) == null && teamNames.get(index + 1) != null) 
+        if (teamNames.get(index) == null && teamNames.get(index + 1) != null) {
             adjustingTable(teamNames.get(index + 1));
-        else round++;
+        } else {
+            round++;
+        }
     }
 
     private void organizeRounds() {
@@ -318,8 +355,12 @@ public class GameController extends Controller implements Initializable {
                 lblSecondTeam.setText("" + counterSecondTeam);
                 System.out.println("El balón toca equipo2...");
 
-            } else System.out.println("El balón no toca los equipos...");
-        } else System.out.println("Falla de limites en imagenes...");
+            } else {
+                System.out.println("El balón no toca los equipos...");
+            }
+        } else {
+            System.out.println("Falla de limites en imagenes...");
+        }
     }
 
     private void winnerAnimatic(ImageView winner) {
