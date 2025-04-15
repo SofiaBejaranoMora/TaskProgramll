@@ -1,40 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TableColumn?>
-<?import io.github.palexdev.materialfx.controls.MFXButton?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.geometry.Insets?>
 
-<AnchorPane fx:id="ncpRoot" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.GameController">
+<AnchorPane fx:id="ncpRoot" prefHeight="410.0" prefWidth="600.0" styleClass="GameBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.GameController">
    <children>
       <VBox alignment="TOP_CENTER" prefHeight="560.0" prefWidth="760.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
-            <!-- Tournament Table -->
-            <TableView fx:id="tblPlayersTable" prefHeight="200.0" prefWidth="760.0">
-               <columns>
-                  <TableColumn fx:id="clmnRound1" text="Round 1" prefWidth="108.0" />
-                  <TableColumn fx:id="clmnRound2" text="Round 2" prefWidth="108.0" />
-                  <TableColumn fx:id="clmnRound3" text="Round 3" prefWidth="108.0" />
-                  <TableColumn fx:id="clmnRound4" text="Round 4" prefWidth="108.0" />
-                  <TableColumn fx:id="clmnRound5" text="Round 5" prefWidth="108.0" />
-                  <TableColumn fx:id="clmnRound6" text="Round 6" prefWidth="108.0" />
-                  <TableColumn fx:id="clmnFinal" text="Final" prefWidth="108.0" />
-               </columns>
-            </TableView>
             <!-- Game Controls -->
-            <Label text="Marcador" style="-fx-font-weight: bold;">
+            <Label style="-fx-font-weight: bold;" styleClass="boxRose" stylesheets="@Style.css" text="Marcador">
                <padding>
-                  <Insets top="10.0" right="10.0" bottom="10.0" left="10.0" />
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </Label>
             <HBox alignment="CENTER" prefHeight="40.0" prefWidth="760.0">
                <children>
-                  <Label fx:id="lblFirstTeam" alignment="CENTER" text="0" prefWidth="100.0" />
-                  <Label fx:id="lblSecondTeam" alignment="CENTER" text="0" prefWidth="100.0" />
+                  <Label fx:id="lblFirstTeam" alignment="CENTER" prefHeight="17.0" prefWidth="50.0" styleClass="boxRose" stylesheets="@Style.css" text="0" />
+                  <Label fx:id="lblSecondTeam" alignment="CENTER" prefHeight="17.0" prefWidth="50.0" styleClass="boxRose" stylesheets="@Style.css" text="0" />
                </children>
                <padding>
                   <Insets left="20.0" right="20.0" />
@@ -58,30 +45,31 @@
                      </HBox.margin>
                   </ImageView>
                </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
             </HBox>
-            <Label text="Cronómetro" style="-fx-font-weight: bold;">
+            <Label style="-fx-font-weight: bold;" styleClass="boxLightBlue" stylesheets="@Style.css" text="Cronómetro">
                <padding>
-                  <Insets top="10.0" right="15.0" bottom="5.0" left="15.0" />
+                  <Insets bottom="5.0" left="15.0" right="15.0" top="10.0" />
                </padding>
             </Label>
-            <Label fx:id="lblTimer" text="0:00">
+            <Label fx:id="lblTimer" alignment="CENTER" contentDisplay="CENTER" prefHeight="0.0" prefWidth="53.0" styleClass="TableViewLightdBlue" stylesheets="@Style.css" text="0:00" textAlignment="CENTER">
                <padding>
                   <Insets bottom="15.0" left="15.0" right="15.0" />
                </padding>
             </Label>
-            <HBox alignment="CENTER" prefHeight="40.0" prefWidth="760.0">
+            <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="760.0">
                <children>
-                  <MFXButton fx:id="btnBack" text="Back" onAction="#onActionBtnBack" prefWidth="100.0" />
-                  <MFXButton fx:id="btnStart" text="Start" onAction="#onActionBtnStart" prefWidth="100.0" />
-                  <MFXButton fx:id="btnOut" text="Salir" onAction="#onActionBtnOut" prefWidth="100.0" />
+                  <MFXButton fx:id="btnOut" onAction="#onActionBtnOut" prefWidth="100.0" text="Salir" />
                </children>
                <padding>
-                  <Insets top="10.0" bottom="10.0" />
+                  <Insets bottom="10.0" top="10.0" />
                </padding>
             </HBox>
          </children>
          <padding>
-            <Insets top="10.0" right="10.0" bottom="10.0" left="10.0" />
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
       </VBox>
    </children>
