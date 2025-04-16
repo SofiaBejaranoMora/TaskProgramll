@@ -74,7 +74,7 @@ public class MaintenanceController extends Controller implements Initializable {
 
     @FXML
     private void OnActionBtnCancel(ActionEvent event) {
-
+        Clean();
     }
 
     @FXML
@@ -105,11 +105,19 @@ public class MaintenanceController extends Controller implements Initializable {
             file = new File(selectedTeam.searchSportType().RuteImage());
             if (file.exists()) {
                 AppContext.getInstance().set("selectedTeam", selectedTeam);
+                AppContext.getInstance().set("neededTeam", false);
                 FlowController.getInstance().goView("RegistrationModify");
             } else {
                 message.show(Alert.AlertType.WARNING, "Alerta", "El equipo no se puede modificar porque la imagen del balón del deporte "
-                        + selectedTeam.getName() + " fue movida o eliminada. Primero, actualice este deporte "
+                        + selectedTeam.getName() + " fue movida o eliminada. Primero, debe de actualizar este deporte "
                         + "con una nueva imagen del balón para poder modificar sus equipos.");
+                AppContext.getInstance().set("neededTeamBoolean", true);
+                AppContext.getInstance().set("neededTeam", selectedTeam);
+                AppContext.getInstance().set("selectedSport", selectedTeam.searchSportType());
+                AppContext.getInstance().set("isSport", true);
+                AppContext.getInstance().set("isMaintenace", true);
+                AppContext.getInstance().set("Title", "Mantenimiento de Deporte");
+                FlowController.getInstance().goView("RegistrationModify");
             }
         } else {
             message.show(Alert.AlertType.WARNING, "Alerta", "No ha seleccionado ningun equipo para modificar");

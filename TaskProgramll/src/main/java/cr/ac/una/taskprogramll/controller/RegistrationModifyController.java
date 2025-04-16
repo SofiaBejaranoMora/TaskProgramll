@@ -94,7 +94,6 @@ public class RegistrationModifyController extends Controller implements Initiali
                 if (((isMaintenace) && (newSport.getName().trim().toUpperCase().replaceAll("\\s+", "").equals(name.toUpperCase().replaceAll("\\s+", ""))))
                         || (!CheckedExistsSport(name))) {
                     Sport(name);
-                    ClearPanel();
                 } else {
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "Ya hay un deporte registrado con el mismo nombre");
                 }
@@ -123,6 +122,9 @@ public class RegistrationModifyController extends Controller implements Initiali
     @FXML
     void OnActionBtnCancel(ActionEvent event) {
         ClearPanel();
+        if (isMaintenace) {
+            FlowController.getInstance().goView("Maintenance");
+        }
     }
 
     @FXML
@@ -172,7 +174,16 @@ public class RegistrationModifyController extends Controller implements Initiali
             SaveImage(newSport.getId());
             fileManeger.serialization(sportList, "Sport");
             ClearPanel();
-            FlowController.getInstance().goView("Maintenance");
+            if ((Boolean) AppContext.getInstance().get("neededTeamBoolean")) {
+                Team kwdwd=(Team) AppContext.getInstance().get("neededTeam");
+                AppContext.getInstance().set("selectedTeam", (Team) AppContext.getInstance().get("neededTeam"));
+                AppContext.getInstance().set("isSport", false);
+                AppContext.getInstance().set("isMaintenace", true);
+                AppContext.getInstance().set("Title", "Mantenimiento de Equipo");
+                InitializeController();
+            } else {
+                FlowController.getInstance().goView("Maintenance");
+            }
         } else {
             SportRegistration(name);
         }
@@ -189,7 +200,7 @@ public class RegistrationModifyController extends Controller implements Initiali
     }
 
     public void TeamRegistration(String name, Sport type) {
-        int id=CreateIdTeam();
+        int id = CreateIdTeam();
         newTeam = new Team(name.trim(), type.getId(), id);
         teamList.add(newTeam);
         fileManeger.serialization(teamList, "Team");
@@ -202,7 +213,7 @@ public class RegistrationModifyController extends Controller implements Initiali
         if (!HasTeam() && !HasTourney()) {
             file = new File(newSport.RuteImage());
             name = newSport.getName();
-            if ((sportList.remove(newSport)) && (file.delete())) {
+            if ((sportList.remove(newSport)) && ((!file.exists()) || (file.delete()))) {
                 fileManeger.serialization(sportList, "Sport");
                 message.show(Alert.AlertType.CONFIRMATION, "Confirmacion", "El deporte " + name + " se elimino con exito.");
                 ClearPanel();
@@ -218,7 +229,7 @@ public class RegistrationModifyController extends Controller implements Initiali
     public void TeamDelete(String name) {
         file = new File(newTeam.RuteImage());
         name = newTeam.getName();
-        if ((teamList.remove(newTeam)) && (file.delete())) {
+        if ((teamList.remove(newTeam)) && ((!file.exists()) || (file.delete()))) {
             fileManeger.serialization(teamList, "Team");
             message.show(Alert.AlertType.CONFIRMATION, "Confirmacion", "El equipo " + name + " se elimino con exito.");
             ClearPanel();
@@ -355,11 +366,18 @@ public class RegistrationModifyController extends Controller implements Initiali
         btnDelete.setDisable(!enabled);
         btnDelete.setManaged(enabled);
         btnDelete.setVisible(enabled);
-        if(!isSport){
-        cmbSport.setDisable(enabled);
-        cmbSport.setVisible(!enabled);
-        cmbSport.setManaged(!enabled);
+        if (!isSport) {
+            cmbSport.setDisable(enabled);
+            cmbSport.setVisible(!enabled);
+            cmbSport.setManaged(!enabled);
         }
+    }
+
+    public void EnabledExistImage(Boolean enabled) {
+        btnCancel.setVisible(enabled);
+        btnCancel.setManaged(enabled);
+        btnCancel.setDisable(!enabled);
+        AppContext.getInstance().set("ExistImage", enabled);
     }
 
     public void InitializeComboxSportType() {
@@ -388,10 +406,17 @@ public class RegistrationModifyController extends Controller implements Initiali
                 image = new Image("file:" + newSport.RuteImage());
                 mgvImage.setImage(image);
                 newSport = FindObject(newSport, sportList);
+                EnabledExistImage(true);
             } else {
                 mgvImage.setImage(null);
-                message.show(Alert.AlertType.INFORMATION, "Aviso", "La imagen del balón del deporte "
-                        + newSport.getName() + " fue movida o eliminada.Debera de seleccionar una nueva imegen.");
+                if (!(Boolean) AppContext.getInstance().get("neededTeamBoolean")) {
+                    btnDelete.setDisable(false);
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "La imagen del balón del deporte "
+                            + newSport.getName() + " fue movida o eliminada.Debera de seleccionar una nueva imegen.");
+                } else {
+                    btnDelete.setDisable(true);
+                }
+                EnabledExistImage(false);
             }
         } else {
             newTeam = (Team) AppContext.getInstance().get("selectedTeam");
@@ -401,10 +426,12 @@ public class RegistrationModifyController extends Controller implements Initiali
                 image = new Image("file:" + newTeam.RuteImage());
                 mgvImage.setImage(image);
                 newTeam = FindObject(newTeam, teamList);
+                EnabledExistImage(true);
             } else {
                 mgvImage.setImage(null);
                 message.show(Alert.AlertType.INFORMATION, "Aviso", "La imagen del equipo "
                         + newTeam.getName() + " fue movida o eliminada.Debera de seleccionar o tomar una nueva imegen.");
+                EnabledExistImage(false);
             }
         }
     }
