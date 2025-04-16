@@ -5,16 +5,20 @@ import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
+import cr.ac.una.taskprogramll.util.Mensaje;
+import cr.ac.una.taskprogramll.util.ResourceUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
@@ -27,6 +31,7 @@ import javafx.util.Duration;
 /** * FXML Controller class * * @author ashly */
 public class GameController extends Controller implements Initializable {
 
+    private final Mensaje message = new Mensaje();
     private Tourney currentTourney;
     private List<Team> currentTeamList;
     private Sport currentSport;
@@ -66,8 +71,11 @@ public class GameController extends Controller implements Initializable {
 
     @FXML
     private void onMouseDraggedMgvBall(MouseEvent event) {
-        mgvBall.setLayoutX(event.getSceneX());
-        mgvBall.setLayoutY(event.getSceneY());
+            mgvBall.toFront();
+            double localX = mgvBall.getParent().sceneToLocal(event.getSceneX(), event.getSceneY()).getX();
+            double localY = mgvBall.getParent().sceneToLocal(event.getSceneX(), event.getSceneY()).getY();
+            mgvBall.setLayoutX(localX);
+            mgvBall.setLayoutY(localY);
     }
 
     @FXML
@@ -85,14 +93,14 @@ public class GameController extends Controller implements Initializable {
     }
     
     private void chargeImages() {
-        mgvBall.setImage(new Image(currentSport.RuteImage()));
-        mgvFirstTeam.setImage(new Image(currentTeamList.get(index).RuteImage()));
+        mgvBall.setImage(new Image(ResourceUtil.getImagePath(currentSport.getName() + ".png")));
+        mgvFirstTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index).getName() + ".png")));
 
         if (currentRound % 2 != 0) {
-            mgvSecondTeam.setImage(new Image(currentTeamList.get(index + 1).RuteImage()));
+            mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index + 1).getName() + ".png")));
 
         } else {
-            mgvSecondTeam.setImage(new Image(currentTeamList.get(index - 1).RuteImage()));
+            mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index - 1).getName() + ".png")));
 
         }
     }
@@ -189,7 +197,11 @@ public class GameController extends Controller implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        InitializeFromAppContext();
+        try {
+            InitializeFromAppContext(); //Posee un error, pero creo que está relacionado a carga de imagenes
+        } catch (Exception e) {
+            message.show(Alert.AlertType.ERROR, "Error de Inicialización", "No se inicializo: " + e.getMessage());
+        }
     }    
 
     @Override
