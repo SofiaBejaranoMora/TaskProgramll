@@ -147,9 +147,19 @@ public class MatchTeamsController extends Controller implements Initializable {
      
      private void encounter() {
          if (currentTeamList.get(index) != null){
+             currentTourney.getContinueGame().setContinueIndexTeam(index);
+             currentTourney.getContinueGame().setCurrentRound(currentRound);
              
-             
-         } else currentRound++;
+         }
+         else if (currentRound % 2 != 0){
+             if (currentTeamList.get(index + 1) != null)
+                 adjustingTable(currentTeamList.get(index + 1));
+         }
+         else if (currentRound % 2 == 0){
+             if (currentTeamList.get(index - 1) != null)
+                 adjustingTable(currentTeamList.get(index - 1));
+         }
+         else currentRound++;
      }
      
      private void adjustingTable(Team winnerTeam){
@@ -190,7 +200,6 @@ public class MatchTeamsController extends Controller implements Initializable {
      
      private void startGameParameters() {
          globalSize = currentTeamList.size();
-         index = globalSize;
          currentTourney.getContinueGame().setGlobalSize(globalSize);
          organizedRound();
          distributionOnTable();

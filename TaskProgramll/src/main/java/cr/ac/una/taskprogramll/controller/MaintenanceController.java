@@ -123,9 +123,9 @@ public class MaintenanceController extends Controller implements Initializable {
         } else {
             message.show(Alert.AlertType.WARNING, "Alerta", "No ha seleccionado ningun deporte para modificar");
         }
-    } 
+    }
 
-    public void FilterTeamName() { 
+    public void FilterTeamName() {
         teamList.clear();
         List<Team> list = ListLeakedTeams();
         String nameSearch = txtNameSearch.getText().trim().toUpperCase();
@@ -199,6 +199,17 @@ public class MaintenanceController extends Controller implements Initializable {
         }
     }
 
+    public void Clean() {
+        tclSport.setCellValueFactory(null);
+        tclTeam.setCellValueFactory(null);
+        tclTeamSportType.setCellValueFactory(null);
+        tbvSport.getItems().clear();
+        tbvTeams.getItems().clear();
+        cmbSportSearch.getSelectionModel().clearSelection();
+        cmbSportSearch.getItems().clear();
+        txtNameSearch.setText("");
+    }
+
     public void InitialConditionsPanel() {
         labTitle.setText((String) AppContext.getInstance().get("Title"));
         isSport = (Boolean) AppContext.getInstance().get("isSport");
@@ -217,11 +228,13 @@ public class MaintenanceController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Clean();
         InitialConditionsPanel();
     }
 
     @Override
     public void initialize() {
+        Clean();
         InitialConditionsPanel();
     }
 }

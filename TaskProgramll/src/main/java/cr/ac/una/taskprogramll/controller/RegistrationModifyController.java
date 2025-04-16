@@ -99,9 +99,14 @@ public class RegistrationModifyController extends Controller implements Initiali
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "Ya hay un deporte registrado con el mismo nombre");
                 }
             } else if ((cmbSport.getValue() != null) || (isMaintenace)) {
-                Sport type = cmbSport.getValue();
+                Sport type;
+                if (isMaintenace) {
+                    type = newTeam.searchSportType();
+                } else {
+                    type = cmbSport.getValue();
+                }
                 if (((isMaintenace) && (newTeam.getName().trim().toUpperCase().replaceAll("\\s+", "").equals(name.toUpperCase().replaceAll("\\s+", ""))))
-                        || ((!CheckedExistsTeam(name,type)) &&(!CheckedExistsSport(name)))) {
+                        || ((!CheckedExistsTeam(name, type)) && (!CheckedExistsSport(name)))) {
                     Team(name, type);
                     ClearPanel();
                 } else {
@@ -151,8 +156,8 @@ public class RegistrationModifyController extends Controller implements Initiali
 
     public void Team(String name, Sport type) {
         if (isMaintenace) {
-            newTeam.ChangeName(name);
-            SaveImage(name);
+            newTeam.setName(name);
+            SaveImage(newTeam.getId());
             fileManeger.serialization(teamList, "Team");
             ClearPanel();
             FlowController.getInstance().goView("Maintenance");
@@ -163,9 +168,9 @@ public class RegistrationModifyController extends Controller implements Initiali
 
     public void Sport(String name) {
         if (isMaintenace) {
-            newSport.ChangeName(name);
-            SaveImage(name);
-            fileManeger.serialization(teamList, "Team");
+            newSport.setName(name);
+            SaveImage(newSport.getId());
+            fileManeger.serialization(sportList, "Sport");
             ClearPanel();
             FlowController.getInstance().goView("Maintenance");
         } else {
@@ -178,22 +183,23 @@ public class RegistrationModifyController extends Controller implements Initiali
         sportList.add(newSport);
         fileManeger.serialization(sportList, "Sport");
         image = mgvImage.getImage();// revisar y quitar si es necesario
-        RelocateImage(name);
+        RelocateImage(newSport.getId());
         InitializeComboxSportType();
         ClearPanel();
     }
 
     public void TeamRegistration(String name, Sport type) {
-        newTeam = new Team(name.trim(), type.getId(), CreateIdTeam());
+        int id=CreateIdTeam();
+        newTeam = new Team(name.trim(), type.getId(), id);
         teamList.add(newTeam);
         fileManeger.serialization(teamList, "Team");
         image = mgvImage.getImage();
-        SaveImage(name);
+        SaveImage(id);
         ClearPanel();
     }
 
     public void SportDelete(String name) {
-        if (!HasTeam()) {
+        if (!HasTeam() && !HasTourney()) {
             file = new File(newSport.RuteImage());
             name = newSport.getName();
             if ((sportList.remove(newSport)) && (file.delete())) {
@@ -231,14 +237,15 @@ public class RegistrationModifyController extends Controller implements Initiali
         return false;
     }
 
-    /*public Boolean HasTourney() {
+    public Boolean HasTourney() {
         for (Tourney currentTeam : tourneyList) {
-            if ((currentTeam.() == newSport.getId())) {
+            if ((currentTeam.getSportTypeId() == newSport.getId())) {
                 return false;
             }
         }
         return false;
-    }*/
+    }
+
     public Boolean CheckedExistsTeam(String name, Sport sport) {
         name = name.toUpperCase().replaceAll("\\s+", "");
         String nameCurrentTeam;
@@ -272,8 +279,8 @@ public class RegistrationModifyController extends Controller implements Initiali
         }
     }
 
-    public void RelocateImage(String name) {
-        String newRute = ruteImage + name + ".png";
+    public void RelocateImage(int id) {
+        String newRute = ruteImage + id + ".png";
         try {
             Path originalSourceImage = selectedImage.toPath();
             Path newDestinationImage = new File(newRute).toPath();
@@ -284,8 +291,8 @@ public class RegistrationModifyController extends Controller implements Initiali
         }
     }
 
-    public void SaveImage(String name) {
-        String newRute = ruteImage + name + ".png";
+    public void SaveImage(int id) {
+        String newRute = ruteImage + id + ".png";
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(mgvImage.getImage(), null), "PNG", new File(newRute));
         } catch (IOException e) {
@@ -348,6 +355,11 @@ public class RegistrationModifyController extends Controller implements Initiali
         btnDelete.setDisable(!enabled);
         btnDelete.setManaged(enabled);
         btnDelete.setVisible(enabled);
+        if(!isSport){
+        cmbSport.setDisable(enabled);
+        cmbSport.setVisible(!enabled);
+        cmbSport.setManaged(!enabled);
+        }
     }
 
     public void InitializeComboxSportType() {
@@ -357,8 +369,8 @@ public class RegistrationModifyController extends Controller implements Initiali
 
     public void InitializeComponent() {
         labTitle.setText((String) AppContext.getInstance().get("Title"));
-        EnabledMaintenance(isMaintenace);
         EnabledTeam(!isSport);
+        EnabledMaintenance(isMaintenace);
         mgvImage.fitHeightProperty().bind(hbxImage.heightProperty().multiply(0.85));
         mgvImage.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
         imgOther.fitWidthProperty().bind(hbxImage.widthProperty().multiply(0.85));
@@ -384,8 +396,6 @@ public class RegistrationModifyController extends Controller implements Initiali
         } else {
             newTeam = (Team) AppContext.getInstance().get("selectedTeam");
             txtName.setText(newTeam.getName());
-            cmbSport.setFloatingText("Deporte:" + newTeam.searchSportType().getName());
-            cmbSport.setDisable(true);
             file = new File(newTeam.RuteImage());
             if (file.exists()) {
                 image = new Image("file:" + newTeam.RuteImage());
@@ -405,7 +415,7 @@ public class RegistrationModifyController extends Controller implements Initiali
             sportList = fileManeger.deserialization("Sport", Sport.class);
             InitializeComboxSportType();
         }
-        if (!isSport) {
+        if (!isSport || isMaintenace) {
             file = new File("Team.txt");
             if ((file.exists()) && (file.length() > 0)) {
                 teamList = fileManeger.deserialization("Team", Team.class);
