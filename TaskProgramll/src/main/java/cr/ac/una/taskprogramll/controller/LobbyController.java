@@ -4,18 +4,33 @@
  */
 package cr.ac.una.taskprogramll.controller;
 
-import cr.ac.una.taskprogramll.util.AppContext;
+import cr.ac.una.taskprogramll.model.FileManager;
+import cr.ac.una.taskprogramll.model.Sport;
+import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.util.FlowController;
+import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
+import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class LobbyController extends Controller implements Initializable {
+
+    private File file = new File("Sport.txt");
+    private File file2 = new File("Team.txt");
+    
+    private Mensaje message = new Mensaje();
+    private List<Sport> sportList = new ArrayList<>();
+    private List<Team> teamList = new ArrayList<>();
+    private FileManager fileManeger = new FileManager();
 
     @FXML
     private MFXComboBox<String> cmbMenu;
@@ -37,15 +52,45 @@ public class LobbyController extends Controller implements Initializable {
                 FlowController.getInstance().goMain();
                 break;
             case "Crear Torneo":
-                FlowController.getInstance().goViewInStage("CreateTourney", (Stage) cmbMenu.getScene().getWindow());
+                if (EnableTourney()) {
+                    FlowController.getInstance().goViewInStage("CreateTourney", (Stage) cmbMenu.getScene().getWindow());
+                } else {
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No puede registrar torneos porque aún no ha registrado ningún equipo. Por favor, registre al menos dos equipos del mismo deporte primero.");
+                }
                 break;
             case "Ver Torneos":
-                FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) cmbMenu.getScene().getWindow());
+                file = new File("Tourney.txt");
+                if ((file.exists()) && (file.length() > 0)) {
+                    FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) cmbMenu.getScene().getWindow());
+                } else {
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No puede ver o iniciar torneos porque aún no ha registrado ningún torneo. Por favor, registre al menos un torneo primero.");
+                }
                 break;
-
             default:
                 throw new AssertionError();
         }
+    }
+
+    public Boolean EnableTourney() {
+        if (((file.exists()) && (file.length() > 0)) && ((file2.exists()) && (file2.length() > 0))) {
+            teamList = fileManeger.deserialization("Team", Team.class);
+            sportList = fileManeger.deserialization("Sport", Sport.class);
+            int couter = 0;
+            if (teamList.size() >= 2) {
+                for (Sport currentSport : sportList) {
+                    for (Team currentTeam : teamList) {
+                        if (currentSport.getId() == currentTeam.getIdSportType()) {
+                            couter++;
+                        }
+                        if (couter >= 2) {
+                            return true;
+                        }
+                    }
+                    couter = 0;
+                }
+            }
+        }
+        return false;
     }
 
     @FXML

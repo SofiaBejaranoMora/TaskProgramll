@@ -6,17 +6,24 @@ package cr.ac.una.taskprogramll.controller;
 
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
+import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class RegistrationMaintenanceController extends Controller implements Initializable {
+
+    private File file;
+    private Mensaje message = new Mensaje();
+
 
     @FXML
     private MFXButton btnRegistrationSport;
@@ -33,32 +40,50 @@ public class RegistrationMaintenanceController extends Controller implements Ini
     private void OnActionBtnRegistrationSport(ActionEvent event) {
         AppContext.getInstance().set("isSport", true);
         AppContext.getInstance().set("isMaintenace", false);
-        AppContext.getInstance().set("Title","Registro de " + btnRegistrationSport.getText());
+        AppContext.getInstance().set("Title", "Registro de " + btnRegistrationSport.getText());
         FlowController.getInstance().goView("RegistrationModify");
     }
 
     @FXML
     private void OnActionBtnRegistrationTeam(ActionEvent event) {
-        AppContext.getInstance().set("isSport", false);
-        AppContext.getInstance().set("isMaintenace", false);
-        AppContext.getInstance().set("Title", "Registro de " + btnRegistrationTeam.getText());
-        FlowController.getInstance().goView("RegistrationModify");
+        file = new File("Sport.txt");
+        if ((file.exists()) && (file.length() > 0)) {
+            AppContext.getInstance().set("isSport", false);
+            AppContext.getInstance().set("isMaintenace", false);
+            AppContext.getInstance().set("Title", "Registro de " + btnRegistrationTeam.getText());
+            FlowController.getInstance().goView("RegistrationModify");
+        }
+        else{
+            message.show(Alert.AlertType.INFORMATION, "Aviso", "No puede registrar equipos porque aún no ha registrado ningún deporte. Por favor, registre al menos un deporte primero.");
+        }
     }
 
     @FXML
     private void OnActionBtnMaintenanceSport(ActionEvent event) {
-        AppContext.getInstance().set("isSport", true);
-        AppContext.getInstance().set("isMaintenace", true);
-        AppContext.getInstance().set("Title","Mantenimiento de " + btnMaintenanceSport.getText());
-        FlowController.getInstance().goView("Maintenance");
+        file = new File("Sport.txt");
+        if ((file.exists()) && (file.length() > 0)) {
+            AppContext.getInstance().set("isSport", true);
+            AppContext.getInstance().set("isMaintenace", true);
+            AppContext.getInstance().set("Title", "Mantenimiento de " + btnMaintenanceSport.getText());
+            FlowController.getInstance().goView("Maintenance");
+        }
+        else{
+            message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay deportes registrados para realizar mantenimiento. Por favor, registre al menos un deporte primero.");
+        }
     }
 
     @FXML
     private void OnActionBtnMaintenanceTeam(ActionEvent event) {
-        AppContext.getInstance().set("isSport", false);
-        AppContext.getInstance().set("isMaintenace", true);
-        AppContext.getInstance().set("Title","Mantenimiento de " + btnMaintenanceTeam.getText());
-        FlowController.getInstance().goView("Maintenance");
+        file = new File("Team.txt");
+        if ((file.exists()) && (file.length() > 0)) {
+            AppContext.getInstance().set("isSport", false);
+            AppContext.getInstance().set("isMaintenace", true);
+            AppContext.getInstance().set("Title", "Mantenimiento de " + btnMaintenanceTeam.getText());
+            FlowController.getInstance().goView("Maintenance");
+        }
+        else{
+            message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
+        }
     }
 
     @FXML

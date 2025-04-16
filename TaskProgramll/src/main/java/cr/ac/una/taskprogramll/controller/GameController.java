@@ -146,7 +146,7 @@ public class GameController extends Controller implements Initializable {
         looser.setFitWidth(toRize.getWidth() * 0.85);
         looser.setFitHeight(toRize.getHeight()* 0.85);
         ColorAdjust redTone = new ColorAdjust();
-        redTone.setHue(-0.55);             //Ajusta el tono a un verde
+        redTone.setHue(-0.55);             //Ajusta el tono a un rojo
         redTone.setBrightness(0.2);      //Aclara levemente
         looser.setEffect(redTone);
     }

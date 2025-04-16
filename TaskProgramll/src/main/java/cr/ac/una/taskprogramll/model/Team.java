@@ -172,6 +172,4 @@ public class Team {
         return Objects.equals(this.name, other.name);
     }
     
-    
-    
 }
