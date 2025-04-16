@@ -270,3 +270,7 @@ TableViewRose:selected {
     -fx-scale-x: 1.1;
     -fx-scale-y: 1.1;
 }
+
+#tourneyHitbox {
+    -fx-fill: url("resources/stadium.png");
+}

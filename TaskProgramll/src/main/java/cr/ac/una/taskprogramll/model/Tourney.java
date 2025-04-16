@@ -4,6 +4,7 @@
  */
 package cr.ac.una.taskprogramll.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -197,6 +198,7 @@ public class Tourney {
                 '}';
     }
 
+    @JsonIgnore
     public Sport searchSportType() {
     FileManager fileManager = new FileManager();
     File file = new File("Sport.txt");
