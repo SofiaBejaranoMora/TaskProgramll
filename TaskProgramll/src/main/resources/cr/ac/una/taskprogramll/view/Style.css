@@ -100,11 +100,6 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 12, 0, 0, 3);
 }
 
-.mfx-button {
-    -fx-background-color: #FF72C7;
-    -mfx-button-type:RAISED;
-}
-
 .mfx-button:hover{
     -fx-background-color: -fx-rose-base-color;
     -fx-scale-x: 1.1;
@@ -251,7 +246,7 @@
     -fx-background-color: #5DEAF1;
 }
 
-.ColorGreenBackground {
+.PurpleBackground{
     -fx-background-color:
         radial-gradient(center 76.42% 75.00%, radius 100%, rgba(96, 71, 145, 1) 0%, rgba(96, 71, 145, 0) 100%),
         radial-gradient(center 6.68% 69.12%, radius 100%, rgba(163, 114, 219, 1) 0%, rgba(163, 114, 219, 0) 100%),

@@ -10,13 +10,9 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.TourneysInfoController">
+<AnchorPane styleClass="StadiumStandBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.TourneysInfoController">
    <StackPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-      <ImageView fitHeight="600" fitWidth="800" preserveRatio="true">
-         <image>
-            <Image url="@../resources/StadiumStandBackground.jpg" />
-         </image>
-      </ImageView>
+      <ImageView fitHeight="600" fitWidth="800" preserveRatio="true" />
       <StackPane maxHeight="400" maxWidth="600" AnchorPane.bottomAnchor="50" AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50" AnchorPane.topAnchor="50">
          <StackPane fx:id="ticketInferior" onMouseClicked="#slideBackTicket">
             <ImageView fitHeight="400" fitWidth="600" preserveRatio="true">
