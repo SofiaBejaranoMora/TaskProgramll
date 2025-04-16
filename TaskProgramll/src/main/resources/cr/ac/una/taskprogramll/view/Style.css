@@ -260,3 +260,7 @@
         radial-gradient(center 66.73% 69.96%, radius 100%, rgba(163, 114, 219, 1) 0%, rgba(163, 114, 219, 0) 100%),
         radial-gradient(center 39.16% 71.63%, radius 100%, rgba(218, 162, 252, 1) 0%, rgba(218, 162, 252, 0) 100%);
 }
+
+#tourneyHitbox {
+    -fx-fill: url("resources/stadium.png");
+}

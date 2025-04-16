@@ -36,7 +36,7 @@ public class LobbyController extends Controller implements Initializable {
     private MFXComboBox<String> cmbMenu;
 
     public void comboxInitializer() {
-        cmbMenu.getItems().addAll("Registro y Mantenimiento", "Crear Torneo", "Ver Torneos");
+        cmbMenu.getItems().addAll("Registro y Mantenimiento", "Crear Torneo", "Ver Torneos", "Mini Juego Menu", "Historial de Torneos");
     }
 
     public void clean() {
@@ -66,6 +66,12 @@ public class LobbyController extends Controller implements Initializable {
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "No puede ver o iniciar torneos porque aún no ha registrado ningún torneo. Por favor, registre al menos un torneo primero.");
                 }
                 break;
+            case "Mini Juego Menu":
+            FlowController.getInstance().goViewInStage("MenuGame", (Stage) cmbMenu.getScene().getWindow());
+            break;
+             case "Historial de Torneos":
+            FlowController.getInstance().goViewInStage("TournamentHistory", (Stage) cmbMenu.getScene().getWindow());
+            break;
             default:
                 throw new AssertionError();
         }
