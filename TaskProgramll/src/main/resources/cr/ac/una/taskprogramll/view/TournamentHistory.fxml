@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="rootPane" minHeight="600.0" minWidth="800.0" styleClass="StadiumStandBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.TournamentHistoryController">
+    <VBox fx:id="mainContainer" alignment="TOP_CENTER" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox fx:id="header" alignment="CENTER" minHeight="120.0" spacing="15.0">
+            <Label fx:id="titleLabel" styleClass="LargeLabel" stylesheets="@Style.css" text="Historial de Torneos" />
+            <HBox fx:id="filters" alignment="CENTER" spacing="15.0">
+                <MFXTextField fx:id="teamSearch" floatingText="Buscar equipo (nombre o ID)" prefWidth="250.0" styleClass="mfx-text-field" />
+                <MFXComboBox fx:id="sportFilter" floatingText="Deporte" prefWidth="200.0" styleClass="mfx-combo-box" />
+                <MFXButton fx:id="searchButton" styleClass="mfx-button" text="Buscar" />
+                <MFXButton fx:id="clearButton" styleClass="mfx-button" text="Limpiar" />
+            </HBox>
+        </VBox>
+        <HBox fx:id="content" minHeight="400.0" spacing="15.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tournamentTable" minWidth="400.0" styleClass="TableViewLightdBlue" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="nameColumn" prefWidth="200.0" text="Nombre" />
+                    <TableColumn fx:id="dateColumn" prefWidth="120.0" text="Fecha" />
+                    <TableColumn fx:id="positionColumn" prefWidth="120.0" text="Posición" />
+                </columns>
+            </TableView>
+            <VBox fx:id="detailsPanel" alignment="TOP_CENTER" minWidth="300.0" spacing="10.0" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
+                <Label fx:id="detailsTitle" styleClass="SmallLabel" text="Seleccioná un torneo" />
+                <Label fx:id="positionLabel" styleClass="info" text="" wrapText="true" />
+                <Label fx:id="matchesLabel" styleClass="info" text="" wrapText="true" />
+                <Label fx:id="statsLabel" styleClass="info" text="" wrapText="true" />
+                <Label fx:id="generalStatsLabel" styleClass="info" text="" wrapText="true" />
+            </VBox>
+        </HBox>
+        <HBox fx:id="footer" alignment="CENTER" minHeight="100.0" spacing="20.0" styleClass="footer">
+            <MFXButton fx:id="certificateButton" disable="true" styleClass="mfx-button" text="Generar Certificado">
+            <graphic>
+                  <ImageView fx:id="certificatePreview" fitHeight="33.0" fitWidth="54.0" preserveRatio="true" styleClass="preview">
+                  <image>
+                     <Image url="@../resources/Impresora.png" />
+                  </image>
+               </ImageView>
+            </graphic></MFXButton>
+        </HBox>
+    </VBox>
+</AnchorPane>
