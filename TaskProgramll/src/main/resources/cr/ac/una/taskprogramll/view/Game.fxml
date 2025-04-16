@@ -31,17 +31,13 @@
                <children>
                   <ImageView fx:id="mgvFirstTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
-                        <Insets left="20.0" right="40.0" />
+                        <Insets right="50.0" />
                      </HBox.margin>
                   </ImageView>
-                  <ImageView fx:id="mgvBall" fitHeight="50.0" fitWidth="50.0" onMouseDragged="#onMouseDraggedMgvBall" onMousePressed="#onMousePressedMgvBall" onMouseReleased="#onMouseReleasedMgvBall" pickOnBounds="true" preserveRatio="true">
-                     <HBox.margin>
-                        <Insets left="40.0" right="40.0" />
-                     </HBox.margin>
-                  </ImageView>
+                  <ImageView fx:id="mgvBall" fitHeight="50.0" fitWidth="50.0" onDragDetected="#onDragDetectedMgvBall" onMouseDragged="#onMouseDraggedMgvBall" onMousePressed="#onMousePressedMgvBall" onMouseReleased="#onMouseReleasedMgvBall" pickOnBounds="true" preserveRatio="true" />
                   <ImageView fx:id="mgvSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                      <HBox.margin>
-                        <Insets left="40.0" right="20.0" />
+                        <Insets left="50.0" />
                      </HBox.margin>
                   </ImageView>
                </children>
@@ -61,7 +57,7 @@
             </Label>
             <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="760.0">
                <children>
-                  <MFXButton fx:id="btnOut" onAction="#onActionBtnOut" prefWidth="100.0" text="Salir" />
+                  <MFXButton fx:id="btnOut" onAction="#onActionBtnOut" prefWidth="100.0" styleClass="TableViewLightdBlue" stylesheets="@Style.css" text="Salir" />
                </children>
                <padding>
                   <Insets bottom="10.0" top="10.0" />
