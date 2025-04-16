@@ -18,16 +18,16 @@ public class ResourceUtil {
      * @return URL como String para Image, o null si no se encuentra.
      */
     
-    public static String getImagePath(String imageName) {
+    public static String getImagePath(int id) {
         try {
-            String path = BASE_PATH + imageName;
+            String path = BASE_PATH + id + ".png";
             if (ResourceUtil.class.getResource(path) == null) {
                 System.err.println("No se encontró la imagen: " + path);
                 return null;
             }
             return ResourceUtil.class.getResource(path).toExternalForm();
         } catch (Exception e) {
-            System.err.println("Error cargando imagen " + imageName + ": " + e.getMessage());
+            System.err.println("Error cargando imagen " + id + ": " + e.getMessage());
             return null;
         }
     }

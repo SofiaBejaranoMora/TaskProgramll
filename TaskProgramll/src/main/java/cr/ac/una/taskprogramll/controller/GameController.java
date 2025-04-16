@@ -69,22 +69,28 @@ public class GameController extends Controller implements Initializable {
         counterPoints();
     }
 
+        @FXML
+    void onDragDetectedMgvBall(MouseEvent event) {
+            if(!timerStarted){
+            timerStarted = true;
+            timer();
+            currentTime.play();
+            }
+    }
+    
     @FXML
     private void onMouseDraggedMgvBall(MouseEvent event) {
-            mgvBall.toFront();
             double localX = mgvBall.getParent().sceneToLocal(event.getSceneX(), event.getSceneY()).getX();
             double localY = mgvBall.getParent().sceneToLocal(event.getSceneX(), event.getSceneY()).getY();
             mgvBall.setLayoutX(localX);
-            mgvBall.setLayoutY(localY);
+            mgvBall.setLayoutY(localY);        
+
     }
 
     @FXML
     private void onMousePressedMgvBall(MouseEvent event) {
         mgvBall.setCursor(Cursor.CLOSED_HAND);
-        if(!timerStarted){
-            timerStarted = true;
-            timer();
-        }
+
     }
 
     @FXML
@@ -93,14 +99,14 @@ public class GameController extends Controller implements Initializable {
     }
     
     private void chargeImages() {
-        mgvBall.setImage(new Image(ResourceUtil.getImagePath(currentSport.getName() + ".png")));
-        mgvFirstTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index).getName() + ".png")));
+        mgvBall.setImage(new Image(ResourceUtil.getImagePath(currentSport.getId())));
+        mgvFirstTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index).getId())));
 
         if (currentRound % 2 != 0) {
-            mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index + 1).getName() + ".png")));
+            mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index + 1).getId())));
 
         } else {
-            mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index - 1).getName() + ".png")));
+            mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index - 1).getId())));
 
         }
     }
@@ -121,6 +127,7 @@ public class GameController extends Controller implements Initializable {
                 else index -= 2;
             }
         }));
+        currentTime.setCycleCount(timeLimit);
     }
     
     private void counterPoints() {

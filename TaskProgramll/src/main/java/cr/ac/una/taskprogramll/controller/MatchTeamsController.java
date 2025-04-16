@@ -18,7 +18,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 /** * FXML Controller class * * @author ashly */
@@ -27,6 +26,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     private Tourney currentTourney;
     private List<Team> currentTeamList;
     private List<String> randomChooseTeam = new ArrayList<>();
+    private Boolean isFirstOpen = false;
     private int index = 0;
     private int currentRound = 1;
     private int globalSize;
@@ -98,7 +98,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             column.setSortable(false);
         }
     }
-    
+     
      private void distributionOnTable() {
          disableFilterOrSelection();
          List<Team> randomDistribution = new ArrayList<>();
@@ -149,7 +149,6 @@ public class MatchTeamsController extends Controller implements Initializable {
          if (currentTeamList.get(index) != null){
              currentTourney.getContinueGame().setContinueIndexTeam(index);
              currentTourney.getContinueGame().setCurrentRound(currentRound);
-             
          }
          else if (currentRound % 2 != 0){
              if (currentTeamList.get(index + 1) != null)
@@ -163,6 +162,7 @@ public class MatchTeamsController extends Controller implements Initializable {
      }
      
      private void adjustingTable(Team winnerTeam){
+         if (2 == currentTeamList.size()) currentRound = 6;
          switch (currentRound) {
              case 1 -> {
                  round2.addLast(winnerTeam);
@@ -226,13 +226,23 @@ public class MatchTeamsController extends Controller implements Initializable {
      }
      
     public void initializeFromAppContext() {
-        this.currentTourney = (Tourney) AppContext.getInstance().get("SelectedTourney");
-        this.currentTeamList = currentTourney.getTeamList();
-        switch (currentTourney.returnState()) {
-            case "Sin Empezar" -> startGameParameters();
-            case "En Proceso" -> continueGameParameters();
-            case "Finalizado" -> viewGameTable();
-            default -> continueGameParameters();
+        if (!isFirstOpen) {
+            isFirstOpen = true;
+            this.currentTourney = (Tourney) AppContext.getInstance().get("SelectedTourney");
+            this.currentTeamList = currentTourney.getTeamList();
+            switch (currentTourney.returnState()) {
+                case "Sin Empezar" ->
+                    startGameParameters();
+                case "En Proceso" ->
+                    continueGameParameters();
+                case "Finalizado" ->
+                    viewGameTable();
+                default ->
+                    continueGameParameters();
+            }
+        } else {
+        Team winerTeam = (Team) AppContext.getInstance().get("CurrentTourney");
+        adjustingTable(winerTeam);
         }
     }
      
