@@ -4,6 +4,7 @@
  */
 package cr.ac.una.taskprogramll.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
@@ -11,13 +12,11 @@ import java.util.Objects;
 public class Team {
 
     private String name;
-    private String nameTeamImage;
     private int idSportType;
     private int draw;
     private int wins;
-    private int goals;
+    private int goals; 
     private int points;
-    private boolean isQualified;
     private int id;
 
     public Team() {
@@ -34,20 +33,16 @@ public class Team {
     public Team(String name, int idSportType, int id) {
         this.name = name;
         this.idSportType = idSportType;
-        this.nameTeamImage = name + ".png";
         this.id = id;
         this.draw = 0;
         this.wins = 0;
-        isQualified = false;
     }
 
-    public Team(String name, String nameTeamImage, int idSportType, int draw, int wins, boolean isQualified, int id) {
+    public Team(String name, int idSportType, int draw, int wins, int id) {
         this.name = name;
-        this.nameTeamImage = nameTeamImage + ".png";
         this.idSportType = idSportType;
         this.draw = draw;
         this.wins = wins;
-        this.isQualified = isQualified;
         this.id = id;
     }
 
@@ -57,14 +52,6 @@ public class Team {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getNameTeamImage() {
-        return nameTeamImage;
-    }
-
-    public void setNameTeamImage(String nameTeamImage) {
-        this.nameTeamImage = nameTeamImage;
     }
 
     public int getIdSportType() {
@@ -106,28 +93,20 @@ public class Team {
     public void setPoints(int points) {
         this.points += points;
     }
-    
-    public boolean isIsQualified() {
-        return isQualified;
-    }
-
-    public void setIsQualified(boolean isQualified) {
-        this.isQualified = isQualified;
-    }
 
     public String RuteImage() {
-        return System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/" + name + ".png";
+        return System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/" + id + ".png";
     }
 
-    public void ChangeName(String name) {
+    /*public void ChangeName(String name) {
         String rute = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
         File imagenOriginal = new File(rute + this.name + ".png");
         File imagenNueva = new File(rute + name + ".png");
         imagenOriginal.renameTo(imagenNueva);
-        this.name = name + ".png";
-        this.nameTeamImage = name + ".png";
-    }
+        this.name = name ;
+    }*/
 
+    @JsonIgnore
     public Sport searchSportType() {
         FileManager fileManeger = new FileManager();
         File file = new File("Sport.txt");
@@ -171,5 +150,4 @@ public class Team {
         }
         return Objects.equals(this.name, other.name);
     }
-    
 }
