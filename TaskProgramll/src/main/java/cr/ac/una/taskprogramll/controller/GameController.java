@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -62,37 +61,41 @@ public class GameController extends Controller implements Initializable {
     private Label lblTimer;
     @FXML
     private MFXButton btnOut;
-
-    @FXML
-    private void onMouseReleasedMgvBall(MouseEvent event) {
-        mgvBall.setCursor(Cursor.DEFAULT);
-        counterPoints();
-    }
-
-        @FXML
-    void onDragDetectedMgvBall(MouseEvent event) {
-            if(!timerStarted){
-            timerStarted = true;
-            timer();
-            currentTime.play();
-            }
-    }
     
     @FXML
-    private void onMouseDraggedMgvBall(MouseEvent event) {
-            double localX = mgvBall.getParent().sceneToLocal(event.getSceneX(), event.getSceneY()).getX();
-            double localY = mgvBall.getParent().sceneToLocal(event.getSceneX(), event.getSceneY()).getY();
-            mgvBall.setLayoutX(localX);
-            mgvBall.setLayoutY(localY);        
+    void onDragDetectedMgvBall(MouseEvent event) {
+            if (!timerStarted) {
+                timerStarted = true;
+                timer();
+                currentTime.play();
+            }
+            mgvBall.setVisible(false);
 
+            Image ballImage = mgvBall.getImage();
+            ImageView copyBall = new ImageView(ballImage);
+            copyBall.setFitWidth(ballImage.getWidth() * 0.1);
+            copyBall.setFitHeight(ballImage.getHeight() * 0.1);
+            copyBall.setOpacity(1.0);
+            ncpRoot.getChildren().add(copyBall);
+            copyBall.setLayoutX(mgvBall.getLayoutX());
+            copyBall.setLayoutY(mgvBall.getLayoutY());
+
+            ncpRoot.setOnMouseDragged(dragEvent -> {
+                copyBall.setCursor(Cursor.CLOSED_HAND);
+                copyBall.setLayoutX(dragEvent.getSceneX());
+                copyBall.setLayoutY(dragEvent.getSceneY());
+            });
+
+            ncpRoot.setOnMouseReleased((releaseEvent) -> {
+                copyBall.setCursor(Cursor.DEFAULT);
+                counterPoints();
+                ncpRoot.getChildren().remove(copyBall);
+                mgvBall.setVisible(true);
+                ncpRoot.setOnMouseDragged(null);
+                ncpRoot.setOnMouseReleased(null);
+            });
     }
-
-    @FXML
-    private void onMousePressedMgvBall(MouseEvent event) {
-        mgvBall.setCursor(Cursor.CLOSED_HAND);
-
-    }
-
+    
     @FXML
     private void onActionBtnOut(ActionEvent event) {
         FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
@@ -123,8 +126,6 @@ public class GameController extends Controller implements Initializable {
             } else {
                 currentTime.stop();
                 afterGame();
-                if (currentRound % 2 != 0) index += 2;
-                else index -= 2;
             }
         }));
         currentTime.setCycleCount(timeLimit);
