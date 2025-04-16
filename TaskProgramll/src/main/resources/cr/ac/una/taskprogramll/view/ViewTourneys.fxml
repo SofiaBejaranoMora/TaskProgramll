@@ -13,10 +13,8 @@
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="StoreBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.ViewTourneysController">
    <children>
-      
       <VBox fx:id="mainContainer" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
-          
             <HBox alignment="TOP_RIGHT" prefHeight="50.0" prefWidth="200.0">
                <children>
                   <ImageView fitHeight="39.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
@@ -26,13 +24,11 @@
                   </ImageView>
                </children>
             </HBox>
-            
             <HBox alignment="CENTER" prefHeight="50.0" styleClass="boxLightBlue">
                <children>
                   <Label text="Ver Torneos" />
                </children>
             </HBox>
-            
             <VBox fx:id="imgTrophey" alignment="CENTER">
                <children>
                   <ImageView fitHeight="107.0" fitWidth="109.0" pickOnBounds="true" preserveRatio="true">
@@ -45,19 +41,18 @@
             <HBox alignment="CENTER" prefHeight="50.0" spacing="40.0" styleClass="boxRose">
                <children>
                   <Label text="Seleccione un tipo de deporte" />
-                  <MFXComboBox fx:id="comboDeportes" onAction="#mostrarTorneos" prefWidth="150.0" text="Deportes" />
+                  <MFXComboBox fx:id="sportsComboBox" onAction="#mostrarTorneos" prefWidth="150.0" text="Deportes" />
                </children>
             </HBox>
-            
-            <TableView fx:id="tablaTorneos" prefHeight="150.0" prefWidth="500.0" styleClass="boxLightBlue" visible="false">
+            <TableView fx:id="tourneysTable" prefHeight="150.0" prefWidth="500.0" styleClass="boxLightBlue" visible="false">
                <columns>
-                  <TableColumn fx:id="colTorneo" prefWidth="300.0" text="Torneo" />
-                  <TableColumn fx:id="colEstado" prefWidth="200.0" text="Estado" />
+                  <TableColumn fx:id="colTourney" prefWidth="300.0" text="Torneo" />
+                  <TableColumn fx:id="colState" prefWidth="200.0" text="Estado" />
                </columns>
             </TableView>
             <HBox alignment="CENTER" prefHeight="50.0" spacing="70.0">
                <children>
-                  <MFXButton fx:id="btnBack" onAction="#goBack" text="Refrescar">
+                  <MFXButton fx:id="btnBack" onAction="#goBack" text="Volver">
                      <graphic>
                         <ImageView fitHeight="39.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" />
                      </graphic>
