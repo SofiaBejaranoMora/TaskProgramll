@@ -1,37 +1,6 @@
-
 *{
     -fx-lightBlue-base-color: #BBF6F9; /*#16D4A5*/
     -fx-rose-base-color:#FFA5DB;
-}
-
-.ColorGreenBackground {
-    -fx-background-color:
-        radial-gradient(center 76.42% 75.00%, radius 100%, rgba(96, 71, 145, 1) 0%, rgba(96, 71, 145, 0) 100%),
-        radial-gradient(center 6.68% 69.12%, radius 100%, rgba(163, 114, 219, 1) 0%, rgba(163, 114, 219, 0) 100%),
-        radial-gradient(center 92.24% 63.15%, radius 100%, rgba(218, 162, 252, 1) 0%, rgba(218, 162, 252, 0) 100%),
-        radial-gradient(center 92.76% 3.50%, radius 100%, rgba(96, 71, 145, 1) 0%, rgba(96, 71, 145, 0) 100%),
-        radial-gradient(center 66.73% 69.96%, radius 100%, rgba(163, 114, 219, 1) 0%, rgba(163, 114, 219, 0) 100%),
-        radial-gradient(center 39.16% 71.63%, radius 100%, rgba(218, 162, 252, 1) 0%, rgba(218, 162, 252, 0) 100%);
-}
-
-.title-bar {
-    -fx-background-color: #F8F3FF;
-    -fx-background-radius: 20;
-    -fx-padding: 10.20;
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-font-family: "Segoe UI", "Century Gothic";
-    -fx-text-fill: #5D3F6A;
-    -fx-effect: dropshadow(gaussian, rgba(93, 63, 106, 0.3), 8, 0.2, 0, 2);
-}
-
-.hbox-cute {
-   -fx-background-color: #F3ECFB;
-    -fx-background-radius: 16;
-    -fx-border-color: #D9CBEF;
-    -fx-border-width: 1;
-    -fx-border-radius: 16;
-    -fx-effect: dropshadow(gaussian, rgba(89, 67, 104, 0.15), 6, 0.2, 0, 2);
 }
 
 .StoreBackground {
@@ -54,15 +23,6 @@
     -fx-background-image: url("../resources/GameBackground.jpg");
 }
 
-.StoreBackground,
-.BusStopBackground,
-.LobbyBackground,
-.GameBackground{
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: 100% 100%;
-    -fx-background-position: center center;
-}
-
 .CameraIcon {
     -fx-image: url("../resources/CameraIcon.png");
 }
@@ -71,7 +31,7 @@
     -fx-image: url("../resources/SelectIcon.png");
 }
 
-#LobbyIcon {
+.LobbyIcon {
     -fx-image: url("../resources/LobbyIcon.png");
 }
 
@@ -95,8 +55,13 @@
     -fx-image: url("../resources/SaveIcon.png");
 }
 
-.ImageView{
-    -fx-opacity:1;
+.StoreBackground,
+.BusStopBackground,
+.LobbyBackground,
+.GameBackground{
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 100% 100%;
+    -fx-background-position: center center;
 }
 
 .SaveIcon,
@@ -119,6 +84,22 @@
     -fx-cursor: hand;
 }
 
+.ImageView {
+    -fx-opacity: 1;
+}
+
+.StarIcon {
+    -fx-opacity: 1;
+    -fx-transition: 0.5s ease-in-out;
+}
+
+.StarIcon:hover {
+    -fx-rotate: 360;
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 12, 0, 0, 3);
+}
+
 .mfx-button {
     -fx-background-color: #FF72C7;
     -mfx-button-type:RAISED;
@@ -133,6 +114,17 @@
 /*.mfx-button:active{
      -fx-background-color: #5DEAF1;
 }*/
+
+.mfx-button {
+    -fx-background-color: #FF72C7;
+    -mfx-button-type: RAISED;
+}
+
+.mfx-button:hover {
+    -fx-background-color: -fx-rose-base-color;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
 
 #btnAccept{
     -fx-background-color: #1AFF1A;
@@ -150,85 +142,15 @@
     -fx-background-color: #D7D6D2;
 }
 
-.boxRose{
-    -fx-background-color: -fx-rose-base-color;
-    -fx-opacity:0.85;
-    -fx-background-radius: 15px;
-    -fx-transition: 0.3s;
-}
-
-.boxRose:hover{
-    -fx-background-color: -fx-rose-base-color;
-    -fx-opacity:1;
-}
-
-.boxLightBlue{
-    -fx-background-color: -fx-lightBlue-base-color;
-    -fx-opacity:0.85;
-    -fx-background-radius: 15px;
-    -fx-transition: 0.3s;
-}
-
-.boxLightBlue:hover{
-    -fx-background-color: -fx-lightBlue-base-color;
-    -fx-opacity:1;
-}
-
-.TableViewLightdBlue{
-    -fx-background-color: -fx-lightBlue-base-color;
-}
-
-TableViewLightdBlue:selected {
-    -fx-background-color: #5DEAF1;
-}
-
-.TableViewRose{
-    -fx-background-color:-fx-rose-base-color;
-
-}
-
-TableViewRose:selected {
-    -fx-background-color: #FF72C7;
-}
-
-.TableViewLightdBlue,
-.TableViewRose {
-    -fx-background-radius: 10px;
-    -fx-opacity:0.80;
-    -fx-border-radius: 10px;
-    -fx-border-width: 2px;
-}
-
-* {
-    -fx-lightBlue-base-color: #BBF6F9;
-    -fx-rose-base-color: #FFA5DB;
-}
-
-.InteractiveVBox {
-    -fx-opacity: 1;
-    -fx-transition: 0.3s ease-in-out;
-}
-
-.InteractiveVBox:hover {
-    -fx-scale-x: 1.1;
-    -fx-scale-y: 1.1;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 2);
-}
-
-.ImageView {
-    -fx-opacity: 1;
-}
-
-.StarIcon {
-    -fx-opacity: 1;
-    -fx-transition: 0.5s ease-in-out;
-}
-
-.StarIcon:hover {
-    -fx-rotate: 360;
-    -fx-scale-x: 1.2;
-    -fx-scale-y: 1.2;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 12, 0, 0, 3);
+.title-bar {
+    -fx-background-color: #F8F3FF;
+    -fx-background-radius: 20;
+    -fx-padding: 10.20;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Segoe UI", "Century Gothic";
+    -fx-text-fill: #5D3F6A;
+    -fx-effect: dropshadow(gaussian, rgba(93, 63, 106, 0.3), 8, 0.2, 0, 2);
 }
 
 .LargeLabel {
@@ -260,13 +182,81 @@ TableViewRose:selected {
     -fx-scale-y: 1.05;
 }
 
-.mfx-button {
-    -fx-background-color: #FF72C7;
-    -mfx-button-type: RAISED;
+.boxRose{
+    -fx-background-color: -fx-rose-base-color;
+    -fx-opacity:0.85;
+    -fx-background-radius: 15px;
+    -fx-transition: 0.3s;
 }
 
-.mfx-button:hover {
+.boxRose:hover{
     -fx-background-color: -fx-rose-base-color;
+    -fx-opacity:1;
+}
+
+.boxLightBlue{
+    -fx-background-color: -fx-lightBlue-base-color;
+    -fx-opacity:0.85;
+    -fx-background-radius: 15px;
+    -fx-transition: 0.3s;
+}
+
+.boxLightBlue:hover{
+    -fx-background-color: -fx-lightBlue-base-color;
+    -fx-opacity:1;
+}
+
+.InteractiveVBox {
+    -fx-opacity: 1;
+    -fx-transition: 0.3s ease-in-out;
+}
+
+.InteractiveVBox:hover {
     -fx-scale-x: 1.1;
     -fx-scale-y: 1.1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 2);
+}
+
+.hbox-cute {
+   -fx-background-color: #F3ECFB;
+    -fx-background-radius: 16;
+    -fx-border-color: #D9CBEF;
+    -fx-border-width: 1;
+    -fx-border-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(89, 67, 104, 0.15), 6, 0.2, 0, 2);
+}
+
+.TableViewRose{
+    -fx-background-color:-fx-rose-base-color;
+
+}
+
+.TableViewRose:selected {
+    -fx-background-color: #FF72C7;
+}
+
+.TableViewRose,
+.TableViewLightdBlue {
+    -fx-background-radius: 10px;
+    -fx-opacity:0.80;
+    -fx-border-radius: 10px;
+    -fx-border-width: 2px;
+}
+
+.TableViewLightdBlue{
+    -fx-background-color: -fx-lightBlue-base-color;
+}
+
+.TableViewLightdBlue:selected {
+    -fx-background-color: #5DEAF1;
+}
+
+.ColorGreenBackground {
+    -fx-background-color:
+        radial-gradient(center 76.42% 75.00%, radius 100%, rgba(96, 71, 145, 1) 0%, rgba(96, 71, 145, 0) 100%),
+        radial-gradient(center 6.68% 69.12%, radius 100%, rgba(163, 114, 219, 1) 0%, rgba(163, 114, 219, 0) 100%),
+        radial-gradient(center 92.24% 63.15%, radius 100%, rgba(218, 162, 252, 1) 0%, rgba(218, 162, 252, 0) 100%),
+        radial-gradient(center 92.76% 3.50%, radius 100%, rgba(96, 71, 145, 1) 0%, rgba(96, 71, 145, 0) 100%),
+        radial-gradient(center 66.73% 69.96%, radius 100%, rgba(163, 114, 219, 1) 0%, rgba(163, 114, 219, 0) 100%),
+        radial-gradient(center 39.16% 71.63%, radius 100%, rgba(218, 162, 252, 1) 0%, rgba(218, 162, 252, 0) 100%);
 }

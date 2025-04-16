@@ -15,15 +15,6 @@
    <children>
       <VBox fx:id="mainContainer" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
-            <HBox alignment="TOP_RIGHT" prefHeight="50.0" prefWidth="200.0">
-               <children>
-                  <ImageView fitHeight="39.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../resources/LobbyIcon.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </HBox>
             <HBox alignment="CENTER" prefHeight="50.0" styleClass="boxLightBlue">
                <children>
                   <Label text="Ver Torneos" />
@@ -44,27 +35,30 @@
                   <MFXComboBox fx:id="sportsComboBox" onAction="#mostrarTorneos" prefWidth="150.0" text="Deportes" />
                </children>
             </HBox>
-            <TableView fx:id="tourneysTable" prefHeight="150.0" prefWidth="500.0" styleClass="boxLightBlue" visible="false">
+            <TableView fx:id="tourneysTable" prefHeight="150.0" prefWidth="500.0" styleClass="boxLightBlue" stylesheets="@Style.css" visible="false">
                <columns>
                   <TableColumn fx:id="colTourney" prefWidth="300.0" text="Torneo" />
                   <TableColumn fx:id="colState" prefWidth="200.0" text="Estado" />
                </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
             </TableView>
             <HBox alignment="CENTER" prefHeight="50.0" spacing="70.0">
                <children>
                   <MFXButton fx:id="btnBack" onAction="#goBack" text="Volver">
                      <graphic>
-                        <ImageView fitHeight="39.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="39.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" styleClass="LobbyIcon" />
                      </graphic>
                   </MFXButton>
                   <MFXButton fx:id="btnInfo" onAction="#showInfo" text="Informacion">
                      <graphic>
-                        <ImageView fitHeight="39.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="39.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" styleClass="SearchIcon" />
                      </graphic>
                   </MFXButton>
                   <MFXButton fx:id="btnPlay" onAction="#goPlay" text="Jugar">
                      <graphic>
-                        <ImageView fitHeight="39.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="39.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" />
                      </graphic>
                   </MFXButton>
                </children>

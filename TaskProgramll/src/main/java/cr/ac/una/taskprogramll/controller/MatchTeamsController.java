@@ -109,7 +109,9 @@ public class MatchTeamsController extends Controller implements Initializable {
              int randomChossenTeam = randomTeam.nextInt(roundSize);
              if(!alredyChoosedTeam(currentTeamList.get(randomChossenTeam).getName()))
                  randomDistribution.add(currentTeamList.get(randomChossenTeam));
-         } currentTeamList = randomDistribution;
+         } 
+         currentTeamList.clear();
+         currentTeamList.addAll(randomDistribution);
          
          round1.setAll(currentTeamList);
          clmnRound1.setCellValueFactory(new PropertyValueFactory<>("name"));

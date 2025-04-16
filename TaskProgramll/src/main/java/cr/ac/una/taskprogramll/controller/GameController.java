@@ -16,6 +16,7 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -70,7 +71,6 @@ public class GameController extends Controller implements Initializable {
                 currentTime.play();
             }
             mgvBall.setVisible(false);
-
             Image ballImage = mgvBall.getImage();
             ImageView copyBall = new ImageView(ballImage);
             copyBall.setFitWidth(ballImage.getWidth() * 0.1);
@@ -82,13 +82,18 @@ public class GameController extends Controller implements Initializable {
 
             ncpRoot.setOnMouseDragged(dragEvent -> {
                 copyBall.setCursor(Cursor.CLOSED_HAND);
-                copyBall.setLayoutX(dragEvent.getSceneX());
-                copyBall.setLayoutY(dragEvent.getSceneY());
-            });
-
+                copyBall.setLayoutX(dragEvent.getSceneX() - copyBall.getFitWidth() / 2);
+                copyBall.setLayoutY(dragEvent.getSceneY() - copyBall.getFitHeight() / 2);
+            }); 
+                        
             ncpRoot.setOnMouseReleased((releaseEvent) -> {
                 copyBall.setCursor(Cursor.DEFAULT);
-                counterPoints();
+                Bounds firstTeam = mgvFirstTeam.localToScene(mgvFirstTeam.getBoundsInLocal());
+                Bounds secondTeam = mgvSecondTeam.localToScene(mgvSecondTeam.getBoundsInLocal());
+                if (firstTeam.contains(releaseEvent.getSceneX(), releaseEvent.getSceneY())) 
+                    counterPoints(1);
+                else if (secondTeam.contains(releaseEvent.getSceneX(), releaseEvent.getSceneY()))
+                    counterPoints(2);
                 ncpRoot.getChildren().remove(copyBall);
                 mgvBall.setVisible(true);
                 ncpRoot.setOnMouseDragged(null);
@@ -131,20 +136,20 @@ public class GameController extends Controller implements Initializable {
         currentTime.setCycleCount(timeLimit);
     }
     
-    private void counterPoints() {
-        if (mgvBall.getBoundsInLocal() != null && mgvFirstTeam.getBoundsInLocal() != null && mgvSecondTeam.getBoundsInLocal() != null) {
-            if (mgvBall.getBoundsInLocal().contains(mgvFirstTeam.getBoundsInLocal().getCenterX(), mgvFirstTeam.getBoundsInLocal().getCenterY())) {
+    private void counterPoints(int goalTo) {
+        switch (goalTo) {
+            case 1 -> {
                 counterGoalsFirstTeam++;
                 lblFirstTeam.setText("" + counterGoalsFirstTeam);
                 System.out.println("\nEl balon toca al equipo #1\n");
-                
-            } else if (mgvBall.getBoundsInLocal().contains(mgvSecondTeam.getBoundsInLocal().getCenterX(), mgvSecondTeam.getBoundsInLocal().getCenterY())) {
+            }
+            case 2 -> {
                 counterGoalsSecondTeam++;
                 lblSecondTeam.setText("" + counterGoalsSecondTeam);
                 System.out.println("\nEl balon toca al equipo #2\n");
-                
-            } else System.out.println("\nEl balon no toca los equipos...\n");
-        } else System.out.println("\nFalla de limites en imagenes...\n");
+            }
+            default -> System.out.println("\nEl balon no toca los equipos...\n");
+        }
     }
     
     private void winnerAnimatic(ImageView winner){

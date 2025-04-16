@@ -2,6 +2,7 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -29,13 +30,16 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="200.0" prefWidth="760.0" VBox.vgrow="ALWAYS">
                <children>
-                  <ImageView fx:id="mgvFirstTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="mgvFirstTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets right="50.0" />
                      </HBox.margin>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
                   </ImageView>
                   <ImageView fx:id="mgvBall" fitHeight="50.0" fitWidth="50.0" onDragDetected="#onDragDetectedMgvBall" pickOnBounds="true" preserveRatio="true" />
-                  <ImageView fx:id="mgvSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="mgvSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets left="50.0" />
                      </HBox.margin>

@@ -42,7 +42,7 @@
                   <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
                </padding>
             </VBox>
-            <ImageView fx:id="LobbyIcon" fitHeight="64.0" fitWidth="59.0" onMouseClicked="#OnMouseClickedLobbyIcon" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="LobbyIcon" fitHeight="64.0" fitWidth="59.0" onMouseClicked="#OnMouseClickedLobbyIcon" pickOnBounds="true" preserveRatio="true" styleClass="LobbyIcon" />
             <VBox alignment="TOP_CENTER" layoutX="10.0" layoutY="140.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="20.0" />
          </children>
          <BorderPane.margin>

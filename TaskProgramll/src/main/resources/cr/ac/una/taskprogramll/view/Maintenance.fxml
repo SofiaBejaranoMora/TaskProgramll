@@ -62,7 +62,6 @@
             <HBox alignment="CENTER" layoutX="10.0" layoutY="210.0" maxWidth="1.7976931348623157E308" spacing="40.0" VBox.vgrow="ALWAYS">
                <children>
                   <MFXButton fx:id="btnModify" onAction="#OnActionBtnModify" text="Modificar" />
-                  <MFXButton text="Button" />
                   <MFXButton fx:id="btnCancel" onAction="#OnActionBtnCancel" text="Cancelar" />
                </children>
             </HBox>
