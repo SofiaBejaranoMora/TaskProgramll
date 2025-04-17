@@ -306,7 +306,6 @@ public class CreateTourneyController extends Controller implements Initializable
     private void OnActionBtnCancel(ActionEvent event) {
         ClearPanel();
         FlowController.getInstance().goViewInStage("Lobby", (Stage) btnCancel.getScene().getWindow());
-        ((Stage) btnCancel.getScene().getWindow()).close();
     }
 
     public void customInitialize() {
