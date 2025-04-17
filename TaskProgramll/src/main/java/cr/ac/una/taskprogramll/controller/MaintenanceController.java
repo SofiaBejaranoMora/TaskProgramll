@@ -7,6 +7,7 @@ package cr.ac.una.taskprogramll.controller;
 import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
+import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.Mensaje;
@@ -35,8 +36,11 @@ public class MaintenanceController extends Controller implements Initializable {
 
     private List<Sport> sportList = new ArrayList<>();
     private List<Team> teamList = new ArrayList<>();
+    private List<Tourney> tourneyList = new ArrayList<>();
     private FileManager fileManeger = new FileManager();
+    private Tourney selectedTourney;
     private Boolean isSport = false;
+    private Boolean isTourney = false;
     private File file;
     private Mensaje message = new Mensaje();
 
@@ -60,13 +64,33 @@ public class MaintenanceController extends Controller implements Initializable {
     private Label labTitle;
     @FXML
     private TableColumn<Team, String> tclTeamSportType;
+    @FXML
+    private TableView<Tourney> tbvTourney;
+    @FXML
+    private TableColumn<Tourney, String> tclTourney;
+    @FXML
+    private TableColumn<Tourney, String> tclTourneySportType;
+    @FXML
+    private MFXButton btnAccept;
+    @FXML
+    private MFXTextField txtName;
 
     @FXML
     private void OnActionBtnModify(ActionEvent event) {
         Sport selectedSport = tbvSport.getSelectionModel().getSelectedItem();
         Team selectedTeam = tbvTeams.getSelectionModel().getSelectedItem();
+        selectedTourney = tbvTourney.getSelectionModel().getSelectedItem();
         if (isSport) {
             SportSelectedModify(selectedSport);
+        } else if (isTourney) {
+            selectedTourney = SearchTourneyModify(selectedTourney);
+            if (selectedTourney != null) {
+                EnabledBtnAccept(true);
+                EnabledModifyTourney(true);
+                txtName.setText(selectedTourney.getName());
+            } else {
+                message.show(Alert.AlertType.WARNING, "Alerta", "No ha seleccionado ningun equipo para modificar");
+            }
         } else {
             TeamSelectedModify(selectedTeam);
         }
@@ -74,13 +98,30 @@ public class MaintenanceController extends Controller implements Initializable {
 
     @FXML
     private void OnActionBtnCancel(ActionEvent event) {
+        if (isTourney) {
+            EnabledModifyTourney(false);
+        }
         Clean();
     }
 
     @FXML
+    private void OnActionBtnAccept(ActionEvent event) {
+        selectedTourney.setName(txtName.getText());
+        fileManeger.serialization(tourneyList, "Tourney");
+        EnabledModifyTourney(false);
+        Clean();
+        InitialConditionsPanel();
+    }
+
+    @FXML
     private void OnActionCmbSportSearch(ActionEvent event) {
-        teamList.clear();
-        teamList = ListLeakedTeams();
+        if (isTourney) {
+            tourneyList.clear();
+            tourneyList = ListLeakedTourney();
+        } else {
+            teamList.clear();
+            teamList = ListLeakedTeams();
+        }
         TableInitialize();
     }
 
@@ -89,6 +130,8 @@ public class MaintenanceController extends Controller implements Initializable {
         if (!txtNameSearch.getText().isBlank()) {
             if (isSport) {
                 FilterSportName();
+            } else if (isTourney) {
+                FilterTourneyName();
             } else {
                 FilterTeamName();
             }
@@ -144,6 +187,17 @@ public class MaintenanceController extends Controller implements Initializable {
         }
     }
 
+    public void FilterTourneyName() {
+        tourneyList.clear();
+        List<Tourney> list = ListLeakedTourney();
+        String nameSearch = txtNameSearch.getText().trim().toUpperCase();
+        for (Tourney currentTourney : list) {
+            if (currentTourney.getName().toUpperCase().startsWith(nameSearch)) {
+                tourneyList.add(currentTourney);
+            }
+        }
+    }
+
     public void FilterSportName() {
         sportList.clear();
         List<Sport> list = fileManeger.deserialization("Sport", Sport.class);
@@ -170,22 +224,85 @@ public class MaintenanceController extends Controller implements Initializable {
         }
     }
 
+    public List<Tourney> ListLeakedTourney() {
+        if ((cmbSportSearch.getValue() != null) && (!"Todos".equals(cmbSportSearch.getValue().getName()))) {
+            List<Tourney> result = new ArrayList<>();
+            List<Tourney> list = fileManeger.deserialization("Tourney", Tourney.class);
+            for (Tourney currentTourney : list) {
+                if (currentTourney.getSportTypeId() == cmbSportSearch.getValue().getId()) {
+                    result.add(currentTourney);
+                }
+            }
+            return result;
+        } else {
+            return fileManeger.deserialization("Tourney", Tourney.class);
+        }
+    }
+
+    public Tourney SearchTourneyModify(Tourney tourney) {
+        if (tourney != null) {
+            tourneyList = fileManeger.deserialization("Tourney", Tourney.class);
+            for (Tourney currentTourney : tourneyList) {
+                if (tourney.getId() == currentTourney.getId()) {
+                    return currentTourney;
+                }
+            }
+        }
+        return null;
+    }
+
     public void InitializeComboxSportType() {
         ObservableList<Sport> items = FXCollections.observableArrayList(sportList);
         items.add(new Sport("Todos", 0));
         cmbSportSearch.setItems(items);
     }
 
+    public void EnabledModifyTourney(Boolean enabled) {
+        tbvTourney.setDisable(enabled);
+        btnModify.setVisible(!enabled);
+        btnModify.setManaged(!enabled);
+        btnModify.setDisable(enabled);
+        EnabledcmbSport(!enabled);
+        EnabledBtnAccept(enabled);
+        txtNameSearch.setVisible(!enabled);
+        txtNameSearch.setManaged(!enabled);
+        txtNameSearch.setDisable(enabled);
+        txtName.setVisible(enabled);
+        txtName.setManaged(enabled);
+        txtName.setDisable(!enabled);
+    }
+
     public void EnabledTeam(Boolean enabled) {
-        cmbSportSearch.setDisable(!enabled);
-        cmbSportSearch.setVisible(enabled);
-        cmbSportSearch.setManaged(enabled);
         tbvTeams.setVisible(enabled);
         tbvTeams.setManaged(enabled);
         tbvTeams.setDisable(!enabled);
-        tbvSport.setVisible(!enabled);
-        tbvSport.setManaged(!enabled);
-        tbvSport.setDisable(enabled);
+        EnabledBtnAccept(false);
+    }
+
+    public void EnabledSport(Boolean enabled) {
+        tbvSport.setVisible(enabled);
+        tbvSport.setManaged(enabled);
+        tbvSport.setDisable(!enabled);
+        EnabledBtnAccept(false);
+    }
+
+    public void EnabledTourney(Boolean enabled) {
+        tbvTourney.setVisible(enabled);
+        tbvTourney.setManaged(enabled);
+        tbvTourney.setDisable(!enabled);
+        EnabledBtnAccept(false);
+    }
+
+    public void EnabledBtnAccept(Boolean enabled) {
+        btnAccept.setVisible(enabled);
+        btnAccept.setManaged(enabled);
+        btnAccept.setDisable(!enabled);
+    }
+
+    public void EnabledcmbSport(Boolean enabled) {
+        cmbSportSearch.setVisible(enabled);
+        cmbSportSearch.setManaged(enabled);
+        cmbSportSearch.setDisable(!enabled);
     }
 
     public void TableInitialize() {
@@ -194,6 +311,16 @@ public class MaintenanceController extends Controller implements Initializable {
             tbvSport.setItems(sportObservableList);
             tclSport.setCellValueFactory(new PropertyValueFactory<>("Name"));
             tclSport.prefWidthProperty().bind(tbvSport.widthProperty().multiply(1));
+        } else if (isTourney) {
+            ObservableList<Tourney> sportObservableList = FXCollections.observableArrayList(tourneyList);
+            tbvTourney.setItems(sportObservableList);
+            tclTourney.setCellValueFactory(new PropertyValueFactory<>("Name"));
+            tclTourneySportType.setCellValueFactory(cellData -> {
+                Sport sport = cellData.getValue().searchSportType();
+                return new SimpleStringProperty(sport.toString());
+            });
+            tclTourney.prefWidthProperty().bind(tbvTourney.widthProperty().multiply(0.50));
+            tclTourneySportType.prefWidthProperty().bind(tbvTourney.widthProperty().multiply(0.50));
         } else {
             ObservableList<Team> sportObservableList = FXCollections.observableArrayList(teamList);
             tbvTeams.setItems(sportObservableList);
@@ -208,20 +335,21 @@ public class MaintenanceController extends Controller implements Initializable {
     }
 
     public void Clean() {
-        tclSport.setCellValueFactory(null);
-        tclTeam.setCellValueFactory(null);
-        tclTeamSportType.setCellValueFactory(null);
-        tbvSport.getItems().clear();
-        tbvTeams.getItems().clear();
         cmbSportSearch.getSelectionModel().clearSelection();
         cmbSportSearch.getItems().clear();
         txtNameSearch.setText("");
+        OnKeyReleasedNameSearch(null);
+        OnActionCmbSportSearch(null);
     }
 
     public void InitialConditionsPanel() {
         labTitle.setText((String) AppContext.getInstance().get("Title"));
         isSport = (Boolean) AppContext.getInstance().get("isSport");
-        EnabledTeam(!isSport);
+        isTourney = (Boolean) AppContext.getInstance().get("isTourney");
+        EnabledSport(isSport);
+        EnabledTourney(isTourney);
+        EnabledTeam(!isSport && !isTourney);
+        EnabledcmbSport(!isSport);
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
@@ -230,6 +358,10 @@ public class MaintenanceController extends Controller implements Initializable {
         file = new File("Team.txt");
         if ((file.exists()) && (file.length() > 0)) {
             teamList = fileManeger.deserialization("Team", Team.class);
+        }
+        file = new File("Tourney.txt");
+        if ((file.exists()) && (file.length() > 0)) {
+            tourneyList = fileManeger.deserialization("Tourney", Tourney.class);
         }
         TableInitialize();
     }
@@ -245,4 +377,5 @@ public class MaintenanceController extends Controller implements Initializable {
         Clean();
         InitialConditionsPanel();
     }
+
 }

@@ -34,6 +34,7 @@
                   <Separator prefWidth="200.0" />
                   <MFXButton fx:id="btnMaintenanceSport" maxWidth="1.7976931348623157E308" onAction="#OnActionBtnMaintenanceSport" text="Deporte" VBox.vgrow="ALWAYS" />
                   <MFXButton fx:id="btnMaintenanceTeam" maxWidth="1.7976931348623157E308" onAction="#OnActionBtnMaintenanceTeam" text="Equipo" VBox.vgrow="ALWAYS" />
+                  <MFXButton fx:id="btnMaintenanceTourney" layoutX="19.0" layoutY="139.0" maxWidth="1.7976931348623157E308" onAction="#OnActionBtnMaintenanceTourney" text="Torneo" />
                </children>
                <VBox.margin>
                   <Insets />

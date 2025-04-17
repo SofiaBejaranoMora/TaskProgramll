@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tourney {
+
     private int id;
     private String name; // Nuevo campo
     private int time;
@@ -26,12 +27,11 @@ public class Tourney {
 
     public Tourney(int id, String name, int time, int sportType, List<Team> teamList) {
         this.id = id;
-        if(name!=null){
-        this.name=name;
-        }else{
-            this.name= "";
+        if (name != null) {
+            this.name = name;
+        } else {
+            this.name = "";
         }
-      
 
         // Validación para time (no negativo)
         if (time < 0) {
@@ -59,7 +59,7 @@ public class Tourney {
                 }
             }
         }
-        
+
         this.continueGame = new Game();
     }
 
@@ -83,7 +83,7 @@ public class Tourney {
     public Game getContinueGame() {
         return continueGame;
     }
-  
+
     public List<Team> getTeamList() {
         return new ArrayList<>(teamList);
     }
@@ -109,13 +109,13 @@ public class Tourney {
         this.sportTypeId = sportType;
     }
 
-   public void setTeamList(List<Team> teamList) {
-    if (teamList == null) {
-        this.teamList = new ArrayList<>();
-    } else {
-        this.teamList = new ArrayList<>(teamList);
+    public void setTeamList(List<Team> teamList) {
+        if (teamList == null) {
+            this.teamList = new ArrayList<>();
+        } else {
+            this.teamList = new ArrayList<>(teamList);
+        }
     }
-}
 
     public void addTeam(Team team) {
         if (team == null) {
@@ -164,7 +164,8 @@ public class Tourney {
                 moveTeamToLoosers(teamList.get(i));
             }
         }
-    }    
+    }
+
     public String returnState() {
         if (teamList.isEmpty() && !loosersList.isEmpty()) {
             return "Finalizado";
@@ -187,30 +188,30 @@ public class Tourney {
 
     @Override
     public String toString() {
-        return "Tourney{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", time=" + time +
-                ", sportType=" + sportTypeId +
-                ", teamList=" + teamList +
-                ", loosersList=" + loosersList +
-                ", state=" + returnState()+
-                '}';
+        return "Tourney{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", time=" + time
+                + ", sportType=" + sportTypeId
+                + ", teamList=" + teamList
+                + ", loosersList=" + loosersList
+                + ", state=" + returnState()
+                + '}';
     }
 
     @JsonIgnore
     public Sport searchSportType() {
-    FileManager fileManager = new FileManager();
-    File file = new File("Sport.txt");
-    
-    if (file.exists() && file.length() > 0) {
-        List<Sport> sportList = fileManager.deserialization("Sport", Sport.class);
-        for (Sport currentSport : sportList) {
-            if (currentSport.getId() == this.sportTypeId) {  
-                return currentSport;
+        FileManager fileManager = new FileManager();
+        File file = new File("Sport.txt");
+
+        if (file.exists() && file.length() > 0) {
+            List<Sport> sportList = fileManager.deserialization("Sport", Sport.class);
+            for (Sport currentSport : sportList) {
+                if (currentSport.getId() == this.sportTypeId) {
+                    return currentSport;
+                }
             }
         }
+        return null;
     }
-    return null;
-}
 }
