@@ -35,7 +35,7 @@
                   <MFXComboBox fx:id="sportsComboBox" onAction="#mostrarTorneos" prefWidth="150.0" text="Deportes" />
                </children>
             </HBox>
-            <TableView fx:id="tourneysTable" prefHeight="150.0" prefWidth="500.0" styleClass="boxLightBlue" stylesheets="@Style.css" visible="false">
+            <TableView fx:id="tourneysTable" prefHeight="150.0" prefWidth="500.0" styleClass="boxLightBlue" stylesheets="@Style.css" visible="false" VBox.vgrow="ALWAYS">
                <columns>
                   <TableColumn fx:id="colTourney" prefWidth="300.0" text="Torneo" />
                   <TableColumn fx:id="colState" prefWidth="200.0" text="Estado" />

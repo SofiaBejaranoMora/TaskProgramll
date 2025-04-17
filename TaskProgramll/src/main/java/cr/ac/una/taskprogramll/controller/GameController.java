@@ -69,7 +69,7 @@ public class GameController extends Controller implements Initializable {
                 timerStarted = true;
                 timer();
                 currentTime.play();
-            }
+            } else currentTime.play();
             mgvBall.setVisible(false);
             Image ballImage = mgvBall.getImage();
             ImageView copyBall = new ImageView(ballImage);
@@ -88,12 +88,7 @@ public class GameController extends Controller implements Initializable {
                         
             ncpRoot.setOnMouseReleased((releaseEvent) -> {
                 copyBall.setCursor(Cursor.DEFAULT);
-                Bounds firstTeam = mgvFirstTeam.localToScene(mgvFirstTeam.getBoundsInLocal());
-                Bounds secondTeam = mgvSecondTeam.localToScene(mgvSecondTeam.getBoundsInLocal());
-                if (firstTeam.contains(releaseEvent.getSceneX(), releaseEvent.getSceneY())) 
-                    counterPoints(1);
-                else if (secondTeam.contains(releaseEvent.getSceneX(), releaseEvent.getSceneY()))
-                    counterPoints(2);
+                counterPoints(releaseEvent);
                 ncpRoot.getChildren().remove(copyBall);
                 mgvBall.setVisible(true);
                 ncpRoot.setOnMouseDragged(null);
@@ -103,19 +98,22 @@ public class GameController extends Controller implements Initializable {
     
     @FXML
     private void onActionBtnOut(ActionEvent event) {
+        currentTime.pause();
         FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
     }
     
     private void chargeImages() {
         mgvBall.setImage(new Image(ResourceUtil.getImagePath(currentSport.getId())));
         mgvFirstTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index).getId())));
+        nameFirstTeam = currentTeamList.get(index).getName();
 
         if (currentRound % 2 != 0) {
             mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index + 1).getId())));
+            nameSecondTeam = currentTeamList.get(index + 1).getName();
 
         } else {
             mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index - 1).getId())));
-
+            nameSecondTeam = currentTeamList.get(index - 1).getName();
         }
     }
     
@@ -136,19 +134,18 @@ public class GameController extends Controller implements Initializable {
         currentTime.setCycleCount(timeLimit);
     }
     
-    private void counterPoints(int goalTo) {
-        switch (goalTo) {
-            case 1 -> {
+    private void counterPoints(MouseEvent releaseEvent) {
+        Bounds firstTeam = mgvFirstTeam.localToScene(mgvFirstTeam.getBoundsInLocal());
+        Bounds secondTeam = mgvSecondTeam.localToScene(mgvSecondTeam.getBoundsInLocal());
+        if (firstTeam.contains(releaseEvent.getSceneX(), releaseEvent.getSceneY())) {
                 counterGoalsFirstTeam++;
                 lblFirstTeam.setText("" + counterGoalsFirstTeam);
                 System.out.println("\nEl balon toca al equipo #1\n");
-            }
-            case 2 -> {
+        }
+        else if (secondTeam.contains(releaseEvent.getSceneX(), releaseEvent.getSceneY())) {
                 counterGoalsSecondTeam++;
                 lblSecondTeam.setText("" + counterGoalsSecondTeam);
                 System.out.println("\nEl balon toca al equipo #2\n");
-            }
-            default -> System.out.println("\nEl balon no toca los equipos...\n");
         }
     }
     
