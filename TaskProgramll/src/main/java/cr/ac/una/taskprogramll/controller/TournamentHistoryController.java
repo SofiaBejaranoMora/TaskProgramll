@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -66,9 +67,9 @@ public class TournamentHistoryController extends Controller implements Initializ
     @FXML
     private TableColumn<Tourney, String> nameColumn;
     @FXML
-    private TableColumn<Tourney, Integer> idColumn;
+    private TableColumn<Tourney, Integer> minutesColumn;
     @FXML
-    private TableColumn<Tourney, String> sportColumn;
+    private TableColumn<Tourney, Sport> sportColumn;
     @FXML
     private TableColumn<Tourney, String> stateColumn;
     
@@ -90,20 +91,19 @@ public class TournamentHistoryController extends Controller implements Initializ
     private MFXButton certificateButton;
     @FXML
     private ImageView certificatePreview;
-
-    private ObservableList<Team> availableTeams;
-    private ObservableList <Tourney> availableTourneys;
-    private final List<Sport> sportList = new ArrayList<>();
-
-    
-    private FileManager fileManeger=new FileManager();
-    private final Mensaje message = new Mensaje();
-
-    @FXML
+      @FXML
     private HBox lobbyIcon;
-    
     @FXML
     private MFXButton btnRefresh;
+
+    private ObservableList<Team> availableTeams=FXCollections.observableArrayList();
+    private ObservableList <Tourney> availableTourneys=FXCollections.observableArrayList();
+    private final List<Sport> sportList = new ArrayList<>();
+    private FileManager fileManeger=new FileManager();
+    private final Mensaje message = new Mensaje();
+    
+
+  
     
     /**
      * Initializes the controller class.
@@ -113,14 +113,38 @@ public class TournamentHistoryController extends Controller implements Initializ
         SetupTableColumns();
         SetupTableItems();
         LoadSportFilterList();
+        LoadTourneyList();
+        setupSportFilterListener();
     }    
     
-    private void SetupTableColumns(){
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        sportColumn.setCellValueFactory(new PropertyValueFactory<>("sportType"));
-        stateColumn.setCellValueFactory(new PropertyValueFactory<>("state"));
-    }
+  private void SetupSportColumns(){
+       sportColumn.setCellValueFactory(cellData -> {
+        Tourney tourney = cellData.getValue();
+        if (tourney != null) {
+            // Retorna el resultado del método searchSportType encapsulado en un ReadOnlyObjectWrapper
+            return new ReadOnlyObjectWrapper<>(tourney.searchSportType());
+        } else {
+            // Si 'tourney' es nulo, devuelve un ReadOnlyObjectWrapper con valor null
+            return new ReadOnlyObjectWrapper<>(null);
+        }
+    });
+  }
+  private void SetupStateColumns(){
+      stateColumn.setCellValueFactory(cellData->{
+          Tourney tourney=cellData.getValue();
+          if(tourney!=null){
+              return new ReadOnlyObjectWrapper<>(tourney.returnState());
+          }
+          return new ReadOnlyObjectWrapper<>(null);
+      });
+  }
+  
+private void SetupTableColumns() {
+    nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    minutesColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
+   SetupStateColumns();
+   SetupSportColumns();
+}
     
     private void SetupTableItems(){
         tournamentTable.setItems(availableTourneys);
@@ -146,7 +170,59 @@ public class TournamentHistoryController extends Controller implements Initializ
          }
     }
  
+    private void LoadTourneyList(){
+        if(AppContext.getInstance().get("tourneys")==null){
+            AppContext.getInstance().set("tourneys", new ArrayList<Tourney>());
+        }
+        @SuppressWarnings("unchecked")
+        List<Tourney>tourneys=(List<Tourney>)AppContext.getInstance().get("tourneys");
+        if(tourneys.isEmpty()){
+            File tourneyFile=new File("Tourney.txt");
+            if(tourneyFile.exists()&&tourneyFile.length()>0){
+                try{
+                    tourneys.addAll(fileManeger.deserialization("Tourney", Tourney.class));
+                }catch(Exception e){
+                    message.show(Alert.AlertType.ERROR, "Error al Cargar Torneos", "No se pudieron cargar los torneos: " + e.getMessage());
+                }
+            }
+        }
+        availableTourneys.addAll(tourneys);
+        tournamentTable.setItems(FXCollections.observableArrayList(availableTourneys));
+    }
     
+    private void setupSportFilterListener(){
+        sportFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldSport, newSport)->{
+        if(newSport!=null){
+            filterTournamentsBySport(newSport);
+        }else{
+            tournamentTable.setItems(availableTourneys);
+        }
+        });
+    }
+    
+   private void filterTournamentsBySport(Sport sport){
+        ObservableList<Tourney> filteredTourneys=FXCollections.observableArrayList();
+        for(Tourney tourney:availableTourneys){
+            if(tourney.getSportTypeId()==sport.getId()){
+                filteredTourneys.add(tourney);
+            }
+        }
+        tournamentTable.setItems(filteredTourneys);
+    }
+   
+   void showTourneyInfo(Tourney tourney){
+       
+   }
+   
+   void tourneySelectionListener(){
+       tournamentTable.getSelectionModel().selectedItemProperty().addListener((obs, oldTourney, newTourney)->{
+           if(newTourney!=null){
+               showTourneyInfo(newTourney);
+           }
+            //sino, no mostrar nada
+       });
+       
+   }
     @Override
     public void initialize() {
     }

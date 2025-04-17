@@ -49,7 +49,7 @@
             <TableView fx:id="tournamentTable" styleClass="TableViewLightdBlue" HBox.hgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="nameColumn" text="Nombre" />
-                    <TableColumn fx:id="idColumn" text="Id" />
+                    <TableColumn fx:id="minutesColumn" text="Minutos" />
                <TableColumn fx:id="sportColumn" text="Deporte" />
                     <TableColumn fx:id="stateColumn" text="Estado" />
                 </columns>
