@@ -23,6 +23,14 @@
     -fx-background-image: url("../resources/GameBackground.jpg");
 }
 
+.FrontTicket {
+    -fx-image: url("../resources/FrontTicket.png");
+}
+
+.BackTicket {
+    -fx-image: url("../resources/BackTicket.png");
+}
+
 .CameraIcon {
     -fx-image: url("../resources/CameraIcon.png");
 }
@@ -53,6 +61,42 @@
 
 .SaveIcon {
     -fx-image: url("../resources/SaveIcon.png");
+}
+
+.StarIcon {
+    -fx-image: url("../resources/StarIcon.png");
+}
+
+.PrintIcon {
+    -fx-image: url("../resources/PrintIcon.png");
+}
+
+.TrophyIcon {
+    -fx-image: url("../resources/TrophyIcon.png");
+}
+
+.TrophyKeysIcon{
+    -fx-image: url("../resources/TrophyKeysIcon.png");
+}
+
+.VSIcon {
+    -fx-image: url("../resources/VSIcon.png");
+}
+
+.ClockIcon {
+    -fx-image: url("../resources/ClockIcon.png");
+}
+
+.LookIcon {
+    -fx-image: url("../resources/LookIcon.png");
+}
+
+.GameIcon {
+    -fx-image: url("../resources/GameIcon.png");
+}
+
+.PixelStadium {
+    -fx-image: url("../resources/PixelStadium.png");
 }
 
 .StoreBackground,

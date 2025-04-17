@@ -156,32 +156,37 @@ public class MatchTeamsController extends Controller implements Initializable {
      }
      
      private void adjustingTable(Team winnerTeam){
-         if (2 == currentTeamList.size()) currentRound = 6;
+         //if (2 == currentTeamList.size()) currentRound = 6;
          switch (currentRound) {
              case 1 -> {
-                 round2.addLast(winnerTeam);
+                 round2.addFirst(winnerTeam);
                  clmnRound2.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round2);
+                 index += 2;
             }
              case 2 -> {
                  round3.addLast(winnerTeam);
                  clmnRound3.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round3);
+                 index -= 2;
             }
              case 3 -> {
                  round4.addLast(winnerTeam);
                  clmnRound4.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round4);
-            }
+                 index += 2;
+             }
              case 4 -> {
                  round5.addLast(winnerTeam);
                  clmnRound5.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round5);
+                 index -= 2;
             }
              case 5 -> {
                  round6.addLast(winnerTeam);
                  clmnRound6.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round6);
+                 index += 2;
             }
              case 6 -> {
                  winner.addLast(winnerTeam);
@@ -235,7 +240,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                     continueGameParameters();
             }
         } else {
-        Team winerTeam = (Team) AppContext.getInstance().get("CurrentTourney");
+        Team winerTeam = (Team) AppContext.getInstance().get("WinnerTeam");
         adjustingTable(winerTeam);
         }
     }

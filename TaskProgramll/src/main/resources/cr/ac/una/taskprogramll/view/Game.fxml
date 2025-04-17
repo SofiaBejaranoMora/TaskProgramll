@@ -7,6 +7,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane fx:id="ncpRoot" prefHeight="410.0" prefWidth="600.0" styleClass="GameBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.GameController">
@@ -31,22 +32,25 @@
             <HBox alignment="CENTER" prefHeight="200.0" prefWidth="760.0" VBox.vgrow="ALWAYS">
                <children>
                   <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                  <ImageView fx:id="mgvFirstTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
+                  <StackPane prefHeight="150.0" prefWidth="200.0">
+                     <children>
+                        <ImageView fx:id="mgvFirstTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <viewport>
+                              <Rectangle2D />
+                           </viewport>
+                        </ImageView>
+                        <ImageView id="StarIcon" fx:id="mgvWinFirstTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" />
+                     </children>
+                  </StackPane>
                   <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                   <ImageView fx:id="mgvBall" fitHeight="50.0" fitWidth="50.0" onDragDetected="#onDragDetectedMgvBall" pickOnBounds="true" preserveRatio="true" />
                   <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                  <ImageView fx:id="mgvSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="ALWAYS">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                  </ImageView>
+                  <StackPane prefHeight="150.0" prefWidth="200.0">
+                     <children>
+                        <ImageView fx:id="mgvSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView id="StarIcon" fx:id="mgvWinSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" />
+                     </children>
+                  </StackPane>
                   <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                </children>
                <VBox.margin>

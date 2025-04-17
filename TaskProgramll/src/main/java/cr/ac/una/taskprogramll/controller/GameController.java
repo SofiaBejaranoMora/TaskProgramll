@@ -37,6 +37,7 @@ public class GameController extends Controller implements Initializable {
     private Sport currentSport;
     private Timeline currentTime;
     private Boolean timerStarted = false;
+    private Boolean isFinished = false;
     private String nameFirstTeam = "";
     private String nameSecondTeam = "";
     private int index = 0;
@@ -58,6 +59,10 @@ public class GameController extends Controller implements Initializable {
     private ImageView mgvBall;
     @FXML
     private ImageView mgvSecondTeam;
+    @FXML
+    private ImageView mgvWinFirstTeam;
+    @FXML
+    private ImageView mgvWinSecondTeam;
     @FXML
     private Label lblTimer;
     @FXML
@@ -98,11 +103,18 @@ public class GameController extends Controller implements Initializable {
     
     @FXML
     private void onActionBtnOut(ActionEvent event) {
-        currentTime.pause();
-        FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
+        if(!isFinished) {
+            currentTime.pause();
+            FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
+        }
+        else {
+            FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
+        }
     }
     
     private void chargeImages() {
+        mgvWinFirstTeam.setVisible(false);
+        mgvWinSecondTeam.setVisible(false);
         mgvBall.setImage(new Image(ResourceUtil.getImagePath(currentSport.getId())));
         mgvFirstTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index).getId())));
         nameFirstTeam = currentTeamList.get(index).getName();
@@ -127,7 +139,9 @@ public class GameController extends Controller implements Initializable {
                 timeCalculate++;
                 lblTimer.setText(timerFormat(timeCalculate));
             } else {
+                isFinished = true;
                 currentTime.stop();
+                mgvBall.setVisible(false);
                 afterGame();
             }
         }));
@@ -149,44 +163,25 @@ public class GameController extends Controller implements Initializable {
         }
     }
     
-    private void winnerAnimatic(ImageView winner){
-        Image toRize = winner.getImage();
-        winner.setFitWidth(toRize.getWidth() * 1.15);
-        winner.setFitHeight(toRize.getHeight()* 1.15);
-        ColorAdjust greenTone = new ColorAdjust();
-        greenTone.setHue(0.3);             //Ajusta el tono a un verde
-        greenTone.setBrightness(0.2);   //Aclara levemente
-        winner.setEffect(greenTone);
-    }
-
-    private void looserAnimatic(ImageView looser){
-        Image toRize = looser.getImage();
-        looser.setFitWidth(toRize.getWidth() * 0.85);
-        looser.setFitHeight(toRize.getHeight()* 0.85);
-        ColorAdjust redTone = new ColorAdjust();
-        redTone.setHue(-0.55);             //Ajusta el tono a un rojo
-        redTone.setBrightness(0.2);      //Aclara levemente
-        looser.setEffect(redTone);
-    }
-    
     private void drawAnimatic(){}
     
     private void afterGame() {
         if (counterGoalsFirstTeam > counterGoalsSecondTeam){
+            mgvWinFirstTeam.setVisible(true);
             currentTourney.winnerAndLooser(nameFirstTeam, counterGoalsFirstTeam, 3, nameSecondTeam, counterGoalsSecondTeam);
             AppContext.getInstance().set("WinnerTeam", currentTeamList.get(index));
-            winnerAnimatic(mgvFirstTeam);
-            looserAnimatic(mgvSecondTeam);
+            resetGame();
             
         } else if (counterGoalsFirstTeam < counterGoalsSecondTeam) {
+            mgvWinSecondTeam.setVisible(true);
             currentTourney.winnerAndLooser(nameSecondTeam, counterGoalsSecondTeam, 3, nameFirstTeam, counterGoalsFirstTeam);
             if (currentRound % 2 != 0) AppContext.getInstance().set("WinnerTeam", currentTeamList.get(index + 1));
             else AppContext.getInstance().set("WinnerTeam", currentTeamList.get(index - 1));
-            winnerAnimatic(mgvSecondTeam);
-            looserAnimatic(mgvFirstTeam);
+            resetGame();
             
-        } else {/*Animatica de empate*/}
-        resetGame();
+        } else {/*Animatica de empate*/
+            resetGame();
+        }
     }
     
     private void resetGame() {
