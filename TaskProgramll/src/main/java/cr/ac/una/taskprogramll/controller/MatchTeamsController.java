@@ -64,15 +64,20 @@ public class MatchTeamsController extends Controller implements Initializable {
         FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
     }
 
-    @FXML
-    private void onActionBtnStart(ActionEvent event) {
-        Team winnerTeam = (Team) AppContext.getInstance().get("WinnerTeam");
-        AppContext.getInstance().delete("WinnerTeam");
-        if(winnerTeam != null) adjustingTable(winnerTeam);
-        encounter();
-        AppContext.getInstance().set("CurrentTourney", currentTourney);
-        FlowController.getInstance().goViewInStage("Game", (Stage) btnStart.getScene().getWindow());
+   @FXML
+private void onActionBtnStart(ActionEvent event) {
+    Team winnerTeam = (Team) AppContext.getInstance().get("WinnerTeam");
+    AppContext.getInstance().delete("WinnerTeam");
+    if (winnerTeam != null) {
+        adjustingTable(winnerTeam);
     }
+    if (!encounter()) {
+        // Si no hay más enfrentamientos en la ronda actual, no vamos a Game
+        return;
+    }
+    AppContext.getInstance().set("CurrentTourney", currentTourney);
+    FlowController.getInstance().goViewInStage("Game", (Stage) btnStart.getScene().getWindow());
+}
     
      private int discoverRounds() {
         if (globalSize == 2) return 1;
@@ -132,69 +137,128 @@ public class MatchTeamsController extends Controller implements Initializable {
          }
      }
      
-     private void encounter() {
-         if (currentTeamList.get(index) != null){
-             currentTourney.getContinueGame().setContinueIndexTeam(index);
-             currentTourney.getContinueGame().setCurrentRound(currentRound);
-         }
-         else if (currentRound % 2 != 0){
-             if (currentTeamList.get(index + 1) != null)
-                 adjustingTable(currentTeamList.get(index + 1));
-         }
-         else if (currentRound % 2 == 0){
-             if (currentTeamList.get(index - 1) != null)
-                 adjustingTable(currentTeamList.get(index - 1));
-         }
-         else {
-             adjustingTable(currentTeamList.get(index));
-             currentRound++;
-             encounter();
-         }
-     }
-     
-     private void adjustingTable(Team winnerTeam){
-         //if (2 == currentTeamList.size()) currentRound = 6;
-         switch (currentRound) {
-             case 1 -> {
-                 round2.addFirst(winnerTeam);
-                 System.out.println("Avanzo el equipo " + winnerTeam.getName() + " a la segunda ronda.");
-                 clmnRound2.setCellValueFactory(new PropertyValueFactory<>("name"));
-                 tblPlayersTable.setItems(round2);
-                 index += 2;
+private boolean encounter() {
+    // Si no hay suficientes equipos para un enfrentamiento, no continuamos
+    if (index + 1 >= currentTeamList.size()) {
+        // Si no hay más enfrentamientos en esta ronda, reiniciar índice y preparar próxima ronda
+        index = 0;
+        return false; // No hay enfrentamiento, no ir a Game
+    }
+
+    // Guardar el estado actual del enfrentamiento
+    currentTourney.getContinueGame().setContinueIndexTeam(index);
+    currentTourney.getContinueGame().setCurrentRound(currentRound);
+    currentTourney.getContinueGame().setContinueIdTeam(currentTeamList.get(index).getId());
+
+    // Pasar los equipos que se enfrentan a la vista Game
+    AppContext.getInstance().set("Team1", currentTeamList.get(index));
+    AppContext.getInstance().set("Team2", currentTeamList.get(index + 1));
+
+    return true; // Hay enfrentamiento, ir a Game
+}
+
+private void adjustingTable(Team winnerTeam) {
+    int teamsInNextRound;
+    switch (currentRound) {
+        case 1 -> {
+            round2.addFirst(winnerTeam);
+            System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la segunda ronda.");
+            clmnRound2.setCellValueFactory(new PropertyValueFactory<>("name"));
+            tblPlayersTable.setItems(round2);
+            index += 2;
+            teamsInNextRound = globalSize / 2;
+            if (round2.size() == teamsInNextRound) {
+                currentRound = 2;
+                currentTeamList.clear();
+                currentTeamList.addAll(round2);
+                index = 0;
+                currentTourney.getContinueGame().getRound2().clear();
+                currentTourney.getContinueGame().getRound2().addAll(round2);
+                System.out.println("Ronda 1 completada. Avanzando a la ronda 2.");
             }
-             case 2 -> {
-                 round3.addLast(winnerTeam);
-                 clmnRound3.setCellValueFactory(new PropertyValueFactory<>("name"));
-                 tblPlayersTable.setItems(round3);
-                 index -= 2;
+        }
+        case 2 -> {
+            round3.addLast(winnerTeam);
+            System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la tercera ronda.");
+            clmnRound3.setCellValueFactory(new PropertyValueFactory<>("name"));
+            tblPlayersTable.setItems(round3);
+            index += 2;
+            teamsInNextRound = globalSize / 4;
+            if (round3.size() == teamsInNextRound) {
+                currentRound = 3;
+                currentTeamList.clear();
+                currentTeamList.addAll(round3);
+                index = 0;
+                currentTourney.getContinueGame().getRound3().clear();
+                currentTourney.getContinueGame().getRound3().addAll(round3);
+                System.out.println("Ronda 2 completada. Avanzando a la ronda 3.");
             }
-             case 3 -> {
-                 round4.addLast(winnerTeam);
-                 clmnRound4.setCellValueFactory(new PropertyValueFactory<>("name"));
-                 tblPlayersTable.setItems(round4);
-                 index += 2;
-             }
-             case 4 -> {
-                 round5.addLast(winnerTeam);
-                 clmnRound5.setCellValueFactory(new PropertyValueFactory<>("name"));
-                 tblPlayersTable.setItems(round5);
-                 index -= 2;
+        }
+        case 3 -> {
+            round4.addLast(winnerTeam);
+            System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la cuarta ronda.");
+            clmnRound4.setCellValueFactory(new PropertyValueFactory<>("name"));
+            tblPlayersTable.setItems(round4);
+            index += 2;
+            teamsInNextRound = globalSize / 8;
+            if (round4.size() == teamsInNextRound) {
+                currentRound = 4;
+                currentTeamList.clear();
+                currentTeamList.addAll(round4);
+                index = 0;
+                currentTourney.getContinueGame().getRound4().clear();
+                currentTourney.getContinueGame().getRound4().addAll(round4);
+                System.out.println("Ronda 3 completada. Avanzando a la ronda 4.");
             }
-             case 5 -> {
-                 round6.addLast(winnerTeam);
-                 clmnRound6.setCellValueFactory(new PropertyValueFactory<>("name"));
-                 tblPlayersTable.setItems(round6);
-                 index += 2;
+        }
+        case 4 -> {
+            round5.addLast(winnerTeam);
+            System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la quinta ronda.");
+            clmnRound5.setCellValueFactory(new PropertyValueFactory<>("name"));
+            tblPlayersTable.setItems(round5);
+            index += 2;
+            teamsInNextRound = globalSize / 16;
+            if (round5.size() == teamsInNextRound) {
+                currentRound = 5;
+                currentTeamList.clear();
+                currentTeamList.addAll(round5);
+                index = 0;
+                currentTourney.getContinueGame().getRound5().clear();
+                currentTourney.getContinueGame().getRound5().addAll(round5);
+                System.out.println("Ronda 4 completada. Avanzando a la ronda 5.");
             }
-             case 6 -> {
-                 winner.addLast(winnerTeam);
-                 clmnFinal.setCellValueFactory(new PropertyValueFactory<>("name"));
-                 tblPlayersTable.setItems(winner);
+        }
+        case 5 -> {
+            round6.addLast(winnerTeam);
+            System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la sexta ronda.");
+            clmnRound6.setCellValueFactory(new PropertyValueFactory<>("name"));
+            tblPlayersTable.setItems(round6);
+            index += 2;
+            teamsInNextRound = globalSize / 32;
+            if (round6.size() == teamsInNextRound) {
+                currentRound = 6;
+                currentTeamList.clear();
+                currentTeamList.addAll(round6);
+                index = 0;
+                currentTourney.getContinueGame().getRound6().clear();
+                currentTourney.getContinueGame().getRound6().addAll(round6);
+                System.out.println("Ronda 5 completada. Avanzando a la ronda 6.");
             }
-             default -> throw new AssertionError();
-         }
-     }
-     
+        }
+        case 6 -> {
+            winner.addLast(winnerTeam);
+            System.out.println("¡El equipo " + winnerTeam.getName() + " es el ganador del torneo!");
+            clmnFinal.setCellValueFactory(new PropertyValueFactory<>("name"));
+            tblPlayersTable.setItems(winner);
+            currentTourney.getContinueGame().getWinner().clear();
+            currentTourney.getContinueGame().getWinner().addAll(winner);
+            System.out.println("Torneo finalizado.");
+        }
+        default -> throw new AssertionError();
+    }
+    currentTourney.getContinueGame().setCurrentRound(currentRound);
+}
+
      private void startGameParameters() {
          globalSize = currentTeamList.size();
          currentTourney.getContinueGame().setGlobalSize(globalSize);
@@ -212,8 +276,21 @@ public class MatchTeamsController extends Controller implements Initializable {
          round6.setAll(currentTourney.getContinueGame().getRound6());
          winner.setAll(currentTourney.getContinueGame().getWinner());
          index = currentTourney.getContinueGame().getContinueIndexTeam();
-         if (currentTeamList.get(index).getId() != currentTourney.getContinueGame().getContinueIdTeam()){
-             
+         switch(currentRound){
+             case 1 ->
+                 currentTeamList = round1;
+             case 2 ->
+                 currentTeamList = round2;
+             case 3 ->
+                 currentTeamList = round3;
+             case 4 ->
+                 currentTeamList = round4;
+             case 5 ->
+                 currentTeamList = round5;
+             case 6 ->
+                 currentTeamList = round6;
+             default ->
+                 currentTeamList = winner;             
          }
      }
      

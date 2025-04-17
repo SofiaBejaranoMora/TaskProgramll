@@ -225,6 +225,7 @@ public class CreateTourneyController extends Controller implements Initializable
         if (name.isEmpty() || time.isEmpty()) return "Todos los campos son obligatorios.";
         if (!IsValidNumericInput(time)) return "El tiempo del partido debe ser un número válido entre 1 y 180 minutos.";
         if (teams.isEmpty()) return "Debes seleccionar al menos un equipo.";
+        if(teams.size()<1) return "El minimo de equipos en un torneo es 2.";
         if (selectedSport == null) return "Debes seleccionar un tipo de deporte.";
         return null;
     }
@@ -235,7 +236,6 @@ public class CreateTourneyController extends Controller implements Initializable
             String tourneyName = txtTourneyName.getText().trim();
             String matchTime = txtMatchTime.getText().trim();
             Sport selectedSport = tglLstSportType.getValue();
-
             String errorMessage = CheckInputs(tourneyName, matchTime, selectedTeams, selectedSport);
             if (errorMessage != null) {
                 message.show(Alert.AlertType.ERROR, "Error de Validación", errorMessage);
