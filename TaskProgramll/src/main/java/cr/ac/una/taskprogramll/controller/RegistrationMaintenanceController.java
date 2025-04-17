@@ -38,6 +38,8 @@ public class RegistrationMaintenanceController extends Controller implements Ini
     private MFXButton btnMaintenanceTeam;
     @FXML
     private ImageView LobbyIcon;
+    @FXML
+    private MFXButton btnMaintenanceTourney;
 
     @FXML
     private void OnActionBtnRegistrationSport(ActionEvent event) {
@@ -45,6 +47,7 @@ public class RegistrationMaintenanceController extends Controller implements Ini
         if (existImage) {
             AppContext.getInstance().set("isSport", true);
             AppContext.getInstance().set("isMaintenace", false);
+            AppContext.getInstance().set("isTourney", false);
             AppContext.getInstance().set("Title", "Registro de " + btnRegistrationSport.getText());
             FlowController.getInstance().goView("RegistrationModify");
         } else {
@@ -63,12 +66,16 @@ public class RegistrationMaintenanceController extends Controller implements Ini
                 if (!content.equals("[]") && !content.isEmpty()) {
                     AppContext.getInstance().set("isSport", false);
                     AppContext.getInstance().set("isMaintenace", false);
+                    AppContext.getInstance().set("isTourney", false);
                     AppContext.getInstance().set("Title", "Registro de " + btnRegistrationTeam.getText());
                     FlowController.getInstance().goView("RegistrationModify");
                 } else {
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "No puede registrar equipos porque aún no ha registrado ningún deporte. Por favor, registre al menos un deporte primero.");
                 }
             }
+            else {
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
+                }
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
         }
@@ -85,12 +92,16 @@ public class RegistrationMaintenanceController extends Controller implements Ini
                 if (!content.equals("[]") && !content.isEmpty()) {
                     AppContext.getInstance().set("isSport", true);
                     AppContext.getInstance().set("isMaintenace", true);
+                    AppContext.getInstance().set("isTourney", false);
                     AppContext.getInstance().set("Title", "Mantenimiento de " + btnMaintenanceSport.getText());
                     FlowController.getInstance().goView("Maintenance");
                 } else {
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay deportes registrados para realizar mantenimiento. Por favor, registre al menos un deporte primero.");
                 }
             }
+            else {
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
+                }
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
         }
@@ -107,12 +118,40 @@ public class RegistrationMaintenanceController extends Controller implements Ini
                 if (!content.equals("[]") && !content.isEmpty()) {
                     AppContext.getInstance().set("isSport", false);
                     AppContext.getInstance().set("isMaintenace", true);
+                    AppContext.getInstance().set("isTourney", false);
                     AppContext.getInstance().set("Title", "Mantenimiento de " + btnMaintenanceTeam.getText());
                     FlowController.getInstance().goView("Maintenance");
                 } else {
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
                 }
-            }
+            } else {
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
+                }
+        } else {
+            message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
+        }
+        EnabledButton(existImage);
+    }
+
+    @FXML
+    private void OnActionBtnMaintenanceTourney(ActionEvent event) throws IOException {
+        existImage = (Boolean) AppContext.getInstance().get("ExistImage");
+        if (existImage) {
+            file = new File("Tourney.txt");
+            if ((file.exists()) && (file.length() > 0)) {
+                String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
+                if (!content.equals("[]") && !content.isEmpty()) {
+                    AppContext.getInstance().set("isSport", false);
+                    AppContext.getInstance().set("isTourney", true);
+                    AppContext.getInstance().set("isMaintenace", true);
+                    AppContext.getInstance().set("Title", "Mantenimiento de " + btnMaintenanceTourney.getText());
+                    FlowController.getInstance().goView("Maintenance");
+                } else {
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
+                }
+            } else {
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
+                }
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
         }
