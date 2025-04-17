@@ -7,6 +7,7 @@ import cr.ac.una.taskprogramll.util.FlowController;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -101,18 +102,9 @@ public class MatchTeamsController extends Controller implements Initializable {
      
      private void distributionOnTable() {
          disableFilterOrSelection();
-         List<Team> randomDistribution = new ArrayList<>();
-         int roundSize = currentTeamList.size();
-         
-         while(randomDistribution.size() != currentTeamList.size()){
-             Random randomTeam = new Random();
-             int randomChossenTeam = randomTeam.nextInt(roundSize);
-             if(!alredyChoosedTeam(currentTeamList.get(randomChossenTeam).getName()))
-                 randomDistribution.add(currentTeamList.get(randomChossenTeam));
-         } 
-         currentTeamList.clear();
-         currentTeamList.addAll(randomDistribution);
-         
+        Collections.shuffle(currentTeamList);         
+         currentTourney.getTeamList().clear();
+         currentTourney.setTeamList(currentTeamList);         
          round1.setAll(currentTeamList);
          clmnRound1.setCellValueFactory(new PropertyValueFactory<>("name"));
          tblPlayersTable.setItems(round1);
