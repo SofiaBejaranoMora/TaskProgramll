@@ -52,6 +52,7 @@
                     <TableColumn fx:id="minutesColumn" text="Minutos" />
                <TableColumn fx:id="sportColumn" text="Deporte" />
                     <TableColumn fx:id="stateColumn" text="Estado" />
+               <TableColumn fx:id="winnerColumn" text="Ganador" />
                 </columns>
             <columnResizePolicy>
                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

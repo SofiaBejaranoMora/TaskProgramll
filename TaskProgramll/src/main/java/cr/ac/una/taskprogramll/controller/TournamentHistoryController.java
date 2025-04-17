@@ -72,6 +72,8 @@ public class TournamentHistoryController extends Controller implements Initializ
     private TableColumn<Tourney, Sport> sportColumn;
     @FXML
     private TableColumn<Tourney, String> stateColumn;
+      @FXML
+    private TableColumn<Tourney, String> winnerColumn;
     
     @FXML
     private VBox detailsPanel;
@@ -95,12 +97,14 @@ public class TournamentHistoryController extends Controller implements Initializ
     private HBox lobbyIcon;
     @FXML
     private MFXButton btnRefresh;
+  
 
     private ObservableList<Team> availableTeams=FXCollections.observableArrayList();
     private ObservableList <Tourney> availableTourneys=FXCollections.observableArrayList();
     private final List<Sport> sportList = new ArrayList<>();
     private FileManager fileManeger=new FileManager();
     private final Mensaje message = new Mensaje();
+    
     
 
   
@@ -139,9 +143,29 @@ public class TournamentHistoryController extends Controller implements Initializ
       });
   }
   
+ private void SetupWinnnerColumn() {
+    winnerColumn.setCellValueFactory(cellData -> {
+        Tourney tourney = cellData.getValue();
+        if (tourney != null) {
+            if ("Finalizado".equals(tourney.returnState())) {
+                // Verificar si la lista de perdedores no es nula ni está vacía
+                if (tourney.getLoosersList() != null && !tourney.getLoosersList().isEmpty()) {
+                    String winner = tourney.getLoosersList().getFirst().toString();
+                    return new ReadOnlyObjectWrapper<>(winner); 
+                } else {
+                    return new ReadOnlyObjectWrapper<>("Sin ganador");
+                }
+            } else {
+                return new ReadOnlyObjectWrapper<>("Pendiente"); 
+            }
+        }
+        return new ReadOnlyObjectWrapper<>(null);
+    });
+}
 private void SetupTableColumns() {
     nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     minutesColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
+    SetupWinnnerColumn();
    SetupStateColumns();
    SetupSportColumns();
 }
