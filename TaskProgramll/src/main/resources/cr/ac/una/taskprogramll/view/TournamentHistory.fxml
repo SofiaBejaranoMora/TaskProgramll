@@ -3,6 +3,8 @@
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -12,13 +14,33 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="rootPane" styleClass="StadiumStandBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.TournamentHistoryController">
+<AnchorPane fx:id="rootPane" prefWidth="664.0" styleClass="StadiumStandBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.TournamentHistoryController">
     <VBox fx:id="mainContainer" alignment="TOP_CENTER" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <VBox fx:id="header" alignment="CENTER" spacing="15.0" styleClass="header" VBox.vgrow="NEVER">
-            <Label fx:id="titleLabel" styleClass="LargeLabel" text="Historial de Torneos" />
+         <HBox prefHeight="100.0" prefWidth="200.0">
+            <children>
+               <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                  <Label fx:id="titleLabel" styleClass="LargeLabel" text="Historial de Torneos" />
+               <HBox alignment="BOTTOM_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="215.0" HBox.hgrow="ALWAYS">
+                  <children>
+                     <HBox fx:id="lobbyIcon" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" stylesheets="@Style.css">
+                        <children>
+                           <ImageView fitHeight="69.0" fitWidth="104.0" pickOnBounds="true" preserveRatio="true" styleClass="LobbyIcon" />
+                        </children></HBox>
+                  </children>
+                  <opaqueInsets>
+                     <Insets right="10.0" />
+                  </opaqueInsets>
+               </HBox>
+            </children>
+         </HBox>
             <HBox fx:id="filters" alignment="CENTER" maxWidth="Infinity" spacing="15.0">
-                <MFXTextField fx:id="teamSearch" floatingText="Buscar equipo (nombre o ID)" styleClass="mfx-text-field" HBox.hgrow="ALWAYS" />
-                <MFXComboBox fx:id="sportFilter" floatingText="Deporte" prefWidth="200.0" styleClass="mfx-combo-box" />
+                <MFXTextField fx:id="teamSearch" floatingText="Buscar equipo (nombre o ID)" styleClass="mfx-text-field" stylesheets="@Style.css" HBox.hgrow="ALWAYS" />
+                <MFXComboBox fx:id="sportFilter" floatingText="Deporte" prefWidth="200.0">
+               <styleClass>
+                  <String fx:value="mfx-combo-box" />
+                  <String fx:value="boxLightBlue" />
+               </styleClass></MFXComboBox>
                 <MFXButton fx:id="searchButton" styleClass="mfx-button" text="Buscar" />
                 <MFXButton fx:id="clearButton" styleClass="mfx-button" text="Limpiar" />
             </HBox>
@@ -27,8 +49,9 @@
             <TableView fx:id="tournamentTable" styleClass="TableViewLightdBlue" HBox.hgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="nameColumn" text="Nombre" />
-                    <TableColumn fx:id="dateColumn" text="Fecha" />
-                    <TableColumn fx:id="positionColumn" text="Posición" />
+                    <TableColumn fx:id="idColumn" text="Id" />
+               <TableColumn fx:id="sportColumn" text="Deporte" />
+                    <TableColumn fx:id="stateColumn" text="Estado" />
                 </columns>
             <columnResizePolicy>
                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -43,6 +66,9 @@
             </VBox>
         </HBox>
         <HBox fx:id="footer" alignment="CENTER" spacing="20.0" styleClass="footer" VBox.vgrow="NEVER">
+         <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" />
+         <MFXButton fx:id="btnRefresh" styleClass="mfx-button" stylesheets="@Style.css" text="Refrescar" />
+         <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
             <MFXButton fx:id="certificateButton" disable="true" styleClass="mfx-button" text="Generar Certificado">
                 <graphic>
                     <ImageView fx:id="certificatePreview" fitHeight="24.0" fitWidth="24.0" preserveRatio="true" styleClass="preview">
@@ -52,6 +78,7 @@
                     </ImageView>
                 </graphic>
             </MFXButton>
+         <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" />
         </HBox>
     </VBox>
 </AnchorPane>
