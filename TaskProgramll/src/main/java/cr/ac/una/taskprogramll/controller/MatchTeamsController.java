@@ -6,10 +6,8 @@ import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,7 +24,6 @@ public class MatchTeamsController extends Controller implements Initializable {
 
     private Tourney currentTourney;
     private List<Team> currentTeamList;
-    private List<String> randomChooseTeam = new ArrayList<>();
     private Boolean isFirstOpen = false;
     private int index = 0;
     private int currentRound = 1;
@@ -69,17 +66,12 @@ public class MatchTeamsController extends Controller implements Initializable {
 
     @FXML
     private void onActionBtnStart(ActionEvent event) {
+        Team winnerTeam = (Team) AppContext.getInstance().get("WinnerTeam");
+        AppContext.getInstance().delete("WinnerTeam");
+        if(winnerTeam != null) adjustingTable(winnerTeam);
         encounter();
         AppContext.getInstance().set("CurrentTourney", currentTourney);
         FlowController.getInstance().goViewInStage("Game", (Stage) btnStart.getScene().getWindow());
-    }
-    
-    private Boolean alredyChoosedTeam(String name){
-        if (randomChooseTeam.contains(name)) return true;
-        else {
-            randomChooseTeam.add(name);
-            return false;
-        }
     }
     
      private int discoverRounds() {
@@ -105,6 +97,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         Collections.shuffle(currentTeamList);         
          currentTourney.getTeamList().clear();
          currentTourney.setTeamList(currentTeamList);         
+         currentTourney.getContinueGame().getRound1().addAll(round1);
          round1.setAll(currentTeamList);
          clmnRound1.setCellValueFactory(new PropertyValueFactory<>("name"));
          tblPlayersTable.setItems(round1);
@@ -152,7 +145,11 @@ public class MatchTeamsController extends Controller implements Initializable {
              if (currentTeamList.get(index - 1) != null)
                  adjustingTable(currentTeamList.get(index - 1));
          }
-         else currentRound++;
+         else {
+             adjustingTable(currentTeamList.get(index));
+             currentRound++;
+             encounter();
+         }
      }
      
      private void adjustingTable(Team winnerTeam){
@@ -160,6 +157,7 @@ public class MatchTeamsController extends Controller implements Initializable {
          switch (currentRound) {
              case 1 -> {
                  round2.addFirst(winnerTeam);
+                 System.out.println("Avanzo el equipo " + winnerTeam.getName() + " a la segunda ronda.");
                  clmnRound2.setCellValueFactory(new PropertyValueFactory<>("name"));
                  tblPlayersTable.setItems(round2);
                  index += 2;
@@ -225,24 +223,19 @@ public class MatchTeamsController extends Controller implements Initializable {
      }
      
     public void initializeFromAppContext() {
-        if (!isFirstOpen) {
-            isFirstOpen = true;
-            this.currentTourney = (Tourney) AppContext.getInstance().get("SelectedTourney");
-            this.currentTeamList = currentTourney.getTeamList();
-            switch (currentTourney.returnState()) {
-                case "Sin Empezar" ->
-                    startGameParameters();
-                case "En Proceso" ->
-                    continueGameParameters();
-                case "Finalizado" ->
-                    viewGameTable();
-                default ->
-                    continueGameParameters();
-            }
-        } else {
-        Team winerTeam = (Team) AppContext.getInstance().get("WinnerTeam");
-        adjustingTable(winerTeam);
+        this.currentTourney = (Tourney) AppContext.getInstance().get("SelectedTourney");
+        this.currentTeamList = currentTourney.getTeamList();
+        switch (currentTourney.returnState()) {
+            case "Sin Empezar" ->
+                startGameParameters();
+            case "En Proceso" ->
+                continueGameParameters();
+            case "Finalizado" ->
+                viewGameTable();
+            default ->
+                continueGameParameters();
         }
+        AppContext.getInstance().delete("SelectedTourney");
     }
      
     @Override

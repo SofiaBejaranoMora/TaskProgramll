@@ -26,16 +26,17 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="NEVER">
                <children>
                   <MFXButton fx:id="btnBack" onAction="#onActionBtnBack" styleClass="mfx-button" stylesheets="@Style.css" text="Regresar" HBox.hgrow="ALWAYS">
                      <HBox.margin>
-                        <Insets right="200.0" />
+                        <Insets />
                      </HBox.margin>
                   </MFXButton>
+                  <HBox prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                   <MFXButton fx:id="btnStart" onAction="#onActionBtnStart" styleClass="mfx-button" stylesheets="@Style.css" text="Empezar" HBox.hgrow="ALWAYS">
                      <HBox.margin>
-                        <Insets left="200.0" />
+                        <Insets />
                      </HBox.margin>
                   </MFXButton>
                </children>

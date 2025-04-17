@@ -20,7 +20,6 @@ import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -75,6 +74,7 @@ public class GameController extends Controller implements Initializable {
                 timer();
                 currentTime.play();
             } else currentTime.play();
+        if (!isFinished) {
             mgvBall.setVisible(false);
             Image ballImage = mgvBall.getImage();
             ImageView copyBall = new ImageView(ballImage);
@@ -89,8 +89,8 @@ public class GameController extends Controller implements Initializable {
                 copyBall.setCursor(Cursor.CLOSED_HAND);
                 copyBall.setLayoutX(dragEvent.getSceneX() - copyBall.getFitWidth() / 2);
                 copyBall.setLayoutY(dragEvent.getSceneY() - copyBall.getFitHeight() / 2);
-            }); 
-                        
+            });
+
             ncpRoot.setOnMouseReleased((releaseEvent) -> {
                 copyBall.setCursor(Cursor.DEFAULT);
                 counterPoints(releaseEvent);
@@ -99,6 +99,7 @@ public class GameController extends Controller implements Initializable {
                 ncpRoot.setOnMouseDragged(null);
                 ncpRoot.setOnMouseReleased(null);
             });
+        }
     }
     
     @FXML
@@ -135,14 +136,13 @@ public class GameController extends Controller implements Initializable {
     
     private void timer() {
         currentTime = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            if (timeCalculate <= timeLimit){
-                timeCalculate++;
-                lblTimer.setText(timerFormat(timeCalculate));
-            } else {
+            timeCalculate++;
+            lblTimer.setText(timerFormat(timeCalculate));
+            if (timeCalculate == timeLimit) {
                 isFinished = true;
-                currentTime.stop();
                 mgvBall.setVisible(false);
                 afterGame();
+                currentTime.stop();
             }
         }));
         currentTime.setCycleCount(timeLimit);
@@ -167,12 +167,14 @@ public class GameController extends Controller implements Initializable {
     
     private void afterGame() {
         if (counterGoalsFirstTeam > counterGoalsSecondTeam){
+            System.out.println("Ganador del partido: " + nameFirstTeam);
             mgvWinFirstTeam.setVisible(true);
             currentTourney.winnerAndLooser(nameFirstTeam, counterGoalsFirstTeam, 3, nameSecondTeam, counterGoalsSecondTeam);
             AppContext.getInstance().set("WinnerTeam", currentTeamList.get(index));
             resetGame();
             
         } else if (counterGoalsFirstTeam < counterGoalsSecondTeam) {
+            System.out.println("Ganador del partido: " + nameSecondTeam);
             mgvWinSecondTeam.setVisible(true);
             currentTourney.winnerAndLooser(nameSecondTeam, counterGoalsSecondTeam, 3, nameFirstTeam, counterGoalsFirstTeam);
             if (currentRound % 2 != 0) AppContext.getInstance().set("WinnerTeam", currentTeamList.get(index + 1));
@@ -198,6 +200,7 @@ public class GameController extends Controller implements Initializable {
         this.timeLimit = currentTourney.getTime();
         this.currentSport = currentTourney.searchSportType();
         chargeImages();
+        AppContext.getInstance().delete("CurrentTourney");
     }
     
     @Override
