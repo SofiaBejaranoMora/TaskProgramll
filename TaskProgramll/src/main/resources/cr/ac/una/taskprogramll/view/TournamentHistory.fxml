@@ -13,9 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane fx:id="rootPane" styleClass="StadiumStandBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.TournamentHistoryController">
-    <!-- Contenedor principal -->
     <VBox fx:id="mainContainer" alignment="TOP_CENTER" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <!-- Encabezado: Título y filtros -->
         <VBox fx:id="header" alignment="CENTER" spacing="15.0" styleClass="header" VBox.vgrow="NEVER">
             <Label fx:id="titleLabel" styleClass="LargeLabel" text="Historial de Torneos" />
             <HBox fx:id="filters" alignment="CENTER" maxWidth="Infinity" spacing="15.0">
@@ -25,10 +23,7 @@
                 <MFXButton fx:id="clearButton" styleClass="mfx-button" text="Limpiar" />
             </HBox>
         </VBox>
-
-        <!-- Área principal: Tabla y detalles -->
         <HBox fx:id="content" spacing="15.0" VBox.vgrow="ALWAYS">
-            <!-- Tabla de torneos -->
             <TableView fx:id="tournamentTable" styleClass="TableViewLightdBlue" HBox.hgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="nameColumn" text="Nombre" />
@@ -39,8 +34,6 @@
                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
             </TableView>
-
-            <!-- Panel de detalles -->
             <VBox fx:id="detailsPanel" alignment="TOP_CENTER" spacing="10.0" styleClass="panel" HBox.hgrow="ALWAYS">
                 <Label fx:id="detailsTitle" styleClass="SmallLabel" text="Seleccioná un torneo" />
                 <Label fx:id="positionLabel" maxWidth="Infinity" styleClass="info" text="" wrapText="true" />
@@ -49,8 +42,6 @@
                 <Label fx:id="generalStatsLabel" maxWidth="Infinity" styleClass="info" text="" wrapText="true" />
             </VBox>
         </HBox>
-
-        <!-- Pie: Certificado -->
         <HBox fx:id="footer" alignment="CENTER" spacing="20.0" styleClass="footer" VBox.vgrow="NEVER">
             <MFXButton fx:id="certificateButton" disable="true" styleClass="mfx-button" text="Generar Certificado">
                 <graphic>
