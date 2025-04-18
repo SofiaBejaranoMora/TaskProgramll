@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="GameBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.MatchTeamsController">
@@ -43,5 +47,32 @@
             </HBox>
          </children>
       </VBox>
+      <StackPane fx:id="stpWinnerTourney" prefHeight="150.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+         <children>
+            <ImageView fx:id="mgvWinnerStar" fitHeight="350.0" fitWidth="450.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" StackPane.alignment="CENTER" />
+            <StackPane prefHeight="150.0" prefWidth="200.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label fx:id="lblWinnerName" styleClass="LargeLabel" stylesheets="@Style.css" text="Winner" />
+                        <ImageView fx:id="mgvWinnerImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                        <Label fx:id="lblWinnerPoints" stylesheets="@Style.css" text="Points">
+                           <styleClass>
+                              <String fx:value="SmallLabel" />
+                              <String fx:value="boxLightBlue" />
+                           </styleClass>
+                        </Label>
+                        <Label fx:id="lblWinnerGoals" stylesheets="@Style.css" text="Goals">
+                           <styleClass>
+                              <String fx:value="SmallLabel" />
+                              <String fx:value="boxRose" />
+                           </styleClass>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+         </children>
+      </StackPane>
    </children>
 </AnchorPane>

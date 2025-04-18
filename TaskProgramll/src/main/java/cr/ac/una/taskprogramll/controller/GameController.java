@@ -32,8 +32,6 @@ public class GameController extends Controller implements Initializable {
     private Timeline currentTime;
     private Boolean timerStarted = false;
     private Boolean isFinished = false;
-    private String nameFirstTeam = "";
-    private String nameSecondTeam = "";
     private Team firstTeam;
     private Team secondTeam;
     private int timeLimit;
@@ -113,9 +111,7 @@ public class GameController extends Controller implements Initializable {
         mgvWinSecondTeam.setVisible(false);
         mgvBall.setImage(new Image(ResourceUtil.getImagePath(currentSport.getId())));
         mgvFirstTeam.setImage(new Image(ResourceUtil.getImagePath(firstTeam.getId())));
-        nameFirstTeam = firstTeam.getName();
         mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(secondTeam.getId())));
-        nameSecondTeam = secondTeam.getName();
     }
     
     private String timerFormat(int totalSeconds) {
@@ -156,15 +152,15 @@ public class GameController extends Controller implements Initializable {
     private void afterGame() {
         MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
         if (counterGoalsFirstTeam > counterGoalsSecondTeam){
-            System.out.println("Ganador del partido: " + nameFirstTeam);
+            System.out.println("Ganador del partido: " + firstTeam.getName());
             mgvWinFirstTeam.setVisible(true);
-            currentTourney.winnerAndLooser(nameFirstTeam, counterGoalsFirstTeam, 3, nameSecondTeam, counterGoalsSecondTeam);
+            currentTourney.winnerAndLooser(firstTeam.getName(), counterGoalsFirstTeam, 3, secondTeam.getName(), counterGoalsSecondTeam);
             controller.adjustingTable(firstTeam);
             
         } else if (counterGoalsFirstTeam < counterGoalsSecondTeam) {
-            System.out.println("Ganador del partido: " + nameSecondTeam);
+            System.out.println("Ganador del partido: " + secondTeam.getName());
             mgvWinSecondTeam.setVisible(true);
-            currentTourney.winnerAndLooser(nameSecondTeam, counterGoalsSecondTeam, 3, nameFirstTeam, counterGoalsFirstTeam);
+            currentTourney.winnerAndLooser(secondTeam.getName(), counterGoalsSecondTeam, 3, firstTeam.getName(), counterGoalsFirstTeam);
             controller.adjustingTable(secondTeam);
             
         } else {/*Animatica de empate*/}
