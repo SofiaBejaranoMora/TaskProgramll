@@ -19,27 +19,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
-public class TournamentHistoryController extends Controller implements Initializable{
+public class TournamentHistoryController extends Controller implements Initializable {
 
     @FXML
     private AnchorPane rootPane;
     @FXML
     private VBox mainContainer;
-    @FXML
-    private VBox header;
-    @FXML
-    private Label titleLabel;
     @FXML
     private HBox filters;
     @FXML
@@ -53,19 +50,8 @@ public class TournamentHistoryController extends Controller implements Initializ
     @FXML
     private MFXButton clearButton;
     @FXML
-    private HBox content;
-    @FXML
-    private TableView<Tourney> tournamentTable;
-    @FXML
-    private TableColumn<Tourney, String> nameColumn;
-    @FXML
-    private TableColumn<Tourney, Integer> minutesColumn;
-    @FXML
-    private TableColumn<Tourney, Sport> sportColumn;
-    @FXML
-    private TableColumn<Tourney, String> stateColumn;
-    @FXML
-    private TableColumn<Tourney, String> winnerColumn;
+    private HBox content; @FXML
+    private HBox teamsPane;
     @FXML
     private VBox detailsPanel;
     @FXML
@@ -77,27 +63,28 @@ public class TournamentHistoryController extends Controller implements Initializ
     @FXML
     private Label statsLabel;
     @FXML
+    private Canvas statsCanvas;
+    @FXML
     private Label generalStatsLabel;
     @FXML
-    private HBox footer;
+    private TableView<Tourney> tournamentTable;
     @FXML
-    private MFXButton certificateButton;
+    private TableColumn<Tourney, String> nameColumn;
     @FXML
-    private MFXButton btnParticipants;
+    private TableColumn<Tourney, Integer> minutesColumn;
     @FXML
-    private MFXButton btnBrackets;
+    private TableColumn<Tourney, String> sportColumn;
     @FXML
-    private MFXButton btnRefresh;
+    private TableColumn<Tourney, String> stateColumn;
     @FXML
-    private ImageView certificatePreview;
-    @FXML
-    private ImageView lobbyIcon;
+    private TableColumn<Tourney, String> winnerColumn;
 
     private ObservableList<Tourney> availableTourneys = FXCollections.observableArrayList();
     private ObservableList<Team> availableTeams = FXCollections.observableArrayList();
     private final List<Sport> sportList = new ArrayList<>();
     private FileManager fileManager = new FileManager();
     private final Mensaje message = new Mensaje();
+   
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -109,22 +96,18 @@ public class TournamentHistoryController extends Controller implements Initializ
         setupSportFilterListener();
         setupTeamSearchListener();
         setupTeamFilterListener();
+        setupTeamFilterDisplay();
         tourneySelectionListener();
-        setupActionButtons();
-        setupCertificateButton();
-        setupRefreshButton();
-        setupTeamFilterDisplay(); // Nueva función para corregir visualización
     }
 
     private void setupTeamFilterDisplay() {
         teamFilter.setConverter(new StringConverter<Team>() {
             @Override
             public String toString(Team team) {
-                if (team != null) {
+                if(team!=null){
                     return team.getName();
-                } else {
-                    return "";
                 }
+                return "";
             }
 
             @Override
@@ -137,49 +120,42 @@ public class TournamentHistoryController extends Controller implements Initializ
         });
     }
 
-    private void SetupSportColumns() {
-        sportColumn.setCellValueFactory(cellData -> {
-            Tourney tourney = cellData.getValue();
-            if (tourney != null) {
-                return new ReadOnlyObjectWrapper<>(tourney.searchSportType());
+   private void SetupSportColumns() {
+    sportColumn.setCellValueFactory(cellData -> {
+        Tourney tourney = cellData.getValue();
+        if (tourney != null) {
+            Sport sport = tourney.searchSportType();
+            System.out.println("Torneo: " + tourney.getName() + ", SportTypeId: " + tourney.getSportTypeId() + ", Deporte: " + (sport != null ? sport.getName() : "null"));
+            if (sport != null) {
+                return new ReadOnlyObjectWrapper<>(sport.getName());
             }
-            return new ReadOnlyObjectWrapper<>(null);
-        });
-    }
+        }
+        return new ReadOnlyObjectWrapper<>("Sin deporte");
+    });
+}
 
     private void SetupStateColumns() {
         stateColumn.setCellValueFactory(cellData -> {
             Tourney tourney = cellData.getValue();
-            if (tourney != null) {
-                return new ReadOnlyObjectWrapper<>(tourney.returnState());
-            }
-            return new ReadOnlyObjectWrapper<>(null);
+            return tourney != null ? new ReadOnlyObjectWrapper<>(tourney.returnState()) : new ReadOnlyObjectWrapper<>(null);
         });
     }
 
-    private void SetupWinnnerColumn() {
+    private void SetupWinnerColumn() {
         winnerColumn.setCellValueFactory(cellData -> {
             Tourney tourney = cellData.getValue();
-            if (tourney != null) {
-                if (tourney.returnState() == "Finalizado") {
-                    if (tourney.getLoosersList() != null && !tourney.getLoosersList().isEmpty()) {
-                        String winner = tourney.getLoosersList().getFirst().getName();
-                        return new ReadOnlyObjectWrapper<>(winner);
-                    } else {
-                        return new ReadOnlyObjectWrapper<>("Sin ganador");
-                    }
-                } else {
-                    return new ReadOnlyObjectWrapper<>("Pendiente");
-                }
+            if (tourney != null && "Finalizado".equals(tourney.returnState())) {
+                List<Team> loosers = tourney.getLoosersList();
+                return new ReadOnlyObjectWrapper<>(loosers != null && !loosers.isEmpty() ? loosers.getFirst().getName() : "Sin ganador");
             }
-            return new ReadOnlyObjectWrapper<>(null);
+            return new ReadOnlyObjectWrapper<>("Pendiente");
         });
     }
 
     private void SetupTableColumns() {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         minutesColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
-        SetupWinnnerColumn();
+        SetupWinnerColumn();
         SetupStateColumns();
         SetupSportColumns();
     }
@@ -192,7 +168,7 @@ public class TournamentHistoryController extends Controller implements Initializ
         if (AppContext.getInstance().get("sports") == null) {
             AppContext.getInstance().set("sports", new ArrayList<Sport>());
         } 
-       @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked")
         List<Sport> sports = (List<Sport>) AppContext.getInstance().get("sports");
         if (sports.isEmpty()) {
             File sportFile = new File("Sport.txt");
@@ -321,17 +297,11 @@ public class TournamentHistoryController extends Controller implements Initializ
     private void setupTeamFilterListener() {
         teamFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldTeam, newTeam) -> {
             applyFilters();
-            updateDetails();
         });
     }
 
     private void applyFilters() {
-        String query ;
-        if(teamSearch.getText() == null){
-            query = "";
-        }else{
-            query= teamSearch.getText().trim().toLowerCase();
-        }
+        String query = teamSearch.getText() != null ? teamSearch.getText().trim().toLowerCase() : "";
         Sport selectedSport = sportFilter.getSelectionModel().getSelectedItem();
         Team selectedTeam = teamFilter.getSelectionModel().getSelectedItem();
         ObservableList<Tourney> filtered = FXCollections.observableArrayList();
@@ -354,121 +324,49 @@ public class TournamentHistoryController extends Controller implements Initializ
         }
         tournamentTable.setItems(filtered);
     }
-
-    private void tourneySelectionListener() {
-        tournamentTable.getSelectionModel().selectedItemProperty().addListener((obs, oldTourney, newTourney) -> {
-            updateDetails();
-        });
-    }
-
-    private void updateDetails() {
-        Tourney selectedTourney = tournamentTable.getSelectionModel().getSelectedItem();
-        Team selectedTeam = teamFilter.getSelectionModel().getSelectedItem();
-        
-        if (selectedTourney != null && selectedTeam != null) {
-            showTourneyInfo(selectedTourney, selectedTeam);
-        } else {
+    
+    private void showTourneyInfo(Tourney tourney, Team team) {
+        if (tourney == null || team == null) {
             detailsTitle.setText("Seleccioná un torneo y un equipo");
             positionLabel.setText("");
             matchesLabel.setText("");
             statsLabel.setText("");
             generalStatsLabel.setText("");
-            btnParticipants.setDisable(true);
-            btnBrackets.setDisable(true);
-            certificateButton.setDisable(true);
+            return;
         }
-    }
-
-    void showTourneyInfo(Tourney tourney, Team team) {
-        detailsTitle.setText(tourney.getName() + " - " + team.getName());
-        
-        // Ranking por torneo
-        String ranking = "N/A";
-        List<Team> rankingList = tourney.returnRanking();
-        if (rankingList != null && !rankingList.isEmpty()) {
-            int position = rankingList.indexOf(team) + 1;
-            if (position > 0) {
-                ranking = position + "º";
-            } else {
-                ranking = "No clasificado";
-            }
-        }
-        positionLabel.setText("Ranking en torneo: " + ranking);
-        
-        // Partidos del equipo
-        matchesLabel.setText("Partidos: No implementado");
-        
-        // Estadísticas por torneo
-        statsLabel.setText("Estadísticas: No implementado");
-        
-        // Estadísticas generales
-        String generalStats = "Estadísticas generales:\n";
-        int tournamentsPlayed = 0;
-        for (Tourney t : availableTourneys) {
-            if (t.getTeamList().contains(team)) {
-                tournamentsPlayed++;
-            }
-        }
-        generalStats += "- Torneos jugados: " + tournamentsPlayed;
-        generalStatsLabel.setText(generalStats);
-        
-        btnParticipants.setDisable(false);
-        btnBrackets.setDisable(false);
-        certificateButton.setDisable(tourney.returnState() != "Finalizado");
-    }
-
-    private void setupActionButtons() {
-        btnParticipants.setOnAction(event -> {
-            Tourney selected = tournamentTable.getSelectionModel().getSelectedItem();
-            if (selected != null) {
-                showParticipants(selected);
-            }
-        });
-        btnBrackets.setOnAction(event -> {
-            // Vacío por ahora
-        });
-    }
-
-    private void showParticipants(Tourney tourney) {
-        StringBuilder participants = new StringBuilder("Equipos participantes:\n");
-        if (tourney.getTeamList() != null && !tourney.getTeamList().isEmpty()) {
-            for (Team team : tourney.getTeamList()) {
-                participants.append("- ").append(team.getName()).append(" (ID: ").append(team.getId()).append(")\n");
-            }
+        detailsTitle.setText(tourney.getName());
+        positionLabel.setText(tourney.getTeamPosition(team));
+        if (tourney.getLoosersList().contains(team)) {
+            matchesLabel.setText("Resultado: Eliminado");
+        } else if (tourney.getTeamList().contains(team)) {
+            matchesLabel.setText("Resultado: En competencia");
         } else {
-            participants.append("No hay equipos registrados.");
+            matchesLabel.setText("Resultado: No participa");
         }
-        message.show(Alert.AlertType.INFORMATION, "Participantes - " + tourney.getName(), participants.toString());
+        statsLabel.setText("Puntos: " + team.getPoints() + ", Goles: " + team.getGoals());
+        generalStatsLabel.setText("Estado del torneo: " + tourney.returnState());
     }
 
-    private void showBrackets(Tourney tourney) {
-        // Vacío por ahora
-    }
+    private void updateTeamsPane(Tourney tourney) {
+        teamsPane.getChildren().clear();
 
-    private void setupCertificateButton() {
-        certificateButton.setOnAction(event -> {
-            // Vacío por ahora
+        if (tourney != null && tourney.getTeamList() != null) {
+            for (Team team : tourney.getTeamList()) {
+                Button teamCard = new Button(team.getName());
+                teamCard.setUserData(team);
+                teamCard.setOnAction(event -> showTourneyInfo(tourney, (Team) teamCard.getUserData()));
+                teamsPane.getChildren().add(teamCard);
+            }
+        }
+    }
+    private void tourneySelectionListener() {
+        tournamentTable.getSelectionModel().selectedItemProperty().addListener((obs, oldTourney, newTourney) -> {
+            updateTeamsPane(newTourney);
         });
     }
-
-    private void setupRefreshButton() {
-        btnParticipants.setDisable(true);
-        btnBrackets.setDisable(true);
-        btnRefresh.setOnAction(event -> {
-            availableTourneys.clear();
-            availableTeams.clear();
-            sportList.clear();
-            LoadTourneyList();
-            LoadTeamFilterList();
-            LoadSportFilterList();
-            teamSearch.clear();
-            teamFilter.getSelectionModel().clearSelection();
-            sportFilter.getSelectionModel().clearSelection();
-            message.show(Alert.AlertType.INFORMATION, "Actualizado", "Lista de torneos, equipos y deportes recargada.");
-        });
-    }
-
     @Override
     public void initialize() {
     }
+
+ 
 }

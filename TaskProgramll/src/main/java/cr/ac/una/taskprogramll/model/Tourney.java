@@ -214,4 +214,19 @@ public class Tourney {
         }
         return null;
     }
+    
+    public String getTeamPosition(Team team) {
+        if (team == null || (!teamList.contains(team) && !loosersList.contains(team))) {
+            return "No participa";
+        }
+        if (teamList.contains(team)) {
+            if (teamList.size() == 1 && loosersList.size() > 0) {
+                return "Posición: 1 (Ganador)";
+            }
+            return "En competencia";
+        }
+        List<Team> ranking = new ArrayList<>(loosersList);
+        int position = ranking.size() - ranking.indexOf(team);
+        return "Posición: " + position + " (Eliminado)";
+    }
 }
