@@ -150,10 +150,6 @@
     -fx-scale-y: 1.1;
 }
 
-/*.mfx-button:active{
-     -fx-background-color: #5DEAF1;
-}*/
-
 .mfx-button {
     -fx-background-color: #FF72C7;
     -mfx-button-type: RAISED;

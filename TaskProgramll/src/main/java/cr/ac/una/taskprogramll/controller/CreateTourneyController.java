@@ -30,77 +30,153 @@ import javafx.stage.Stage;
 
 public class CreateTourneyController extends Controller implements Initializable {
 
-    @FXML private Button btnCancel;
-    @FXML private Button btnStart;
-    @FXML private Button btnAdjustTeams;
-    @FXML private MFXTextField txtTourneyName;
-    @FXML private MFXTextField txtMatchTime;
-    @FXML private MFXComboBox<Sport> tglLstSportType;
-    @FXML private TableView<Team> tblTeams; // Equipos disponibles
-    @FXML private TableView<Team> tblTeams1; // Equipos elegidos
-    @FXML private TableColumn<Team, String> colTeamName; // Columna de equipos disponibles
-    @FXML private TableColumn<Team, String> colTeamName1; // Columna de equipos elegidos
-    @FXML private MFXSlider sliderTeamCount;
-
     private final FileManager fileManager = new FileManager();
     private final Mensaje message = new Mensaje();
     private final ObservableList<Team> allTeams = FXCollections.observableArrayList();
     private final ObservableList<Team> availableTeams = FXCollections.observableArrayList();
     private final ObservableList<Team> selectedTeams = FXCollections.observableArrayList();
     private final List<Sport> sportList = new ArrayList<>();
+    
+    @FXML
+    private Button btnCancel;
+    @FXML
+    private Button btnStart;
+    @FXML
+    private Button btnAdjustTeams;
+    @FXML
+    private MFXTextField txtTourneyName;
+    @FXML
+    private MFXTextField txtMatchTime;
+    @FXML
+    private MFXComboBox<Sport> tglLstSportType;
+    @FXML
+    private TableView<Team> tblTeams; // Equipos disponibles
+    @FXML
+    private TableView<Team> tblTeams1; // Equipos elegidos
+    @FXML
+    private TableColumn<Team, String> colTeamName; // Columna de equipos disponibles
+    @FXML
+    private TableColumn<Team, String> colTeamName1; // Columna de equipos elegidos
+    @FXML
+    private MFXSlider sliderTeamCount;
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
+    @FXML
+    private void OnActionBtnCancel(ActionEvent event) {
+        ClearPanel();
+        FlowController.getInstance().goViewInStage("Lobby", (Stage) btnCancel.getScene().getWindow());
+    }
+
+    @FXML
+    private void adjustSelectedTeamsSlice(ActionEvent event) {
         try {
-            InitialConditionsPanel();
+            int desiredCount = Math.clamp((int) sliderTeamCount.getValue(), 2, 64);
+            int totalTeamsAvailable = selectedTeams.size() + availableTeams.size();
+            if (totalTeamsAvailable < desiredCount) {
+                message.show(Alert.AlertType.ERROR, "Error de Equipos", String.format(
+                        "No hay suficientes equipos disponibles. Se necesitan %d equipos, pero solo hay %d.",
+                        desiredCount, totalTeamsAvailable
+                ));
+                return;
+            }
+
+            while (selectedTeams.size() > desiredCount) {
+                availableTeams.add(selectedTeams.remove(selectedTeams.size() - 1));
+            }
+
+            Random random = new Random();
+            while (selectedTeams.size() < desiredCount && !availableTeams.isEmpty()) {
+                int randomIndex = random.nextInt(availableTeams.size());
+                Team randomTeam = availableTeams.get(randomIndex);
+                selectedTeams.add(randomTeam);
+                availableTeams.remove(randomIndex);
+            }
+
+            System.out.println("Teams adjusted to: " + selectedTeams.size());
         } catch (Exception e) {
-            message.show(Alert.AlertType.ERROR, "Error de Inicialización", "No se pudo inicializar la vista: " + e.getMessage());
+            message.show(Alert.AlertType.ERROR, "Error al Ajustar Equipos", "No se pudieron ajustar los equipos: " + e.getMessage());
         }
     }
 
-    public void InitialConditionsPanel() {
-        SetupTableColumns();
-        SetupTableItems();
-        ConfigureSlider();
-        ConfigureTeamSelection();
-        LoadSportList();
-        LoadTeamList();
-        LoadTourneyList(); // Carga simple de torneos
-        SetupSportFilter();
-    }
-
-    private void SetupTableColumns() {
-        colTeamName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colTeamName1.setCellValueFactory(new PropertyValueFactory<>("name"));
-    }
-
-    private void SetupTableItems() {
-        tblTeams.setItems(availableTeams);
-        tblTeams1.setItems(selectedTeams);
-    }
-
-    private void ConfigureSlider() {
-        sliderTeamCount.setMin(2);
-        sliderTeamCount.setMax(64);
-        sliderTeamCount.setValue(2);
-    }
-
-    private void ConfigureTeamSelection() {
-        tblTeams.setOnMouseClicked(event -> {
-            Team selectedTeam = tblTeams.getSelectionModel().getSelectedItem();
-            if (selectedTeam != null && !selectedTeams.contains(selectedTeam)) {
-                selectedTeams.add(selectedTeam);
-                availableTeams.remove(selectedTeam);
+    @FXML
+    private void createTourney(ActionEvent event) {
+        try {
+            String tourneyName = txtTourneyName.getText().trim();
+            String matchTime = txtMatchTime.getText().trim();
+            Sport selectedSport = tglLstSportType.getValue();
+            String errorMessage = CheckInputs(tourneyName, matchTime, selectedTeams, selectedSport);
+            if (errorMessage != null) {
+                message.show(Alert.AlertType.ERROR, "Error de Validación", errorMessage);
+                return;
             }
-        });
 
-        tblTeams1.setOnMouseClicked(event -> {
-            Team selectedTeam = tblTeams1.getSelectionModel().getSelectedItem();
-            if (selectedTeam != null) {
-                availableTeams.add(selectedTeam);
-                selectedTeams.remove(selectedTeam);
+            int id = GenerateTourneyId();
+            Tourney newTourney = new Tourney(id, tourneyName, Integer.parseInt(matchTime), selectedSport.getId(), new ArrayList<>(selectedTeams));
+            List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
+            if (tourneys == null) {
+                tourneys = new ArrayList<>();
             }
-        });
+            tourneys.add(newTourney);
+            AppContext.getInstance().set("tourneys", tourneys);
+            fileManager.serialization(tourneys, "Tourney");
+            System.out.println("Tourney created and saved: " + tourneyName + " with " + selectedTeams.size() + " teams.");
+            ClearPanel();
+        } catch (Exception e) {
+            message.show(Alert.AlertType.ERROR, "Error al Crear Torneo", "No se pudo crear el torneo: " + e.getMessage());
+        }
+    }
+
+    private boolean IsIdUsed(int id) {
+        @SuppressWarnings("unchecked")
+        List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
+        if (tourneys == null) {
+            return false;
+        }
+        for (Tourney tourney : tourneys) {
+            if (tourney.getId() == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean IsValidNumericInput(String input) {
+        if (input.trim().isEmpty()) {
+            return false;
+        }
+        try {
+            int value = Integer.parseInt(input);
+            return value > 0 && value <= 180;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private String CheckInputs(String name, String time, ObservableList<Team> teams, Sport selectedSport) {
+        if (name.isEmpty() || time.isEmpty()) {
+            return "Todos los campos son obligatorios.";
+        }
+        if (!IsValidNumericInput(time)) {
+            return "El tiempo del partido debe ser un número válido entre 1 y 180 minutos.";
+        }
+        if (teams.isEmpty()) {
+            return "Debes seleccionar al menos un equipo.";
+        }
+        if (teams.size() < 1) {
+            return "El minimo de equipos en un torneo es 2.";
+        }
+        if (selectedSport == null) {
+            return "Debes seleccionar un tipo de deporte.";
+        }
+        return null;
+    }
+
+    private int GenerateTourneyId() {
+        Random random = new Random();
+        int newId = Math.abs(random.nextInt());
+        while (IsIdUsed(newId)) {
+            newId = Math.abs(random.nextInt());
+        }
+        return newId;
     }
 
     private void LoadSportList() {
@@ -190,107 +266,38 @@ public class CreateTourneyController extends Controller implements Initializable
         });
     }
 
-    @FXML
-    private void adjustSelectedTeamsSlice(ActionEvent event) {
-        try {
-            int desiredCount = Math.clamp((int) sliderTeamCount.getValue(), 2, 64);
-            int totalTeamsAvailable = selectedTeams.size() + availableTeams.size();
-            if (totalTeamsAvailable < desiredCount) {
-                message.show(Alert.AlertType.ERROR, "Error de Equipos", String.format(
-                    "No hay suficientes equipos disponibles. Se necesitan %d equipos, pero solo hay %d.",
-                    desiredCount, totalTeamsAvailable
-                ));
-                return;
-            }
-
-            while (selectedTeams.size() > desiredCount) {
-                availableTeams.add(selectedTeams.remove(selectedTeams.size() - 1));
-            }
-
-            Random random = new Random();
-            while (selectedTeams.size() < desiredCount && !availableTeams.isEmpty()) {
-                int randomIndex = random.nextInt(availableTeams.size());
-                Team randomTeam = availableTeams.get(randomIndex);
-                selectedTeams.add(randomTeam);
-                availableTeams.remove(randomIndex);
-            }
-
-            System.out.println("Teams adjusted to: " + selectedTeams.size());
-        } catch (Exception e) {
-            message.show(Alert.AlertType.ERROR, "Error al Ajustar Equipos", "No se pudieron ajustar los equipos: " + e.getMessage());
-        }
+    private void SetupTableColumns() {
+        colTeamName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colTeamName1.setCellValueFactory(new PropertyValueFactory<>("name"));
     }
 
-    private String CheckInputs(String name, String time, ObservableList<Team> teams, Sport selectedSport) {
-        if (name.isEmpty() || time.isEmpty()) return "Todos los campos son obligatorios.";
-        if (!IsValidNumericInput(time)) return "El tiempo del partido debe ser un número válido entre 1 y 180 minutos.";
-        if (teams.isEmpty()) return "Debes seleccionar al menos un equipo.";
-        if(teams.size()<1) return "El minimo de equipos en un torneo es 2.";
-        if (selectedSport == null) return "Debes seleccionar un tipo de deporte.";
-        return null;
+    private void SetupTableItems() {
+        tblTeams.setItems(availableTeams);
+        tblTeams1.setItems(selectedTeams);
     }
 
-    @FXML
-    private void createTourney(ActionEvent event) {
-        try {
-            String tourneyName = txtTourneyName.getText().trim();
-            String matchTime = txtMatchTime.getText().trim();
-            Sport selectedSport = tglLstSportType.getValue();
-            String errorMessage = CheckInputs(tourneyName, matchTime, selectedTeams, selectedSport);
-            if (errorMessage != null) {
-                message.show(Alert.AlertType.ERROR, "Error de Validación", errorMessage);
-                return;
+    private void ConfigureSlider() {
+        sliderTeamCount.setMin(2);
+        sliderTeamCount.setMax(64);
+        sliderTeamCount.setValue(2);
+    }
+
+    private void ConfigureTeamSelection() {
+        tblTeams.setOnMouseClicked(event -> {
+            Team selectedTeam = tblTeams.getSelectionModel().getSelectedItem();
+            if (selectedTeam != null && !selectedTeams.contains(selectedTeam)) {
+                selectedTeams.add(selectedTeam);
+                availableTeams.remove(selectedTeam);
             }
+        });
 
-            int id = GenerateTourneyId();
-            Tourney newTourney = new Tourney(id, tourneyName, Integer.parseInt(matchTime), selectedSport.getId(), new ArrayList<>(selectedTeams));
-            List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
-            if (tourneys == null) {
-                tourneys = new ArrayList<>();
+        tblTeams1.setOnMouseClicked(event -> {
+            Team selectedTeam = tblTeams1.getSelectionModel().getSelectedItem();
+            if (selectedTeam != null) {
+                availableTeams.add(selectedTeam);
+                selectedTeams.remove(selectedTeam);
             }
-            tourneys.add(newTourney);
-            AppContext.getInstance().set("tourneys", tourneys);
-            fileManager.serialization(tourneys, "Tourney");
-            System.out.println("Tourney created and saved: " + tourneyName + " with " + selectedTeams.size() + " teams.");
-            ClearPanel();
-        } catch (Exception e) {
-            message.show(Alert.AlertType.ERROR, "Error al Crear Torneo", "No se pudo crear el torneo: " + e.getMessage());
-        }
-    }
-
-    private int GenerateTourneyId() {
-        Random random = new Random();
-        int newId = Math.abs(random.nextInt());
-        while (IsIdUsed(newId)) {
-            newId = Math.abs(random.nextInt());
-        }
-        return newId;
-    }
-
-    private boolean IsIdUsed(int id) {
-        @SuppressWarnings("unchecked")
-        List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
-        if (tourneys == null) {
-            return false;
-        }
-        for (Tourney tourney : tourneys) {
-            if (tourney.getId() == id) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean IsValidNumericInput(String input) {
-        if (input.trim().isEmpty()) {
-            return false;
-        }
-        try {
-            int value = Integer.parseInt(input);
-            return value > 0 && value <= 180;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+        });
     }
 
     private void ClearPanel() {
@@ -302,10 +309,15 @@ public class CreateTourneyController extends Controller implements Initializable
         System.out.println("Fields reset after tourney creation.");
     }
 
-    @FXML
-    private void OnActionBtnCancel(ActionEvent event) {
-        ClearPanel();
-        FlowController.getInstance().goViewInStage("Lobby", (Stage) btnCancel.getScene().getWindow());
+    public void InitialConditionsPanel() {
+        SetupTableColumns();
+        SetupTableItems();
+        ConfigureSlider();
+        ConfigureTeamSelection();
+        LoadSportList();
+        LoadTeamList();
+        LoadTourneyList(); // Carga simple de torneos
+        SetupSportFilter();
     }
 
     public void customInitialize() {
@@ -313,5 +325,15 @@ public class CreateTourneyController extends Controller implements Initializable
     }
 
     @Override
-    public void initialize() {}
+    public void initialize(URL url, ResourceBundle rb) {
+        try {
+            InitialConditionsPanel();
+        } catch (Exception e) {
+            message.show(Alert.AlertType.ERROR, "Error de Inicialización", "No se pudo inicializar la vista: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void initialize() {
+    }
 }

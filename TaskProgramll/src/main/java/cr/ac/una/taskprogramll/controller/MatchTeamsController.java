@@ -1,10 +1,13 @@
 package cr.ac.una.taskprogramll.controller;
 
+import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
+import cr.ac.una.taskprogramll.util.ResourceUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import java.io.File;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -14,19 +17,24 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-/**
- * * FXML Controller class * * @author ashly
- */
+/**  * * FXML Controller class * * @author ashly  */
 public class MatchTeamsController extends Controller implements Initializable {
 
     private Tourney currentTourney;
+    private List<Tourney> tourneyList;
     private List<Team> currentTeamList;
+    private FileManager fileManager = new FileManager();
+    private File file;
     private int index = 0;
     private int currentRound = 1;
     private int globalSize;
@@ -58,12 +66,25 @@ public class MatchTeamsController extends Controller implements Initializable {
     private MFXButton btnBack;
     @FXML
     private MFXButton btnStart;
+    @FXML
+    private StackPane stpWinnerTourney;
+    @FXML
+    private ImageView mgvWinnerStar;
+    @FXML
+    private Label lblWinnerName;
+    @FXML
+    private ImageView mgvWinnerImage;
+    @FXML
+    private Label lblWinnerPoints;
+    @FXML
+    private Label lblWinnerGoals;
 
     @FXML
     private void onActionBtnBack(ActionEvent event) {
         AppContext.getInstance().set("SelectedTourney", null);
         currentTourney.getContinueGame().setContinueIndexTeam(index);
         currentTourney.getContinueGame().setContinueIdTeam(currentTeamList.get(index).getId());
+        fileManager.serialization(tourneyList, "Tourney");
         FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
     }
 
@@ -72,11 +93,9 @@ public class MatchTeamsController extends Controller implements Initializable {
         AppContext.getInstance().set("CurrentTourney", currentTourney);
         GameController controller = (GameController) FlowController.getInstance().getController("Game");
         if (currentRound % 2 != 0) {
-            //encounter();
             controller.InitializeGame(currentTeamList.get(index), currentTeamList.get(index + 1));
         } else {
-            //encounter();
-            controller.InitializeGame(currentTeamList.get(index), currentTeamList.get(index - 1));
+            controller.InitializeGame(currentTeamList.get(index - 1), currentTeamList.get(index));
         }
         FlowController.getInstance().goViewInStage("Game", (Stage) btnStart.getScene().getWindow());
     }
@@ -118,12 +137,9 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
 
     private void encounter() {
-        if (currentTeamList.get(index) != null) {
-            currentTourney.getContinueGame().setContinueIndexTeam(index);
-            currentTourney.getContinueGame().setCurrentRound(currentRound);
-        } else if (currentRound % 2 != 0 && currentTeamList.get(index + 1) != null) {
+        if (currentRound % 2 != 0 && currentTeamList.get(index + 1) == null) {
             adjustingTable(currentTeamList.get(index + 1));
-        } else if (currentRound % 2 == 0 && currentTeamList.get(index - 1) != null) {
+        } else if (currentRound % 2 == 0 && currentTeamList.get(index - 1) == null) {
             adjustingTable(currentTeamList.get(index - 1));
         } else {
             adjustingTable(currentTeamList.get(index));
@@ -168,6 +184,9 @@ public class MatchTeamsController extends Controller implements Initializable {
                 currentRound++;
                 currentTeamList = currentTourney.getTeamList();
                 index = currentTeamList.size() - 1;
+            } else if (index == currentTeamList.size() - 1){
+                index --;
+                adjustingTable(currentTeamList.get(index + 1));
             }
         } else {
             index -= 2;
@@ -175,7 +194,10 @@ public class MatchTeamsController extends Controller implements Initializable {
                 currentRound++;
                 currentTeamList = currentTourney.getTeamList();
                 index = 0;
-            }            
+            } else if (index == currentTeamList.size() + 1) {
+                index ++;
+                adjustingTable(currentTeamList.get(index - 1));
+            }
         }
     }
     
@@ -271,7 +293,6 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             case 6 -> {
                 winner.add(winnerTeam);
-                winnerAnimatic(winnerTeam);
                 System.out.println("El ganador del torneo es " + winnerTeam.getName());
                 clmnFinal.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -285,6 +306,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                     }
                 });
                 tblPlayersTable.refresh();
+                winnerAnimatic(winnerTeam);
             }
             default ->
                 throw new AssertionError("Ronda inválida: " + currentRound);
@@ -294,6 +316,11 @@ public class MatchTeamsController extends Controller implements Initializable {
     private void winnerAnimatic(Team winnerTeam) {
         btnStart.setVisible(false);
         btnStart.setManaged(false);
+        stpWinnerTourney.setVisible(true);
+        mgvWinnerImage.setImage(new Image(ResourceUtil.getImagePath(winnerTeam.getId())));
+        lblWinnerName.setText(winnerTeam.getName());
+        lblWinnerPoints.setText("" + winnerTeam.getPoints());
+        lblWinnerGoals.setText("" + winnerTeam.getGoals());
     }
     
     private void startGameParameters() {
@@ -312,6 +339,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         round5.setAll(currentTourney.getContinueGame().getRound5());
         round6.setAll(currentTourney.getContinueGame().getRound6());
         winner.setAll(currentTourney.getContinueGame().getWinner());
+        tblPlayersTable.refresh();
         index = currentTourney.getContinueGame().getContinueIndexTeam();
         if (currentTeamList.get(index).getId() != currentTourney.getContinueGame().getContinueIdTeam()) {
 
@@ -323,8 +351,16 @@ public class MatchTeamsController extends Controller implements Initializable {
         btnStart.setVisible(false);
     }
 
+    public Tourney searchTourney(Tourney selectedTourney) {
+        for(Tourney tourney:tourneyList){
+            if (tourney.getId() == selectedTourney.getId())
+                return tourney;
+        }
+        return null;
+    }
+    
     public void initializeFromAppContext() {
-        this.currentTourney = (Tourney) AppContext.getInstance().get("SelectedTourney");
+        this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("SelectedTourney"));
         this.currentTeamList = currentTourney.getTeamList();
         switch (currentTourney.returnState()) {
             case "Sin Empezar" ->
@@ -340,10 +376,13 @@ public class MatchTeamsController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+            file = new File("Tourney.txt");
+            if ((file.exists()) && (file.length() > 0)) {
+                tourneyList = fileManager.deserialization("Tourney", Tourney.class);
+            }
     }
 
     @Override
-    public void initialize() {
-    }
+    public void initialize() {}
 
 }
