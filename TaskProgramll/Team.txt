@@ -1,1 +1,1 @@
-[{"name":"ygg","idSportType":2270,"draw":0,"wins":0,"goals":0,"points":0,"id":5561},{"name":"errw","idSportType":2270,"draw":0,"wins":0,"goals":0,"points":0,"id":6031},{"name":"deawd","idSportType":6065,"draw":0,"wins":0,"goals":0,"points":0,"id":4090}]
+[{"name":"cscsasada","idSportType":1943,"draw":0,"wins":0,"goals":0,"points":0,"id":8877},{"name":"awdawda","idSportType":1943,"draw":0,"wins":0,"goals":0,"points":0,"id":4531}]

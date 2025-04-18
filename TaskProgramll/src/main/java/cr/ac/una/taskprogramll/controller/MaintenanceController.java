@@ -31,6 +31,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 
 public class MaintenanceController extends Controller implements Initializable {
 
@@ -110,7 +111,7 @@ public class MaintenanceController extends Controller implements Initializable {
         fileManeger.serialization(tourneyList, "Tourney");
         EnabledModifyTourney(false);
         Clean();
-        InitialConditionsPanel();
+        InitializeController();
     }
 
     @FXML
@@ -137,6 +138,8 @@ public class MaintenanceController extends Controller implements Initializable {
             }
         } else if (isSport) {
             sportList = fileManeger.deserialization("Sport", Sport.class);
+        } else if (isTourney) {
+            tourneyList = ListLeakedTourney();
         } else {
             teamList = ListLeakedTeams();
         }
@@ -342,7 +345,7 @@ public class MaintenanceController extends Controller implements Initializable {
         OnActionCmbSportSearch(null);
     }
 
-    public void InitialConditionsPanel() {
+    public void InitializeController() {
         labTitle.setText((String) AppContext.getInstance().get("Title"));
         isSport = (Boolean) AppContext.getInstance().get("isSport");
         isTourney = (Boolean) AppContext.getInstance().get("isTourney");
@@ -369,13 +372,13 @@ public class MaintenanceController extends Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Clean();
-        InitialConditionsPanel();
+        InitializeController();
     }
 
     @Override
     public void initialize() {
         Clean();
-        InitialConditionsPanel();
+        InitializeController();
     }
 
 }
