@@ -5,11 +5,9 @@ import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
-import cr.ac.una.taskprogramll.util.Mensaje;
 import cr.ac.una.taskprogramll.util.ResourceUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -18,7 +16,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -30,17 +27,15 @@ import javafx.util.Duration;
 /** * FXML Controller class * * @author ashly */
 public class GameController extends Controller implements Initializable {
 
-    private final Mensaje message = new Mensaje();
     private Tourney currentTourney;
-    private List<Team> currentTeamList;
     private Sport currentSport;
     private Timeline currentTime;
     private Boolean timerStarted = false;
     private Boolean isFinished = false;
     private String nameFirstTeam = "";
     private String nameSecondTeam = "";
-    private int index = 0;
-    private int currentRound =1;
+    private Team firstTeam;
+    private Team secondTeam;
     private int timeLimit;
     private int timeCalculate = 0;
     private int counterGoalsFirstTeam = 0;
@@ -117,17 +112,10 @@ public class GameController extends Controller implements Initializable {
         mgvWinFirstTeam.setVisible(false);
         mgvWinSecondTeam.setVisible(false);
         mgvBall.setImage(new Image(ResourceUtil.getImagePath(currentSport.getId())));
-        mgvFirstTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index).getId())));
-        nameFirstTeam = currentTeamList.get(index).getName();
-
-        if (currentRound % 2 != 0) {
-            mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index + 1).getId())));
-            nameSecondTeam = currentTeamList.get(index + 1).getName();
-
-        } else {
-            mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(currentTeamList.get(index - 1).getId())));
-            nameSecondTeam = currentTeamList.get(index - 1).getName();
-        }
+        mgvFirstTeam.setImage(new Image(ResourceUtil.getImagePath(firstTeam.getId())));
+        nameFirstTeam = firstTeam.getName();
+        mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(secondTeam.getId())));
+        nameSecondTeam = secondTeam.getName();
     }
     
     private String timerFormat(int totalSeconds) {
@@ -149,14 +137,14 @@ public class GameController extends Controller implements Initializable {
     }
     
     private void counterPoints(MouseEvent releaseEvent) {
-        Bounds firstTeam = mgvFirstTeam.localToScene(mgvFirstTeam.getBoundsInLocal());
-        Bounds secondTeam = mgvSecondTeam.localToScene(mgvSecondTeam.getBoundsInLocal());
-        if (firstTeam.contains(releaseEvent.getSceneX(), releaseEvent.getSceneY())) {
+        Bounds firstTeamBounds = mgvFirstTeam.localToScene(mgvFirstTeam.getBoundsInLocal());
+        Bounds secondTeamBounds = mgvSecondTeam.localToScene(mgvSecondTeam.getBoundsInLocal());
+        if (firstTeamBounds.contains(releaseEvent.getSceneX(), releaseEvent.getSceneY())) {
                 counterGoalsFirstTeam++;
                 lblFirstTeam.setText("" + counterGoalsFirstTeam);
                 System.out.println("\nEl balon toca al equipo #1\n");
         }
-        else if (secondTeam.contains(releaseEvent.getSceneX(), releaseEvent.getSceneY())) {
+        else if (secondTeamBounds.contains(releaseEvent.getSceneX(), releaseEvent.getSceneY())) {
                 counterGoalsSecondTeam++;
                 lblSecondTeam.setText("" + counterGoalsSecondTeam);
                 System.out.println("\nEl balon toca al equipo #2\n");
@@ -171,14 +159,13 @@ public class GameController extends Controller implements Initializable {
             System.out.println("Ganador del partido: " + nameFirstTeam);
             mgvWinFirstTeam.setVisible(true);
             currentTourney.winnerAndLooser(nameFirstTeam, counterGoalsFirstTeam, 3, nameSecondTeam, counterGoalsSecondTeam);
-            controller.adjustingTable(currentTeamList.get(index));
+            controller.adjustingTable(firstTeam);
             
         } else if (counterGoalsFirstTeam < counterGoalsSecondTeam) {
             System.out.println("Ganador del partido: " + nameSecondTeam);
             mgvWinSecondTeam.setVisible(true);
             currentTourney.winnerAndLooser(nameSecondTeam, counterGoalsSecondTeam, 3, nameFirstTeam, counterGoalsFirstTeam);
-            if (currentRound % 2 != 0) controller.adjustingTable(currentTeamList.get(index + 1));
-            else controller.adjustingTable(currentTeamList.get(index - 1));
+            controller.adjustingTable(secondTeam);
             
         } else {/*Animatica de empate*/}
     }
@@ -187,42 +174,28 @@ public class GameController extends Controller implements Initializable {
         lblTimer.setText("00:00");
         lblFirstTeam.setText("0");
         lblSecondTeam.setText("0");
-        mgvFirstTeam.setImage(null);
-        mgvSecondTeam.setImage(null);
         mgvWinFirstTeam.setVisible(false);
         mgvWinSecondTeam.setVisible(false);
         counterGoalsFirstTeam = 0;
         counterGoalsSecondTeam = 0;
-        nameFirstTeam = "";
-        nameSecondTeam = "";
         mgvBall.setVisible(true);
         timeCalculate = 0;
         isFinished = false;
         timerStarted =false;
     }
     
-    private void InitializeGame(Team firstTeam, Team secondTeam, int time) {
-        
-    }
-            
-    public void InitializeFromAppContext() {
-        this.currentTourney = (Tourney) AppContext.getInstance().get("CurrentTourney");
-        this.currentTeamList = currentTourney.getTeamList();
-        this.index = currentTourney.getContinueGame().getContinueIndexTeam();
-        this.currentRound = currentTourney.getContinueGame().getCurrentRound();
-        this.timeLimit = currentTourney.getTime();
-        this.currentSport = currentTourney.searchSportType();
+    public void InitializeGame(Team firstTeam, Team secondTeam) {
+        this.firstTeam = firstTeam;
+        this.secondTeam = secondTeam;
         chargeImages();
-        AppContext.getInstance().delete("CurrentTourney");
     }
-    
+             
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        try {
-            InitializeFromAppContext(); //Posee un error, pero creo que está relacionado a carga de imagenes
-        } catch (Exception e) {
-            message.show(Alert.AlertType.ERROR, "Error de Inicialización", "No se inicializo: " + e.getMessage());
-        }
+        this.currentTourney = (Tourney) AppContext.getInstance().get("CurrentTourney");
+        this.timeLimit = currentTourney.getTime();
+        this.currentSport = currentTourney.searchSportType();
+        AppContext.getInstance().delete("CurrentTourney");
     }    
 
     @Override

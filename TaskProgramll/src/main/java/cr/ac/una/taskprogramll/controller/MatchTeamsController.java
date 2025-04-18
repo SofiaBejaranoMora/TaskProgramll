@@ -6,11 +6,9 @@ import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -71,6 +69,9 @@ public class MatchTeamsController extends Controller implements Initializable {
     private void onActionBtnStart(ActionEvent event) {
         encounter();
         AppContext.getInstance().set("CurrentTourney", currentTourney);
+        GameController controller = (GameController) FlowController.getInstance().getController("Game"); 
+        if (currentRound % 2 != 0) controller.InitializeGame(currentTeamList.get(index), currentTeamList.get(index + 1));
+        else controller.InitializeGame(currentTeamList.get(index), currentTeamList.get(index - 1));
         FlowController.getInstance().goViewInStage("Game", (Stage) btnStart.getScene().getWindow());
     }
 
@@ -113,9 +114,11 @@ public class MatchTeamsController extends Controller implements Initializable {
          else if (currentRound % 2 == 0 && currentTeamList.get(index - 1) != null)
                  adjustingTable(currentTeamList.get(index - 1));
          else {
-             adjustingTable(currentTeamList.get(index));
              currentRound++;
-             encounter();
+             if (currentRound % 2 != 0)
+                 index++;
+             else
+                 index--;
          }
      }
      
@@ -149,6 +152,7 @@ public class MatchTeamsController extends Controller implements Initializable {
      }
      
 public void adjustingTable(Team winnerTeam) {
+    if (currentTeamList.size() == 2) currentRound = 6;
     switch (currentRound) {
         case 1 -> {
             round2.add(winnerTeam);
@@ -237,7 +241,7 @@ public void adjustingTable(Team winnerTeam) {
         }
         case 6 -> {
             winner.add(winnerTeam);
-            System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la siguiente ronda.");
+            System.out.println("El ganador del torneo es " + winnerTeam.getName());
             clmnFinal.setCellFactory(column -> new TableCell<Team, String>() {
                 @Override
                 protected void updateItem(String item, boolean empty) {
