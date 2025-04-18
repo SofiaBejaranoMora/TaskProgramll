@@ -136,16 +136,6 @@ public class MatchTeamsController extends Controller implements Initializable {
         tblPlayersTable.setItems(round1);
     }
 
-    private void encounter() {
-        if (currentRound % 2 != 0 && currentTeamList.get(index + 1) == null) {
-            adjustingTable(currentTeamList.get(index + 1));
-        } else if (currentRound % 2 == 0 && currentTeamList.get(index - 1) == null) {
-            adjustingTable(currentTeamList.get(index - 1));
-        } else {
-            adjustingTable(currentTeamList.get(index));
-        }
-    }
-
     private void organizedRound() {
         switch (discoverRounds()) {
             case 1 -> {
@@ -208,6 +198,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         switch (currentRound) {
             case 1 -> {
                 round2.add(winnerTeam);
+                currentTourney.getContinueGame().addToRound(winnerTeam, currentRound);
                 System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la siguiente ronda.");
                 clmnRound2.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -225,6 +216,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             case 2 -> {
                 round3.add(winnerTeam);
+                currentTourney.getContinueGame().addToRound(winnerTeam, currentRound);
                 System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la siguiente ronda.");
                 clmnRound3.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -242,6 +234,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             case 3 -> {
                 round4.add(winnerTeam);
+                currentTourney.getContinueGame().addToRound(winnerTeam, currentRound);
                 System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la siguiente ronda.");
                 clmnRound4.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -259,6 +252,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             case 4 -> {
                 round5.add(winnerTeam);
+                currentTourney.getContinueGame().addToRound(winnerTeam, currentRound);
                 System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la siguiente ronda.");
                 clmnRound5.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -276,6 +270,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             case 5 -> {
                 round6.add(winnerTeam);
+                currentTourney.getContinueGame().addToRound(winnerTeam, currentRound); 
                 System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la siguiente ronda.");
                 clmnRound6.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -293,6 +288,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             case 6 -> {
                 winner.add(winnerTeam);
+                currentTourney.getContinueGame().addToRound(winnerTeam, currentRound);
                 System.out.println("El ganador del torneo es " + winnerTeam.getName());
                 clmnFinal.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -342,7 +338,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         tblPlayersTable.refresh();
         index = currentTourney.getContinueGame().getContinueIndexTeam();
         if (currentTeamList.get(index).getId() != currentTourney.getContinueGame().getContinueIdTeam()) {
-
+            adjustingTable(currentTeamList.get(index + 1));
         }
     }
 
