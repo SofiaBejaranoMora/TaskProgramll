@@ -169,6 +169,8 @@ public class ViewTourneysController extends Controller implements Initializable 
             // Lógica para jugar/continuar torneo
             AppContext.getInstance().set("SelectedTourney", selectedTourney);
             // Navegar a la vista de información 
+            MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
+            controller.initializeFromAppContext();
             FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnPlay.getScene().getWindow());
             System.out.println("Iniciando torneo: " + selectedTourney.getName());
         }

@@ -104,11 +104,11 @@ public class GameController extends Controller implements Initializable {
     
     @FXML
     private void onActionBtnOut(ActionEvent event) {
-        if(!isFinished) {
+        if (!isFinished) {
             currentTime.pause();
             FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
-        }
-        else {
+        } else {
+            resetGame();
             FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
         }
     }
@@ -166,33 +166,46 @@ public class GameController extends Controller implements Initializable {
     private void drawAnimatic(){}
     
     private void afterGame() {
+        MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
         if (counterGoalsFirstTeam > counterGoalsSecondTeam){
             System.out.println("Ganador del partido: " + nameFirstTeam);
             mgvWinFirstTeam.setVisible(true);
             currentTourney.winnerAndLooser(nameFirstTeam, counterGoalsFirstTeam, 3, nameSecondTeam, counterGoalsSecondTeam);
-            AppContext.getInstance().set("WinnerTeam", currentTeamList.get(index));
-            resetGame();
+            controller.adjustingTable(currentTeamList.get(index));
             
         } else if (counterGoalsFirstTeam < counterGoalsSecondTeam) {
             System.out.println("Ganador del partido: " + nameSecondTeam);
             mgvWinSecondTeam.setVisible(true);
             currentTourney.winnerAndLooser(nameSecondTeam, counterGoalsSecondTeam, 3, nameFirstTeam, counterGoalsFirstTeam);
-            if (currentRound % 2 != 0) AppContext.getInstance().set("WinnerTeam", currentTeamList.get(index + 1));
-            else AppContext.getInstance().set("WinnerTeam", currentTeamList.get(index - 1));
-            resetGame();
+            if (currentRound % 2 != 0) controller.adjustingTable(currentTeamList.get(index + 1));
+            else controller.adjustingTable(currentTeamList.get(index - 1));
             
-        } else {/*Animatica de empate*/
-            resetGame();
-        }
+        } else {/*Animatica de empate*/}
     }
     
     private void resetGame() {
         lblTimer.setText("00:00");
         lblFirstTeam.setText("0");
         lblSecondTeam.setText("0");
+        mgvFirstTeam.setImage(null);
+        mgvSecondTeam.setImage(null);
+        mgvWinFirstTeam.setVisible(false);
+        mgvWinSecondTeam.setVisible(false);
+        counterGoalsFirstTeam = 0;
+        counterGoalsSecondTeam = 0;
+        nameFirstTeam = "";
+        nameSecondTeam = "";
+        mgvBall.setVisible(true);
+        timeCalculate = 0;
+        isFinished = false;
+        timerStarted =false;
     }
     
-    private void InitializeFromAppContext() {
+    private void InitializeGame(Team firstTeam, Team secondTeam, int time) {
+        
+    }
+            
+    public void InitializeFromAppContext() {
         this.currentTourney = (Tourney) AppContext.getInstance().get("CurrentTourney");
         this.currentTeamList = currentTourney.getTeamList();
         this.index = currentTourney.getContinueGame().getContinueIndexTeam();
