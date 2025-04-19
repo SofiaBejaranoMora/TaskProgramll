@@ -169,6 +169,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             index += 2;
             if (index == currentTeamList.size()) {
                 currentRound++;
+                btnBack.setVisible(true);
                 currentTeamList = currentTourney.getTeamList();
                 index = currentTeamList.size() - 1;
             } else if (index == currentTeamList.size() - 1){
@@ -179,6 +180,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             index -= 2;
             if (index == -1) {
                 currentRound++;
+                btnBack.setVisible(true);
                 currentTeamList = currentTourney.getTeamList();
                 index = 0;
             } else if (index == currentTeamList.size() + 1) {
@@ -299,6 +301,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                     }
                 });
                 tblPlayersTable.refresh();
+                currentTourney.moveTeamToLoosers(winnerTeam);
                 winnerAnimatic(winnerTeam);
             }
             default ->
@@ -340,8 +343,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         distributionOnTable();
     }
 
-    private void continueGameParameters() {
-        organizedRound();
+    private void loadColumns() {
         round1.setAll(currentTourney.getContinueGame().getRound1());
         clmnRound1.setCellFactory(column -> new TableCell<Team, String>() {
             @Override
@@ -426,6 +428,11 @@ public class MatchTeamsController extends Controller implements Initializable {
                 }
             }
         });
+    }
+    
+    private void continueGameParameters() {
+        organizedRound();        
+        loadColumns();
         index = currentTourney.getContinueGame().getContinueIndexTeam();
         currentRound = currentTourney.getContinueGame().getCurrentRound();
         if (currentTeamList.get(index).getId() != currentTourney.getContinueGame().getContinueIdFTeam()) {
@@ -445,90 +452,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
 
     private void viewGameTable() {
-                round1.setAll(currentTourney.getContinueGame().getRound1());
-        clmnRound1.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= round1.size()) {
-                    setText(null);
-                } else {
-                    setText(round1.get(getIndex()).getName());
-                }
-            }
-        });
-        round2.setAll(currentTourney.getContinueGame().getRound2());
-        clmnRound2.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= round2.size()) {
-                    setText(null);
-                } else {
-                    setText(round2.get(getIndex()).getName());
-                }
-            }
-        });
-        round3.setAll(currentTourney.getContinueGame().getRound3());
-        clmnRound3.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= round3.size()) {
-                    setText(null);
-                } else {
-                    setText(round3.get(getIndex()).getName());
-                }
-            }
-        });
-        round4.setAll(currentTourney.getContinueGame().getRound4());
-        clmnRound4.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= round4.size()) {
-                    setText(null);
-                } else {
-                    setText(round4.get(getIndex()).getName());
-                }
-            }
-        });
-        round5.setAll(currentTourney.getContinueGame().getRound5());
-        clmnRound5.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= round5.size()) {
-                    setText(null);
-                } else {
-                    setText(round5.get(getIndex()).getName());
-                }
-            }
-        });
-        round6.setAll(currentTourney.getContinueGame().getRound6());
-        clmnRound6.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= round6.size()) {
-                    setText(null);
-                } else {
-                    setText(round6.get(getIndex()).getName());
-                }
-            }
-        });
-        winner.setAll(currentTourney.getContinueGame().getWinner());
-        clmnFinal.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= winner.size()) {
-                    setText(null);
-                } else {
-                    setText(winner.get(getIndex()).getName());
-                }
-            }
-        });
+        loadColumns();
         btnStart.setManaged(false);
         btnStart.setVisible(false);
     }
@@ -542,6 +466,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
     
     public void initializeFromAppContext() {
+        btnBack.setVisible(false);
         this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("SelectedTourney"));
         this.currentTeamList = currentTourney.getTeamList();
         switch (currentTourney.returnState()) {

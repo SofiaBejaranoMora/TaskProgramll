@@ -71,8 +71,8 @@ public class GameController extends Controller implements Initializable {
             mgvBall.setVisible(false);
             Image ballImage = mgvBall.getImage();
             ImageView copyBall = new ImageView(ballImage);
-            copyBall.setFitWidth(ballImage.getWidth() * 0.05);
-            copyBall.setFitHeight(ballImage.getHeight() * 0.05);
+            copyBall.setFitWidth(ballImage.getWidth() * 0.1);
+            copyBall.setFitHeight(ballImage.getHeight() * 0.1);
             copyBall.setOpacity(1.0);
             ncpRoot.getChildren().add(copyBall);
             copyBall.setLayoutX(mgvBall.getLayoutX());
