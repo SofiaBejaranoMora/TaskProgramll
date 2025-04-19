@@ -9,6 +9,7 @@ import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.scene.paint.Color;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -325,6 +327,43 @@ public class TournamentHistoryController extends Controller implements Initializ
         tournamentTable.setItems(filtered);
     }
     
+    private void drawTeamStats(Team team) {
+        GraphicsContext gc = statsCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, statsCanvas.getWidth(), statsCanvas.getHeight());
+        if (team == null) {
+            return;
+        }
+
+        double width = statsCanvas.getWidth();
+        double height = statsCanvas.getHeight();
+        int points = team.getPoints();
+        int goals = team.getGoals();
+        System.out.println("Dibujando gráfico - Equipo: " + team.getName() + ", Puntos: " + points + ", Goles: " + goals);
+
+        if (points == 0 && goals == 0) {
+            gc.setFill(Color.BLACK);
+            gc.fillText("Sin datos para mostrar", width / 4, height / 2);
+            return;
+        }
+
+        double maxValue = Math.max(Math.max(points, goals), 1);
+        double barWidth = width / 4;
+
+        // Barra de puntos
+        double pointsHeight = (points / maxValue) * (height * 0.8);
+        gc.setFill(Color.BLUE);
+        gc.fillRect(barWidth * 0.5, height - pointsHeight, barWidth, pointsHeight);
+        gc.setFill(Color.BLACK); 
+        gc.fillText("Puntos", barWidth * 0.5, height - 5);
+
+        // Barra de goles
+        double goalsHeight = (goals / maxValue) * (height * 0.8);
+        gc.setFill(Color.GREEN);
+        gc.fillRect(barWidth * 2.5, height - goalsHeight, barWidth, goalsHeight);
+        gc.setFill(Color.BLACK);
+        gc.fillText("Goles", barWidth * 2.5, height - 5);
+    }
+    
     private void showTourneyInfo(Tourney tourney, Team team) {
         if (tourney == null || team == null) {
             detailsTitle.setText("Seleccioná un torneo y un equipo");
@@ -332,6 +371,7 @@ public class TournamentHistoryController extends Controller implements Initializ
             matchesLabel.setText("");
             statsLabel.setText("");
             generalStatsLabel.setText("");
+            statsCanvas.getGraphicsContext2D().clearRect(0, 0, statsCanvas.getWidth(), statsCanvas.getHeight());
             return;
         }
         detailsTitle.setText(tourney.getName());
@@ -345,7 +385,10 @@ public class TournamentHistoryController extends Controller implements Initializ
         }
         statsLabel.setText("Puntos: " + team.getPoints() + ", Goles: " + team.getGoals());
         generalStatsLabel.setText("Estado del torneo: " + tourney.returnState());
+        drawTeamStats(team);
     }
+    
+    
 
     private void updateTeamsPane(Tourney tourney) {
         teamsPane.getChildren().clear();
