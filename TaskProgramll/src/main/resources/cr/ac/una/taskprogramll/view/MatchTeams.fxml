@@ -47,7 +47,7 @@
             </HBox>
          </children>
       </VBox>
-      <StackPane fx:id="stpWinnerTourney" prefHeight="150.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+      <StackPane fx:id="stpWinnerTourney" prefHeight="150.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="20.0">
          <children>
             <ImageView fx:id="mgvWinnerStar" fitHeight="350.0" fitWidth="450.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" StackPane.alignment="CENTER" />
             <StackPane prefHeight="150.0" prefWidth="200.0">

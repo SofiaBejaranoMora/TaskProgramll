@@ -81,10 +81,7 @@ public class MatchTeamsController extends Controller implements Initializable {
 
     @FXML
     private void onActionBtnBack(ActionEvent event) {
-        AppContext.getInstance().set("SelectedTourney", null);
-        currentTourney.getContinueGame().setContinueIndexTeam(index);
-        currentTourney.getContinueGame().setContinueIdTeam(currentTeamList.get(index).getId());
-        fileManager.serialization(tourneyList, "Tourney");
+        saveData();
         FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
     }
 
@@ -115,7 +112,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             return 6;
         }
     }
-
+    
     private void disableFilterOrSelection() {
         tblPlayersTable.setEditable(false);
         tblPlayersTable.getSelectionModel().clearSelection();
@@ -130,7 +127,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         Collections.shuffle(currentTeamList);
         currentTourney.getTeamList().clear();
         currentTourney.setTeamList(currentTeamList);
-        currentTourney.getContinueGame().getRound1().addAll(round1);
+        currentTourney.getContinueGame().setItems(currentTeamList);
         round1.setAll(currentTeamList);
         clmnRound1.setCellValueFactory(new PropertyValueFactory<>("name"));
         tblPlayersTable.setItems(round1);
@@ -319,6 +316,23 @@ public class MatchTeamsController extends Controller implements Initializable {
         lblWinnerGoals.setText("" + winnerTeam.getGoals());
     }
     
+    private void saveData() {
+        stpWinnerTourney.setVisible(false);
+        AppContext.getInstance().set("SelectedTourney", null);
+        currentTourney.getContinueGame().setCurrentRound(currentRound);
+        if (currentRound % 2 != 0) { 
+            currentTourney.getContinueGame().setContinueIdFTeam(currentTeamList.get(index).getId());
+            currentTourney.getContinueGame().setContinueIdSTeam(currentTeamList.get(index + 1).getId());
+            currentTourney.getContinueGame().setContinueIndexTeam(index);    
+        }
+        else {
+            currentTourney.getContinueGame().setContinueIdFTeam(currentTeamList.get(index).getId());
+            currentTourney.getContinueGame().setContinueIdSTeam(currentTeamList.get(index - 1).getId());
+            currentTourney.getContinueGame().setContinueIndexTeam(index);
+        }
+        fileManager.serialization(tourneyList, "Tourney");
+    }
+    
     private void startGameParameters() {
         globalSize = currentTeamList.size();
         currentTourney.getContinueGame().setGlobalSize(globalSize);
@@ -329,20 +343,192 @@ public class MatchTeamsController extends Controller implements Initializable {
     private void continueGameParameters() {
         organizedRound();
         round1.setAll(currentTourney.getContinueGame().getRound1());
+        clmnRound1.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= round1.size()) {
+                    setText(null);
+                } else {
+                    setText(round1.get(getIndex()).getName());
+                }
+            }
+        });
         round2.setAll(currentTourney.getContinueGame().getRound2());
+        clmnRound2.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= round2.size()) {
+                    setText(null);
+                } else {
+                    setText(round2.get(getIndex()).getName());
+                }
+            }
+        });
         round3.setAll(currentTourney.getContinueGame().getRound3());
+        clmnRound3.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= round3.size()) {
+                    setText(null);
+                } else {
+                    setText(round3.get(getIndex()).getName());
+                }
+            }
+        });
         round4.setAll(currentTourney.getContinueGame().getRound4());
+        clmnRound4.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= round4.size()) {
+                    setText(null);
+                } else {
+                    setText(round4.get(getIndex()).getName());
+                }
+            }
+        });
         round5.setAll(currentTourney.getContinueGame().getRound5());
+        clmnRound5.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= round5.size()) {
+                    setText(null);
+                } else {
+                    setText(round5.get(getIndex()).getName());
+                }
+            }
+        });
         round6.setAll(currentTourney.getContinueGame().getRound6());
+        clmnRound6.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= round6.size()) {
+                    setText(null);
+                } else {
+                    setText(round6.get(getIndex()).getName());
+                }
+            }
+        });
         winner.setAll(currentTourney.getContinueGame().getWinner());
-        tblPlayersTable.refresh();
+        clmnFinal.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= winner.size()) {
+                    setText(null);
+                } else {
+                    setText(winner.get(getIndex()).getName());
+                }
+            }
+        });
         index = currentTourney.getContinueGame().getContinueIndexTeam();
-        if (currentTeamList.get(index).getId() != currentTourney.getContinueGame().getContinueIdTeam()) {
-            adjustingTable(currentTeamList.get(index + 1));
+        currentRound = currentTourney.getContinueGame().getCurrentRound();
+        if (currentTeamList.get(index).getId() != currentTourney.getContinueGame().getContinueIdFTeam()) {
+            if (currentRound % 2 != 0) adjustingTable(currentTeamList.get(index + 1));
+            else adjustingTable(currentTeamList.get(index - 1));
+        } else {
+            if (currentRound % 2 != 0) {
+                if (currentTeamList.get(index + 1).getId() != currentTourney.getContinueGame().getContinueIdSTeam()) {
+                    adjustingTable(currentTeamList.get(index));
+                }
+            } else {
+                if (currentTeamList.get(index - 1).getId() != currentTourney.getContinueGame().getContinueIdSTeam()) {
+                    adjustingTable(currentTeamList.get(index));
+                } 
+            }
         }
     }
 
     private void viewGameTable() {
+                round1.setAll(currentTourney.getContinueGame().getRound1());
+        clmnRound1.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= round1.size()) {
+                    setText(null);
+                } else {
+                    setText(round1.get(getIndex()).getName());
+                }
+            }
+        });
+        round2.setAll(currentTourney.getContinueGame().getRound2());
+        clmnRound2.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= round2.size()) {
+                    setText(null);
+                } else {
+                    setText(round2.get(getIndex()).getName());
+                }
+            }
+        });
+        round3.setAll(currentTourney.getContinueGame().getRound3());
+        clmnRound3.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= round3.size()) {
+                    setText(null);
+                } else {
+                    setText(round3.get(getIndex()).getName());
+                }
+            }
+        });
+        round4.setAll(currentTourney.getContinueGame().getRound4());
+        clmnRound4.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= round4.size()) {
+                    setText(null);
+                } else {
+                    setText(round4.get(getIndex()).getName());
+                }
+            }
+        });
+        round5.setAll(currentTourney.getContinueGame().getRound5());
+        clmnRound5.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= round5.size()) {
+                    setText(null);
+                } else {
+                    setText(round5.get(getIndex()).getName());
+                }
+            }
+        });
+        round6.setAll(currentTourney.getContinueGame().getRound6());
+        clmnRound6.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= round6.size()) {
+                    setText(null);
+                } else {
+                    setText(round6.get(getIndex()).getName());
+                }
+            }
+        });
+        winner.setAll(currentTourney.getContinueGame().getWinner());
+        clmnFinal.setCellFactory(column -> new TableCell<Team, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || getIndex() >= winner.size()) {
+                    setText(null);
+                } else {
+                    setText(winner.get(getIndex()).getName());
+                }
+            }
+        });
         btnStart.setManaged(false);
         btnStart.setVisible(false);
     }

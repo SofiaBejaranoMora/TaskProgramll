@@ -6,7 +6,8 @@ import java.util.List;
 /** * * @author ashly*/
 public class Game {
     
-    private int continueIdTeam;
+    private int continueIdFTeam;
+    private int continueIdSTeam;
     private int continueIndexTeam;
     private int remainingTime;
     private int goalsTeam1;
@@ -31,12 +32,20 @@ public class Game {
         this.winner = new ArrayList<>();
     }
 
-    public int getContinueIdTeam() {
-        return continueIdTeam;
+    public int getContinueIdFTeam() {
+        return continueIdFTeam;
     }
 
-    public void setContinueIdTeam(int continueIdTeam) {
-        this.continueIdTeam = continueIdTeam;
+    public void setContinueIdFTeam(int continueIdFTeam) {
+        this.continueIdFTeam = continueIdFTeam;
+    }
+
+    public int getContinueIdSTeam() {
+        return continueIdSTeam;
+    }
+
+    public void setContinueIdSTeam(int continueIdSTeam) {
+        this.continueIdSTeam = continueIdSTeam;
     }
 
     public int getContinueIndexTeam() {
@@ -87,10 +96,14 @@ public class Game {
         this.currentRound = currentRound;
     }
     
+    public void setItems(List<Team> round1){
+        this.round1 = round1;
+    }
+    
     public List<Team> getRound1() {
         return round1;
     }
-
+    
     public List<Team> getRound2() {
         return round2;
     }
@@ -118,24 +131,21 @@ public class Game {
     public void addToRound(Team passTeam, int numberRound) {
         switch (numberRound) {
             case 1 -> {
-                round1.add(passTeam);
-            }
-            case 2 -> {
                 round2.add(passTeam);
             }
-            case 3 -> {
+            case 2 -> {
                 round3.add(passTeam);
             }
-            case 4 -> {
+            case 3 -> {
                 round4.add(passTeam);
             }
-            case 5 -> {
+            case 4 -> {
                 round5.add(passTeam);
             }
-            case 6 -> {
+            case 5 -> {
                 round6.add(passTeam);
             }
-            case 7 -> {
+            case 6 -> {
                 winner.add(passTeam);
             }
             default -> throw new AssertionError();
