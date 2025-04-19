@@ -8,6 +8,7 @@ import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.ResourceUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import java.net.URL;
+import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -59,6 +60,8 @@ public class GameController extends Controller implements Initializable {
     private Label lblTimer;
     @FXML
     private MFXButton btnOut;
+    @FXML
+    private MFXButton btnFastFinish;
     
     @FXML
     void onDragDetectedMgvBall(MouseEvent event) {
@@ -104,6 +107,28 @@ public class GameController extends Controller implements Initializable {
             resetGame();
             FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
         }
+    }
+    
+    @FXML
+    private void onActionBtnFastFinish(ActionEvent event) {
+        currentTime.play();
+        currentTime.stop();
+        mgvBall.setVisible(false);
+        int pointsFor = 0;
+        while (pointsFor != 2) {
+            Random randomPoints = new Random();
+            int randomGoals = randomPoints.nextInt(10);
+            if (pointsFor == 0) {
+                counterGoalsFirstTeam += randomGoals;
+                lblFirstTeam.setText("" + counterGoalsFirstTeam);
+                pointsFor++;
+            } else {
+                counterGoalsSecondTeam += randomGoals;
+                lblSecondTeam.setText("" + counterGoalsSecondTeam);
+                pointsFor++;
+            }
+        }
+        afterGame();
     }
     
     private void chargeImages() {

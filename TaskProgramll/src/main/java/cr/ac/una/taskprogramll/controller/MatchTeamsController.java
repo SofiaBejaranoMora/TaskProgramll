@@ -20,6 +20,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -120,6 +121,22 @@ public class MatchTeamsController extends Controller implements Initializable {
         for (TableColumn<Team, ?> column : tblPlayersTable.getColumns()) {
             column.setSortable(false);
         }
+    }
+
+    private void applyRowStyles(TableView<Team> tableView) {
+        tableView.setRowFactory(tv -> new TableRow<Team>() {
+            @Override
+            protected void updateItem(Team item, boolean empty) {
+                super.updateItem(item, empty);
+                if (!empty) {
+                    int index = getIndex();
+                    String style = (index % 4 < 2) ? "-fx-background-color: #d3d3d3;" : "-fx-background-color: #ffffff;";
+                    setStyle(style);
+                } else {
+                    setStyle("");
+                }
+            }
+        });
     }
 
     private void distributionOnTable() {
@@ -483,10 +500,11 @@ public class MatchTeamsController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-            file = new File("Tourney.txt");
-            if ((file.exists()) && (file.length() > 0)) {
-                tourneyList = fileManager.deserialization("Tourney", Tourney.class);
-            }
+        applyRowStyles(tblPlayersTable);
+        file = new File("Tourney.txt");
+        if ((file.exists()) && (file.length() > 0)) {
+            tourneyList = fileManager.deserialization("Tourney", Tourney.class);
+        }
     }
 
     @Override

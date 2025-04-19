@@ -72,6 +72,8 @@
             </Label>
             <HBox alignment="CENTER_RIGHT" prefHeight="40.0" prefWidth="760.0">
                <children>
+                  <MFXButton fx:id="btnFastFinish" onAction="#onActionBtnFastFinish" prefWidth="100.0" styleClass="TableViewLightdBlue" stylesheets="@Style.css" text="Finalizar" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                   <MFXButton fx:id="btnOut" onAction="#onActionBtnOut" prefWidth="100.0" styleClass="TableViewLightdBlue" stylesheets="@Style.css" text="Salir" />
                </children>
                <padding>
