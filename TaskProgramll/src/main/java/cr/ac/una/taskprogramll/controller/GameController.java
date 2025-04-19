@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,6 +23,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -111,9 +113,8 @@ public class GameController extends Controller implements Initializable {
     
     @FXML
     private void onActionBtnFastFinish(ActionEvent event) {
-        currentTime.play();
-        currentTime.stop();
         mgvBall.setVisible(false);
+        isFinished = true;
         int pointsFor = 0;
         while (pointsFor != 2) {
             Random randomPoints = new Random();
@@ -172,19 +173,34 @@ public class GameController extends Controller implements Initializable {
         }
     }
     
-    private void drawAnimatic(){}
+    private void winnerAnimatic(ImageView starWinner) {
+        Scale scale = new Scale();
+        starWinner.getTransforms().add(scale);
+        Timeline timeline = new Timeline();
+        KeyFrame increase = new KeyFrame(Duration.millis(500), new KeyValue(scale.xProperty(), 1.5), new KeyValue(scale.yProperty(), 1.5));
+        KeyFrame reduce = new KeyFrame(Duration.millis(1000), new KeyValue(scale.xProperty(), 1.0), new KeyValue(scale.yProperty(), 1.0));
+        timeline.getKeyFrames().addAll(increase, reduce);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+    
+    private void drawAnimatic(){
+        
+    }
     
     private void afterGame() {
         MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
         if (counterGoalsFirstTeam > counterGoalsSecondTeam){
             System.out.println("Ganador del partido: " + firstTeam.getName());
             mgvWinFirstTeam.setVisible(true);
+            winnerAnimatic(mgvWinFirstTeam);
             currentTourney.winnerAndLooser(firstTeam.getName(), counterGoalsFirstTeam, 3, secondTeam.getName(), counterGoalsSecondTeam);
             controller.adjustingTable(firstTeam);
             
         } else if (counterGoalsFirstTeam < counterGoalsSecondTeam) {
             System.out.println("Ganador del partido: " + secondTeam.getName());
             mgvWinSecondTeam.setVisible(true);
+            winnerAnimatic(mgvWinSecondTeam);
             currentTourney.winnerAndLooser(secondTeam.getName(), counterGoalsSecondTeam, 3, firstTeam.getName(), counterGoalsFirstTeam);
             controller.adjustingTable(secondTeam);
             

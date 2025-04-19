@@ -39,7 +39,7 @@
                               <Rectangle2D />
                            </viewport>
                         </ImageView>
-                        <ImageView id="StarIcon" fx:id="mgvWinFirstTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" />
+                        <ImageView id="StarIcon" fx:id="mgvWinFirstTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" translateX="-30.0" translateY="-30.0" />
                      </children>
                   </StackPane>
                   <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
@@ -48,7 +48,7 @@
                   <StackPane prefHeight="150.0" prefWidth="200.0">
                      <children>
                         <ImageView fx:id="mgvSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                        <ImageView id="StarIcon" fx:id="mgvWinSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" />
+                        <ImageView id="StarIcon" fx:id="mgvWinSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" translateX="-30.0" translateY="-30.0" />
                      </children>
                   </StackPane>
                   <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />

@@ -12,6 +12,9 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -26,7 +29,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**  * * FXML Controller class * * @author ashly  */
 public class MatchTeamsController extends Controller implements Initializable {
@@ -36,6 +41,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     private List<Team> currentTeamList;
     private FileManager fileManager = new FileManager();
     private File file;
+    private Boolean viewButton = false;
     private int index = 0;
     private int currentRound = 1;
     private int globalSize;
@@ -68,6 +74,8 @@ public class MatchTeamsController extends Controller implements Initializable {
     @FXML
     private MFXButton btnStart;
     @FXML
+    private MFXButton btnCetificate;
+    @FXML
     private StackPane stpWinnerTourney;
     @FXML
     private ImageView mgvWinnerStar;
@@ -88,6 +96,10 @@ public class MatchTeamsController extends Controller implements Initializable {
 
     @FXML
     private void onActionBtnStart(ActionEvent event) {
+        if (viewButton) {
+            btnBack.setVisible(false);
+            viewButton = false;
+        }
         AppContext.getInstance().set("CurrentTourney", currentTourney);
         GameController controller = (GameController) FlowController.getInstance().getController("Game");
         if (currentRound % 2 != 0) {
@@ -96,6 +108,11 @@ public class MatchTeamsController extends Controller implements Initializable {
             controller.InitializeGame(currentTeamList.get(index - 1), currentTeamList.get(index));
         }
         FlowController.getInstance().goViewInStage("Game", (Stage) btnStart.getScene().getWindow());
+    }
+    
+    @FXML
+    private void onActionBtnCertificate(ActionEvent event) {
+        //Desktop.getDesktop().open(new File (System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/"+winner.get(0).getName()+"_"+currentTourney.getName()+".pdf";));
     }
 
     private int discoverRounds() {
@@ -129,8 +146,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             protected void updateItem(Team item, boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty) {
-                    int index = getIndex();
-                    String style = (index % 4 < 2) ? "-fx-background-color: #d3d3d3;" : "-fx-background-color: #ffffff;";
+                    String style = (getIndex() % 4 < 2) ? "-fx-background-color: #d3d3d3; -fx-border-color: red; -fx-border-width: 1px;" : "-fx-background-color: #ffffff; -fx-border-color: black; -fx-border-width: 1px;";
                     setStyle(style);
                 } else {
                     setStyle("");
@@ -187,6 +203,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             if (index == currentTeamList.size()) {
                 currentRound++;
                 btnBack.setVisible(true);
+                viewButton = true;
                 currentTeamList = currentTourney.getTeamList();
                 index = currentTeamList.size() - 1;
             } else if (index == currentTeamList.size() - 1){
@@ -198,6 +215,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             if (index == -1) {
                 currentRound++;
                 btnBack.setVisible(true);
+                viewButton = true;
                 currentTeamList = currentTourney.getTeamList();
                 index = 0;
             } else if (index == currentTeamList.size() + 1) {
@@ -319,6 +337,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                 });
                 tblPlayersTable.refresh();
                 currentTourney.moveTeamToLoosers(winnerTeam);
+                btnCetificate.setVisible(true);
                 winnerAnimatic(winnerTeam);
             }
             default ->
@@ -326,11 +345,23 @@ public class MatchTeamsController extends Controller implements Initializable {
         }
     }
 
+        private void winnerAnimatic(ImageView starWinner) {
+        Scale scale = new Scale();
+        starWinner.getTransforms().add(scale);
+        Timeline timeline = new Timeline();
+        KeyFrame increase = new KeyFrame(Duration.millis(500), new KeyValue(scale.xProperty(), 1.5), new KeyValue(scale.yProperty(), 1.5));
+        KeyFrame reduce = new KeyFrame(Duration.millis(1000), new KeyValue(scale.xProperty(), 1.0), new KeyValue(scale.yProperty(), 1.0));
+        timeline.getKeyFrames().addAll(increase, reduce);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+    
     private void winnerAnimatic(Team winnerTeam) {
         btnStart.setVisible(false);
         btnStart.setManaged(false);
         stpWinnerTourney.setVisible(true);
         mgvWinnerImage.setImage(new Image(ResourceUtil.getImagePath(winnerTeam.getId())));
+        winnerAnimatic(mgvWinnerStar);
         lblWinnerName.setText(winnerTeam.getName());
         lblWinnerPoints.setText("" + winnerTeam.getPoints());
         lblWinnerGoals.setText("" + winnerTeam.getGoals());
@@ -352,6 +383,8 @@ public class MatchTeamsController extends Controller implements Initializable {
         }
         fileManager.serialization(tourneyList, "Tourney");
     }
+    
+    private void printCertificate(){}
     
     private void startGameParameters() {
         globalSize = currentTeamList.size();
