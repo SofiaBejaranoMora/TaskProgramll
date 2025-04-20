@@ -338,6 +338,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                 tblPlayersTable.refresh();
                 currentTourney.moveTeamToLoosers(winnerTeam);
                 btnCetificate.setVisible(true);
+                btnBack.setVisible(true);
                 winnerAnimatic(winnerTeam);
             }
             default ->
@@ -384,7 +385,9 @@ public class MatchTeamsController extends Controller implements Initializable {
         fileManager.serialization(tourneyList, "Tourney");
     }
     
-    private void printCertificate(){}
+    private void printCertificate(){
+        
+    }
     
     private void startGameParameters() {
         globalSize = currentTeamList.size();
@@ -505,6 +508,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         loadColumns();
         btnStart.setManaged(false);
         btnStart.setVisible(false);
+        btnBack.setVisible(true);
     }
 
     public Tourney searchTourney(Tourney selectedTourney) {

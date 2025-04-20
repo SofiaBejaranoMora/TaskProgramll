@@ -119,7 +119,7 @@ public class GameController extends Controller implements Initializable {
         int pointsFor = 0;
         while (pointsFor != 2) {
             Random randomPoints = new Random();
-            int randomGoals = randomPoints.nextInt(10);
+            int randomGoals = randomPoints.nextInt(10 + 1);
             if (pointsFor == 0) {
                 counterGoalsFirstTeam += randomGoals;
                 lblFirstTeam.setText("" + counterGoalsFirstTeam);
@@ -130,6 +130,7 @@ public class GameController extends Controller implements Initializable {
                 pointsFor++;
             }
         }
+        btnFastFinish.setVisible(false);
         afterGame();
     }
     

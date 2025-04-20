@@ -45,11 +45,24 @@
                   </MFXButton>
                </children>
             </HBox>
+            <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0">
+               <children>
+                  <MFXButton fx:id="btnCetificate" onAction="#onActionBtnCertificate" text="Imprimir Certificado" visible="false">
+                     <graphic>
+                        <VBox prefHeight="30.0" prefWidth="30.0">
+                           <children>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" styleClass="PrintIcon" />
+                           </children>
+                        </VBox>
+                     </graphic>
+                  </MFXButton>
+               </children>
+            </HBox>
          </children>
       </VBox>
-      <StackPane fx:id="stpWinnerTourney" prefHeight="150.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="20.0">
+      <StackPane fx:id="stpWinnerTourney" prefHeight="150.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="20.0">
          <children>
-            <ImageView fx:id="mgvWinnerStar" fitHeight="350.0" fitWidth="450.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" translateX="-30.0" translateY="-30.0" StackPane.alignment="CENTER" />
+            <ImageView fx:id="mgvWinnerStar" fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" translateX="-30.0" translateY="-30.0" StackPane.alignment="CENTER" />
             <StackPane prefHeight="150.0" prefWidth="200.0">
                <children>
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
@@ -74,14 +87,5 @@
             </StackPane>
          </children>
       </StackPane>
-      <MFXButton fx:id="btnCetificate" layoutX="219.0" layoutY="386.0" onAction="#onActionBtnCertificate" text="Imprimir Certificado" visible="false">
-         <graphic>
-            <VBox prefHeight="30.0" prefWidth="30.0">
-               <children>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" styleClass="PrintIcon" />
-               </children>
-            </VBox>
-         </graphic>
-      </MFXButton>
    </children>
 </AnchorPane>

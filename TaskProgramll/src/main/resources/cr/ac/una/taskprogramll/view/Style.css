@@ -132,18 +132,6 @@
     -fx-opacity: 1;
 }
 
-.StarIcon {
-    -fx-opacity: 1;
-    -fx-transition: 0.5s ease-in-out;
-}
-
-.StarIcon:hover {
-    -fx-rotate: 360;
-    -fx-scale-x: 1.2;
-    -fx-scale-y: 1.2;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 12, 0, 0, 3);
-}
-
 .mfx-button:hover{
     -fx-background-color: -fx-rose-base-color;
     -fx-scale-x: 1.1;
