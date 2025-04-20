@@ -287,3 +287,32 @@
 #tourneyHitbox {
     -fx-fill: url("resources/stadium.png");
 }
+
+.scroll-pane {
+    -fx-background: -fx-lightBlue-base-color; 
+    -fx-background-color: transparent;
+    -fx-border-color: #D9CBEF; 
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-opacity: 0.85;
+    -fx-effect: dropshadow(gaussian, rgba(89, 67, 104, 0.15), 6, 0.2, 0, 2); 
+}
+
+.scroll-pane:hover {
+    -fx-opacity: 1;
+    -fx-effect: dropshadow(gaussian, rgba(89, 67, 104, 0.3), 8, 0.2, 0, 3); 
+}
+
+.Accordion {
+    -fx-background-color:
+        radial-gradient(center 76.42% 75.00%, radius 100%, rgba(96, 71, 145, 0.5) 0%, rgba(96, 71, 145, 0) 100%),
+        radial-gradient(center 6.68% 69.12%, radius 100%, rgba(163, 114, 219, 0.5) 0%, rgba(163, 114, 219, 0) 100%),
+        linear-gradient(to bottom, -fx-lightBlue-base-color, #F8F3FF);
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-border-color: #D9CBEF;
+    -fx-border-width: 1px;
+    -fx-opacity: 0.85;
+    -fx-effect: dropshadow(gaussian, rgba(89, 67, 104, 0.15), 6, 0.2, 0, 2);
+}
