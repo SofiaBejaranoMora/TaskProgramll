@@ -226,4 +226,5 @@ public class Tourney {
         int position = ranking.size() - ranking.indexOf(team);
         return "Posición: " + position;
     }
+   
 }

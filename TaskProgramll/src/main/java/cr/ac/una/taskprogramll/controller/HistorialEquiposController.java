@@ -23,6 +23,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Accordion;
@@ -33,6 +34,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.paint.Color;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.ArcType;
 import javafx.util.StringConverter;
@@ -129,8 +133,12 @@ public class HistorialEquiposController extends Controller implements Initializa
 
         teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        teamPointsColumn.setCellValueFactory(new PropertyValueFactory<>("points"));
-
+        teamPointsColumn.setCellValueFactory(cellData -> {
+            Team team = cellData.getValue();
+            int globalPoints = calculateGlobalPoints(team);
+            return javafx.beans.binding.Bindings.createObjectBinding(() -> globalPoints);
+        });
+        
         teamRankingColumn.setCellValueFactory(cellData -> {
             Team team = cellData.getValue();
             List<Team> sortedTeams = new ArrayList<>(availableTeams);
@@ -866,18 +874,18 @@ public class HistorialEquiposController extends Controller implements Initializa
                             int teamGoals = nameFirstTeam.equals(updatedTeam.getName()) ? match.getCounterFirstTeamGoals() : match.getCounterSecondTeamGoals();
                             int opponentGoals = nameFirstTeam.equals(updatedTeam.getName()) ? match.getCounterSecondTeamGoals() : match.getCounterFirstTeamGoals();
 
-                            // Calcular puntos
-                            int teamPoints = 0;
-                            int opponentPoints = 0;
+                            // Calcular puntos (1 por gol + 3 por victoria, 1 por empate)
+                            int teamPoints = teamGoals; // 1 punto por cada gol del equipo
+                            int opponentPoints = opponentGoals; // 1 punto por cada gol del oponente
                             if (teamGoals > opponentGoals) {
-                                teamPoints = 3; // Victoria
-                                opponentPoints = 0;
+                                teamPoints += 3; // Victoria del equipo
+                                opponentPoints += 0;
                             } else if (teamGoals < opponentGoals) {
-                                teamPoints = 0;
-                                opponentPoints = 3; // Derrota
+                                teamPoints += 0;
+                                opponentPoints += 3; // Victoria del oponente
                             } else {
-                                teamPoints = 1; // Empate
-                                opponentPoints = 1;
+                                teamPoints += 1; // Empate
+                                opponentPoints += 1;
                             }
 
                             // Determinar el resultado
@@ -898,20 +906,34 @@ public class HistorialEquiposController extends Controller implements Initializa
                                 matchesPerRound = 1;
                             }
                             int matchRound = Math.min((matchIndex / matchesPerRound) + 1, lastRoundParticipated);
-                            String roundInfo = "Ronda " + matchRound;
+                            String roundInfo = "Ronda " + matchRound;  
 
                             // Crear los detalles del partido
-                            VBox matchDetails = new VBox();
+                            HBox matchDetails = new HBox(10); // Espaciado de 10 entre elementos
+                            matchDetails.setAlignment(Pos.BOTTOM_LEFT); // Alinear los elementos en la parte inferior
+                            VBox textDetails = new VBox(5); // VBox para las etiquetas, con espaciado de 5
                             Label matchLabel = new Label(updatedTeam.getName() + " vs " + opponentName + " - " + teamGoals + " - " + opponentGoals);
                             Label opponentLabel = new Label("Contrincante: " + opponentName);
                             Label teamGoalsLabel = new Label("Goles de " + updatedTeam.getName() + ": " + teamGoals);
                             Label opponentGoalsLabel = new Label("Goles de " + opponentName + ": " + opponentGoals);
                             Label teamPointsLabel = new Label("Puntos de " + updatedTeam.getName() + ": " + teamPoints);
                             Label opponentPointsLabel = new Label("Puntos de " + opponentName + ": " + opponentPoints);
-                            Label drawLabel = new Label("Empate: " + (match.isDraw()? "Sí" : "No"));
+                            Label drawLabel = new Label("Empate: " + (match.isDraw() ? "Sí" : "No"));
                             Label resultLabel = new Label(result);
 
-                            // Crear un Canvas para el gráfico de barras
+                        // Añadir etiquetas al VBox de texto
+                            textDetails.getChildren().addAll(
+                                    matchLabel,
+                                    opponentLabel,
+                                    teamGoalsLabel,
+                                    opponentGoalsLabel,
+                                    teamPointsLabel,
+                                    opponentPointsLabel,
+                                    drawLabel,
+                                    resultLabel
+                            );
+
+                        // Crear un Canvas para el gráfico de barras
                             Canvas goalsBarCanvas = new Canvas(200, 100);
                             GraphicsContext gc = goalsBarCanvas.getGraphicsContext2D();
                             double maxGoals = Math.max(teamGoals, opponentGoals);
@@ -920,28 +942,23 @@ public class HistorialEquiposController extends Controller implements Initializa
                             double barHeightOpponent = (opponentGoals / maxGoals) * 80;
                             double barWidth = 40;
 
-                            // Dibujar barras
+                        // Dibujar barras
                             gc.setFill(Color.BLUE);
                             gc.fillRect(50, 100 - barHeightTeam, barWidth, barHeightTeam); // Barra del jugador
                             gc.setFill(Color.RED);
                             gc.fillRect(100, 100 - barHeightOpponent, barWidth, barHeightOpponent); // Barra del contrincante
-                            // Etiquetas
+                        // Etiquetas
                             gc.setFill(Color.BLACK);
                             gc.fillText(updatedTeam.getName() + ": " + teamGoals, 50, 100 - barHeightTeam - 5);
                             gc.fillText(opponentName + ": " + opponentGoals, 100, 100 - barHeightOpponent - 5);
 
-                            matchDetails.getChildren().addAll(
-                                    matchLabel,
-                                    opponentLabel,
-                                    teamGoalsLabel,
-                                    opponentGoalsLabel,
-                                    teamPointsLabel,
-                                    opponentPointsLabel,
-                                    drawLabel,
-                                    resultLabel,
-                                    goalsBarCanvas
-                            );
+                            // Crear un espaciador flexible
+                            Region spacer = new Region();
+                            HBox.setHgrow(spacer, Priority.ALWAYS); // El espaciador crecerá para ocupar el espacio disponible
 
+// Añadir el texto, el espaciador y la gráfica al HBox
+                            matchDetails.getChildren().addAll(textDetails, spacer, goalsBarCanvas);
+                            
                             roundContents.get(matchRound - 1).getChildren().add(matchDetails);
                             System.out.println("Partido añadido a la ronda " + matchRound + ": " + matchLabel.getText());
                             matchIndex++;
@@ -979,6 +996,68 @@ public class HistorialEquiposController extends Controller implements Initializa
         }
     }
 
+    private int calculateGlobalPoints(Team team) {
+        int totalPoints = 0;
+
+        // Revisar cada torneo
+        for (Tourney tourney : availableTourneys) {
+            // Buscar al equipo en teamList, loosersList, y todas las rondas de continueGame
+            List<Team> allTeamsInTourney = new ArrayList<>();
+
+            // Añadir equipos de teamList
+            allTeamsInTourney.addAll(tourney.getTeamList());
+
+            // Añadir equipos de loosersList
+            allTeamsInTourney.addAll(tourney.getLoosersList());
+
+            // Añadir equipos de todas las rondas y el ganador
+            Game game = tourney.getContinueGame();
+            allTeamsInTourney.addAll(game.getRound1());
+            allTeamsInTourney.addAll(game.getRound2());
+            allTeamsInTourney.addAll(game.getRound3());
+            allTeamsInTourney.addAll(game.getRound4());
+            allTeamsInTourney.addAll(game.getRound5());
+            allTeamsInTourney.addAll(game.getRound6());
+            allTeamsInTourney.addAll(game.getWinner());
+
+            // Buscar el equipo en el torneo
+            for (Team tourneyTeam : allTeamsInTourney) {
+                if (tourneyTeam.getId() == team.getId()) {
+                    // Calcular puntos basados en los partidos
+                    int tourneyPoints = 0;
+                    List<MatchDetails> matches = tourneyTeam.getEncounterList();
+                    if (matches != null) {
+                        for (MatchDetails match : matches) {
+                            // Solo contar partidos donde el equipo es nameFirstTeam para evitar duplicados
+                            if (match.getNameFirstTeam().equals(tourneyTeam.getName())) {
+                                int teamGoals = match.getCounterFirstTeamGoals();
+                                int opponentGoals = match.getCounterSecondTeamGoals();
+                                boolean isDraw = match.isDraw();
+
+                                // Sumar puntos por goles
+                                tourneyPoints += teamGoals; // 1 punto por cada gol
+
+                                // Sumar puntos por resultado del partido
+                                if (isDraw) {
+                                    tourneyPoints += 1; // Empate
+                                } else if (teamGoals > opponentGoals) {
+                                    tourneyPoints += 3; // Victoria
+                                }
+                                // Si teamGoals < opponentGoals, no se suman puntos adicionales (derrota)
+                            }
+                        }
+                    }
+                    totalPoints += tourneyPoints;
+                    System.out.println("Puntos calculados para " + team.getName() + " (ID: " + team.getId() + ") en torneo " + tourney.getName() + ": " + tourneyPoints);
+                    break; // Evitar duplicados dentro del mismo torneo
+                }
+            }
+        }
+
+        System.out.println("Puntos globales calculados para " + team.getName() + " (ID: " + team.getId() + "): " + totalPoints);
+        return totalPoints;
+    }
+    
     @Override
     public void initialize() {
     }
