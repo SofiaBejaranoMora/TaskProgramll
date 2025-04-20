@@ -34,16 +34,19 @@
                     <TableColumn fx:id="stateColumn" prefWidth="100.0" text="Estado" />
                     <TableColumn fx:id="winnerColumn" prefWidth="120.0" text="Ganador" />
                 </columns>
+            <columnResizePolicy>
+               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
             </TableView>
             <!-- Equipos y detalles -->
             <VBox spacing="10.0" HBox.hgrow="ALWAYS">
                 <!-- Carrusel de equipos -->
                 <Label text="Equipos participantes" />
-                <MFXScrollPane hbarPolicy="ALWAYS" vbarPolicy="NEVER" maxHeight="120.0" fitToHeight="true" VBox.vgrow="NEVER">
+                <MFXScrollPane fitToHeight="true" hbarPolicy="ALWAYS" maxHeight="120.0" vbarPolicy="NEVER" VBox.vgrow="NEVER">
                     <content>
                         <HBox fx:id="teamsPane" alignment="CENTER_LEFT" spacing="10.0">
                             <padding>
-                                <Insets left="10.0" right="10.0" top="5.0" bottom="5.0" />
+                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                             </padding>
                         </HBox>
                     </content>

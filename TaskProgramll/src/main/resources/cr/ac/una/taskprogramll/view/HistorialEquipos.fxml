@@ -55,6 +55,9 @@
                                                                 <TableColumn fx:id="teamRankingColumn" prefWidth="100.0" text="Ranking" />
                                                                 <TableColumn fx:id="teamPointsColumn" prefWidth="100.0" text="Puntos" />
                                                             </columns>
+                                             <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                             </columnResizePolicy>
                                                         </TableView>
                                                     </children>
                                                 </VBox>
@@ -73,6 +76,9 @@
                                                                 <TableColumn fx:id="tourneyStateColumn" prefWidth="100.0" text="Estado" />
                                                                 <TableColumn fx:id="tourneyPositionColumn" prefWidth="100.0" text="Posición" />
                                                             </columns>
+                                             <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                             </columnResizePolicy>
                                                         </TableView>
                                                     </children>
                                                 </VBox>

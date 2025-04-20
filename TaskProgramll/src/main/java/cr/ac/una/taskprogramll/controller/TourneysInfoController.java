@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 
 public class TourneysInfoController extends Controller implements Initializable {
 
@@ -71,22 +72,24 @@ public class TourneysInfoController extends Controller implements Initializable 
             toggleSlideInferior();
         }
     }
-
-    private void showCertificate() {
+    
+    @FXML
+    private void onActionBtnShowCertificate(ActionEvent event) {
         if ("Finalizado".equals(selectedTourney.returnState())) {
-        System.out.println("Show certificate for " + selectedTourney.getName());
-                try {
-            Desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/Certificates/" + selectedTourney.getContinueGame().getWinner().get(0) + "_" + selectedTourney.getName() + ".pdf"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error al abrir el certificado: " + e.getMessage());
-        }
+            System.out.println("Show certificate for " + selectedTourney.getName());
+            try {
+                Desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/Certificates/" + selectedTourney.getContinueGame().getWinner().get(0) + "_" + selectedTourney.getName() + ".pdf"));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al abrir el certificado: " + e.getMessage());
+            }
         } else {
-            System.out.println("Aún no hay ganador...");   
-        }
+            System.out.println("Aún no hay ganador...");
+        }       
     }
 
-    private void showKeys() {
+    @FXML
+    private void onActionBtnShowKeys(ActionEvent event) {        
         System.out.println("Show keys for " + selectedTourney.getName());
         MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
         controller.initializeToTicket();
@@ -176,4 +179,5 @@ public class TourneysInfoController extends Controller implements Initializable 
     @Override
     public void initialize() {
     }
+
 }
