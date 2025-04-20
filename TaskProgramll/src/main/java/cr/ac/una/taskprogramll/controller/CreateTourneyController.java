@@ -325,13 +325,7 @@ public class CreateTourneyController extends Controller implements Initializable
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        try {
-            InitialConditionsPanel();
-        } catch (Exception e) {
-            message.show(Alert.AlertType.ERROR, "Error de Inicialización", "No se pudo inicializar la vista: " + e.getMessage());
-        }
-    }
+    public void initialize(URL url, ResourceBundle rb) {}
 
     @Override
     public void initialize() {

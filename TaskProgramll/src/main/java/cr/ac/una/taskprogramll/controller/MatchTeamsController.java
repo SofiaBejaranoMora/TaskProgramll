@@ -91,6 +91,8 @@ public class MatchTeamsController extends Controller implements Initializable {
     @FXML
     private void onActionBtnBack(ActionEvent event) {
         saveData();
+        ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
+        controller.initialPanelConditions();
         FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
     }
 
@@ -336,10 +338,10 @@ public class MatchTeamsController extends Controller implements Initializable {
                     }
                 });
                 tblPlayersTable.refresh();
-                currentTourney.moveTeamToLoosers(winnerTeam);
                 btnCetificate.setVisible(true);
                 btnBack.setVisible(true);
                 winnerAnimatic(winnerTeam);
+                currentTourney.moveTeamToLoosers(winnerTeam);
             }
             default ->
                 throw new AssertionError("Ronda inválida: " + currentRound);

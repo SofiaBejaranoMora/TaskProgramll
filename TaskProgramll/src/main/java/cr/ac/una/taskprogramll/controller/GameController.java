@@ -121,11 +121,11 @@ public class GameController extends Controller implements Initializable {
             Random randomPoints = new Random();
             int randomGoals = randomPoints.nextInt(10 + 1);
             if (pointsFor == 0) {
-                counterGoalsFirstTeam += randomGoals;
+                counterGoalsFirstTeam = randomGoals;
                 lblFirstTeam.setText("" + counterGoalsFirstTeam);
                 pointsFor++;
             } else {
-                counterGoalsSecondTeam += randomGoals;
+                counterGoalsSecondTeam = randomGoals;
                 lblSecondTeam.setText("" + counterGoalsSecondTeam);
                 pointsFor++;
             }
@@ -195,20 +195,20 @@ public class GameController extends Controller implements Initializable {
         if (counterGoalsFirstTeam > counterGoalsSecondTeam){
             System.out.println("Ganador del partido: " + firstTeam.getName());
             mgvWinFirstTeam.setVisible(true);
-            winnerAnimatic(mgvWinFirstTeam);
             currentTourney.winnerAndLooser(firstTeam.getName(), counterGoalsFirstTeam, 3, secondTeam.getName(), counterGoalsSecondTeam);
+            controller.adjustingTable(firstTeam);
             firstTeam.setItemEncounterList(new MatchDetails(firstTeam.getName(), secondTeam.getName(), counterGoalsFirstTeam, counterGoalsSecondTeam));
             secondTeam.setItemEncounterList(new MatchDetails(secondTeam.getName(), firstTeam.getName(), counterGoalsSecondTeam, counterGoalsFirstTeam));
-            controller.adjustingTable(firstTeam);
+            winnerAnimatic(mgvWinFirstTeam);
             
         } else if (counterGoalsFirstTeam < counterGoalsSecondTeam) {
             System.out.println("Ganador del partido: " + secondTeam.getName());
             mgvWinSecondTeam.setVisible(true);
-            winnerAnimatic(mgvWinSecondTeam);
-            firstTeam.setItemEncounterList(new MatchDetails(firstTeam.getName(), secondTeam.getName(), counterGoalsFirstTeam, counterGoalsSecondTeam));
-            secondTeam.setItemEncounterList(new MatchDetails(secondTeam.getName(), firstTeam.getName(), counterGoalsSecondTeam, counterGoalsFirstTeam));
             currentTourney.winnerAndLooser(secondTeam.getName(), counterGoalsSecondTeam, 3, firstTeam.getName(), counterGoalsFirstTeam);
             controller.adjustingTable(secondTeam);
+            firstTeam.setItemEncounterList(new MatchDetails(firstTeam.getName(), secondTeam.getName(), counterGoalsFirstTeam, counterGoalsSecondTeam));
+            secondTeam.setItemEncounterList(new MatchDetails(secondTeam.getName(), firstTeam.getName(), counterGoalsSecondTeam, counterGoalsFirstTeam));
+            winnerAnimatic(mgvWinSecondTeam); 
             
         } else {/*Animatica de empate*/}
     }

@@ -53,6 +53,8 @@ public class LobbyController extends Controller implements Initializable {
                 break;
             case "Crear Torneo":
                 if (EnableTourney()) {
+                    CreateTourneyController controller = (CreateTourneyController) FlowController.getInstance().getController("CreateTourney");
+                    controller.InitialConditionsPanel();
                     FlowController.getInstance().goViewInStage("CreateTourney", (Stage) cmbMenu.getScene().getWindow());
                 } else {
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "No puede registrar torneos porque aún no ha registrado ningún equipo. Por favor, registre al menos dos equipos del mismo deporte primero.");
@@ -61,6 +63,8 @@ public class LobbyController extends Controller implements Initializable {
             case "Ver Torneos":
                 file = new File("Tourney.txt");
                 if ((file.exists()) && (file.length() > 0)) {
+                    ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
+                    controller.initialPanelConditions();
                     FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) cmbMenu.getScene().getWindow());
                 } else {
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "No puede ver o iniciar torneos porque aún no ha registrado ningún torneo. Por favor, registre al menos un torneo primero.");

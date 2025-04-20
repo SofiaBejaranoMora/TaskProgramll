@@ -18,53 +18,40 @@ import java.util.ResourceBundle;
 
 public class TourneysInfoController extends Controller implements Initializable {
 
-    @FXML private StackPane ticketSuperior;
-    @FXML private StackPane ticketInferior;
-    @FXML private MFXButton btnBack;
-    @FXML private Label lblWinner;
-    @FXML private Label lblTeams;
-    @FXML private Label lblRounds;
-    @FXML private Label lblTourney;
-    @FXML private Label lblState;
-    @FXML private Label lblTime;
-    @FXML private MFXButton btnShowCertificate;
-    @FXML private MFXButton btnShowTeams;
-    @FXML private MFXButton btnShowKeys;
-
     private boolean isSuperiorInFront = true;
     private boolean isSlid = false;
     private Tourney selectedTourney;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        ticketSuperior.toFront();
-        isSuperiorInFront = true;
-        isSlid = false;
+    @FXML
+    private StackPane ticketSuperior;
+    @FXML
+    private StackPane ticketInferior;
+    @FXML
+    private MFXButton btnBack;
+    @FXML
+    private Label lblWinner;
+    @FXML
+    private Label lblTeams;
+    @FXML
+    private Label lblRounds;
+    @FXML
+    private Label lblTourney;
+    @FXML
+    private Label lblState;
+    @FXML
+    private Label lblTime;
+    @FXML
+    private MFXButton btnShowCertificate;
+    @FXML
+    private MFXButton btnShowTeams;
+    @FXML
+    private MFXButton btnShowKeys;
 
-        selectedTourney = (Tourney) AppContext.getInstance().get("SelectedTourney");
-        if (selectedTourney != null) {
-            lblTourney.setText(selectedTourney.getName());
-            lblState.setText(selectedTourney.returnState());
-            lblTime.setText(String.valueOf(selectedTourney.getTime()));
-            
-            if ("Finalizado".equals(selectedTourney.returnState())) {
-                lblWinner.setText("Determinado");
-            } else {
-                lblWinner.setText("Sin determinar");
-            }
-
-            int teamCount = 0;
-            if (selectedTourney.getTeamList() != null) {
-                teamCount += selectedTourney.getTeamList().size();
-            }
-            if (selectedTourney.getLoosersList() != null) {
-                teamCount += selectedTourney.getLoosersList().size();
-            }
-            lblTeams.setText(String.valueOf(teamCount));
-            lblRounds.setText(String.valueOf(teamCount / 2));
-        } else {
-            System.err.println("No Tourney selected in AppContext");
-        }
+    @FXML
+    private void goBack() {
+        ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
+        controller.initialPanelConditions();
+        FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) ticketSuperior.getScene().getWindow());
     }
 
     @FXML
@@ -83,6 +70,18 @@ public class TourneysInfoController extends Controller implements Initializable 
         } else {
             toggleSlideInferior();
         }
+    }
+
+    private void showCertificate() {
+        System.out.println("Show certificate for " + selectedTourney.getName());
+    }
+
+    private void showTeams() {
+        System.out.println("Show teams for " + selectedTourney.getName());
+    }
+
+    private void showKeys() {
+        System.out.println("Show keys for " + selectedTourney.getName());
     }
 
     private void toggleSlideSuperior() {
@@ -130,22 +129,39 @@ public class TourneysInfoController extends Controller implements Initializable 
         }
     }
 
-    @FXML
-    private void goBack() {
-        FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) ticketSuperior.getScene().getWindow());
+    public void initialPanelConditions() {
+        ticketSuperior.toFront();
+        isSuperiorInFront = true;
+        isSlid = false;
+
+        selectedTourney = (Tourney) AppContext.getInstance().get("SelectedTourney");
+        if (selectedTourney != null) {
+            lblTourney.setText(selectedTourney.getName());
+            lblState.setText(selectedTourney.returnState());
+            lblTime.setText(String.valueOf(selectedTourney.getTime()));
+
+            if ("Finalizado".equals(selectedTourney.returnState())) {
+                lblWinner.setText("Determinado");
+            } else {
+                lblWinner.setText("Sin determinar");
+            }
+
+            int teamCount = 0;
+            if (selectedTourney.getTeamList() != null) {
+                teamCount += selectedTourney.getTeamList().size();
+            }
+            if (selectedTourney.getLoosersList() != null) {
+                teamCount += selectedTourney.getLoosersList().size();
+            }
+            lblTeams.setText(String.valueOf(teamCount));
+            lblRounds.setText(String.valueOf(teamCount / 2));
+        } else {
+            System.err.println("No Tourney selected in AppContext");
+        }
     }
 
-    private void showCertificate() {
-        System.out.println("Show certificate for " + selectedTourney.getName());
-    }
-
-    private void showTeams() {
-        System.out.println("Show teams for " + selectedTourney.getName());
-    }
-
-    private void showKeys() {
-        System.out.println("Show keys for " + selectedTourney.getName());
-    }
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {}
 
     @Override
     public void initialize() {}

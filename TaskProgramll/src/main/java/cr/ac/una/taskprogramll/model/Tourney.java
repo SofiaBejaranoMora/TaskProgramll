@@ -144,24 +144,21 @@ public class Tourney {
 
     public void winnerAndLooser(String winner, int winnerGoals, int extraPoints, String looser, int looserGoals) {
         for (int i = 0; i < teamList.size(); i++) {
-            if (winner == null && teamList.get(i).getName() == null) {
+            if (winner != null && winner.equals(teamList.get(i).getName())) {
                 teamList.get(i).setWins(1);
                 teamList.get(i).setGoals(winnerGoals);
                 teamList.get(i).setPoints(winnerGoals + extraPoints);
-            } else if (winner != null && winner.equals(teamList.get(i).getName())) {
-                teamList.get(i).setWins(1);
-                teamList.get(i).setGoals(winnerGoals);
-                teamList.get(i).setPoints(winnerGoals + extraPoints);
+            } else {
+                System.out.println("No es este.");
             }
-
-            if (looser == null && teamList.get(i).getName() == null) {
+        }
+        for (int i = 0; i < teamList.size(); i++) {
+            if (looser != null && looser.equals(teamList.get(i).getName())) {
                 teamList.get(i).setGoals(looserGoals);
                 teamList.get(i).setPoints(looserGoals);
                 moveTeamToLoosers(teamList.get(i));
-            } else if (looser != null && looser.equals(teamList.get(i).getName())) {
-                teamList.get(i).setGoals(looserGoals);
-                teamList.get(i).setPoints(looserGoals);
-                moveTeamToLoosers(teamList.get(i));
+            } else {
+                System.out.println("No es este.");
             }
         }
     }
