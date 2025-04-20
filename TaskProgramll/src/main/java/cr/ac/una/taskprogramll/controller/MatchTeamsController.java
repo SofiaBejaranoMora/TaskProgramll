@@ -45,6 +45,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     private FileManager fileManager = new FileManager();
     private File file;
     private Boolean viewButton = false;
+    private Boolean isFinished = false;
     private int index = 0;
     private int currentRound = 1;
     private int globalSize;
@@ -348,6 +349,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                 tblPlayersTable.refresh();
                 btnCetificate.setVisible(true);
                 btnBack.setVisible(true);
+                isFinished = true;
                 winnerAnimatic(winnerTeam);
                 currentTourney.moveTeamToLoosers(winnerTeam);
             }
@@ -376,13 +378,16 @@ public class MatchTeamsController extends Controller implements Initializable {
         lblWinnerName.setText(winnerTeam.getName());
         lblWinnerPoints.setText("Puntos obtenidos: " + winnerTeam.getPoints());
         lblWinnerGoals.setText("Goles realizados: " + winnerTeam.getGoals());
-        Certificate.certificate(winnerCertificate, currentTourney.getName());
+        Certificate.certificate(winnerTeam, currentTourney.getName());
+        winnerCertificate = winnerTeam;
     }
     
     private void saveData() {
         stpWinnerTourney.setVisible(false);
         AppContext.getInstance().set("SelectedTourney", null);
-        currentTourney.getContinueGame().setCurrentRound(currentRound);
+
+        if (!isFinished){
+            currentTourney.getContinueGame().setCurrentRound(currentRound);
         if (currentRound % 2 != 0) { 
             currentTourney.getContinueGame().setContinueIdFTeam(currentTeamList.get(index).getId());
             currentTourney.getContinueGame().setContinueIdSTeam(currentTeamList.get(index + 1).getId());
@@ -393,11 +398,10 @@ public class MatchTeamsController extends Controller implements Initializable {
             currentTourney.getContinueGame().setContinueIdSTeam(currentTeamList.get(index - 1).getId());
             currentTourney.getContinueGame().setContinueIndexTeam(index);
         }
+        } else {
+            System.out.println("Juego terminado");
+        }
         fileManager.serialization(tourneyList, "Tourney");
-    }
-    
-    private void printCertificate(){
-        
     }
     
     private void startGameParameters() {
