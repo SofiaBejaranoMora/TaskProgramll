@@ -1,7 +1,9 @@
 package cr.ac.una.taskprogramll.model;
 
-
-public class MatchDetails { 
+/**
+ * * * @author ashly
+ */
+public class MatchDetails {
 
     private String nameFirstTeam;
     private String nameSecondTeam;
@@ -19,14 +21,43 @@ public class MatchDetails {
         this.draw = counterFirstTeamGoals == counterSecondTeamGoals;
     }
 
-    public String getNameFirstTeam() { return nameFirstTeam; }
-    public void setNameFirstTeam(String nameFirstTeam) { this.nameFirstTeam = nameFirstTeam; }
-    public String getNameSecondTeam() { return nameSecondTeam; }
-    public void setNameSecondTeam(String nameSecondTeam) { this.nameSecondTeam = nameSecondTeam; }
-    public int getCounterFirstTeamGoals() { return counterFirstTeamGoals; }
-    public void setCounterFirstTeamGoals(int counterFirstTeamGoals) { this.counterFirstTeamGoals = counterFirstTeamGoals; }
-    public int getCounterSecondTeamGoals() { return counterSecondTeamGoals; }
-    public void setCounterSecondTeamGoals(int counterSecondTeamGoals) { this.counterSecondTeamGoals = counterSecondTeamGoals; }
-    public boolean isDraw() { return draw; }
-    public void setDraw(boolean draw) { this.draw = draw; }
+    public String getNameFirstTeam() {
+        return nameFirstTeam;
+    }
+
+    public void setNameFirstTeam(String nameFirstTeam) {
+        this.nameFirstTeam = nameFirstTeam;
+    }
+
+    public String getNameSecondTeam() {
+        return nameSecondTeam;
+    }
+
+    public void setNameSecondTeam(String nameSecondTeam) {
+        this.nameSecondTeam = nameSecondTeam;
+    }
+
+    public int getCounterFirstTeamGoals() {
+        return counterFirstTeamGoals;
+    }
+
+    public void setCounterFirstTeamGoals(int counterFirstTeamGoals) {
+        this.counterFirstTeamGoals = counterFirstTeamGoals;
+    }
+
+    public int getCounterSecondTeamGoals() {
+        return counterSecondTeamGoals;
+    }
+
+    public void setCounterSecondTeamGoals(int counterSecondTeamGoals) {
+        this.counterSecondTeamGoals = counterSecondTeamGoals;
+    }
+
+    public boolean isDraw() {
+        return draw;
+    }
+
+    public void setDraw(boolean draw) {
+        this.draw = draw;
+    }
 }

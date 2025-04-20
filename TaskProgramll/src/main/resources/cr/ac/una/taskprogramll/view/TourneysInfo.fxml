@@ -11,8 +11,8 @@
 
 <AnchorPane styleClass="StadiumStandBackground" stylesheets="@Style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.TourneysInfoController">
    <StackPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-      <ImageView fitHeight="600" fitWidth="800" preserveRatio="true" />
-      <StackPane maxHeight="400" maxWidth="600" AnchorPane.bottomAnchor="50" AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50" AnchorPane.topAnchor="50">
+      <ImageView fitHeight="450.0" fitWidth="700.0" preserveRatio="true" />
+      <StackPane maxHeight="200.0" maxWidth="600" AnchorPane.bottomAnchor="50" AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50" AnchorPane.topAnchor="50">
          <StackPane fx:id="ticketInferior" onMouseClicked="#slideBackTicket">
             <ImageView fitHeight="415.0" fitWidth="600" preserveRatio="true" styleClass="BackTicket" />
             <VBox alignment="CENTER" spacing="20" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
@@ -25,7 +25,7 @@
                   </VBox>
                   <Label styleClass="LargeLabel" stylesheets="@Style.css" text="Ganador:" />
                   <Label fx:id="lblWinner" styleClass="SmallLabel" stylesheets="@Style.css" text="Team" />
-                  <MFXButton fx:id="btnShowCertificate" stylesheets="@Style.css" text="Certificado">
+                  <MFXButton fx:id="btnShowCertificate" onAction="#onActionBtnShowCertificate" stylesheets="@Style.css" text="Certificado">
                      <graphic>
                         <VBox styleClass="InteractiveVBox">
                            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true" styleClass="PrintIcon" />
@@ -51,7 +51,7 @@
                   </VBox>
                   <Label styleClass="LargeLabel" stylesheets="@Style.css" text="Rounds:" />
                   <Label fx:id="lblRounds" styleClass="SmallLabel" stylesheets="@Style.css" text="Cantidad" />
-                  <MFXButton fx:id="btnShowKeys" styleClass="mfx-button" stylesheets="@Style.css" text="Ver Llaves">
+                  <MFXButton fx:id="btnShowKeys" onAction="#onActionBtnShowKeys" styleClass="mfx-button" stylesheets="@Style.css" text="Ver Llaves">
                      <graphic>
                         <VBox styleClass="InteractiveVBox">
                            <ImageView fitHeight="30" fitWidth="30" preserveRatio="true" styleClass="LookIcon" />
@@ -101,5 +101,5 @@
          </StackPane>
       </StackPane>
    </StackPane>
-   <MFXButton fx:id="btnBack" onAction="#goBack" text="Volver" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" />
+   <MFXButton fx:id="btnBack" layoutX="20.0" layoutY="549.0" onAction="#goBack" text="Volver" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="20.0" />
 </AnchorPane>
