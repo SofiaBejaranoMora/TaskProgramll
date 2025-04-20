@@ -275,7 +275,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                     protected void updateItem(String item, boolean empty) {
                         super.updateItem(item, empty);
                         if (empty || getIndex() >= round4.size()) {
-                            setText(null); // Celda vacía
+                            setText(null); 
                         } else {
                             setText(round4.get(getIndex()).getName());
                         }
@@ -363,8 +363,8 @@ public class MatchTeamsController extends Controller implements Initializable {
         mgvWinnerImage.setImage(new Image(ResourceUtil.getImagePath(winnerTeam.getId())));
         winnerAnimatic(mgvWinnerStar);
         lblWinnerName.setText(winnerTeam.getName());
-        lblWinnerPoints.setText("" + winnerTeam.getPoints());
-        lblWinnerGoals.setText("" + winnerTeam.getGoals());
+        lblWinnerPoints.setText("Puntos obtenidos: " + winnerTeam.getPoints());
+        lblWinnerGoals.setText("Goles realizados: " + winnerTeam.getGoals());
     }
     
     private void saveData() {

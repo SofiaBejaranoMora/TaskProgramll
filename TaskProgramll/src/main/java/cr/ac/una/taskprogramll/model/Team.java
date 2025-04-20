@@ -6,6 +6,7 @@ package cr.ac.una.taskprogramll.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,6 +19,7 @@ public class Team {
     private int goals; 
     private int points;
     private int id;
+    private List<MatchDetails> encounterList;
 
     public Team() {
     }
@@ -36,6 +38,7 @@ public class Team {
         this.id = id;
         this.draw = 0;
         this.wins = 0;
+        this.encounterList = new ArrayList<>();
     }
 
     public Team(String name, int idSportType, int draw, int wins, int id) {
@@ -44,6 +47,7 @@ public class Team {
         this.draw = draw;
         this.wins = wins;
         this.id = id;
+        this.encounterList = new ArrayList<>();
     }
 
     public String getName() {
@@ -92,6 +96,14 @@ public class Team {
 
     public void setPoints(int points) {
         this.points += points;
+    }
+
+    public List<MatchDetails> getEncounterList() {
+        return encounterList;
+    }
+
+    public void setItemEncounterList(MatchDetails encounterList) {
+        this.encounterList.add(encounterList);
     }
 
     public String RuteImage() {

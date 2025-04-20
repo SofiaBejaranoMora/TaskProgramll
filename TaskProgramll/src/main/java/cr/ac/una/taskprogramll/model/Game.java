@@ -9,9 +9,6 @@ public class Game {
     private int continueIdFTeam;
     private int continueIdSTeam;
     private int continueIndexTeam;
-    private int remainingTime;
-    private int goalsTeam1;
-    private int goalsTeam2;
     private int globalSize;
     private int currentRound;
     private List<Team> round1;
@@ -54,30 +51,6 @@ public class Game {
 
     public void setContinueIndexTeam(int continueIndexTeam) {
         this.continueIndexTeam = continueIndexTeam;
-    }
-    
-    public int getRemainingTime() {
-        return remainingTime;
-    }
-
-    public void setRemainingTime(int remainingTime) {
-        this.remainingTime = remainingTime;
-    }
-
-    public int getGoalsTeam1() {
-        return goalsTeam1;
-    }
-
-    public void setGoalsTeam1(int goalsTeam1) {
-        this.goalsTeam1 = goalsTeam1;
-    }
-
-    public int getGoalsTeam2() {
-        return goalsTeam2;
-    }
-
-    public void setGoalsTeam2(int goalsTeam2) {
-        this.goalsTeam2 = goalsTeam2;
     }
 
     public int getGlobalSize() {

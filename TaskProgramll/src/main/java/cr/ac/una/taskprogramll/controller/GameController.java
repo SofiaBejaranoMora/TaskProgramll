@@ -1,5 +1,6 @@
 package cr.ac.una.taskprogramll.controller;
 
+import cr.ac.una.taskprogramll.model.MatchDetails;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
@@ -195,12 +196,16 @@ public class GameController extends Controller implements Initializable {
             mgvWinFirstTeam.setVisible(true);
             winnerAnimatic(mgvWinFirstTeam);
             currentTourney.winnerAndLooser(firstTeam.getName(), counterGoalsFirstTeam, 3, secondTeam.getName(), counterGoalsSecondTeam);
+            firstTeam.setItemEncounterList(new MatchDetails(firstTeam.getName(), secondTeam.getName(), counterGoalsFirstTeam, counterGoalsSecondTeam));
+            secondTeam.setItemEncounterList(new MatchDetails(secondTeam.getName(), firstTeam.getName(), counterGoalsSecondTeam, counterGoalsFirstTeam));
             controller.adjustingTable(firstTeam);
             
         } else if (counterGoalsFirstTeam < counterGoalsSecondTeam) {
             System.out.println("Ganador del partido: " + secondTeam.getName());
             mgvWinSecondTeam.setVisible(true);
             winnerAnimatic(mgvWinSecondTeam);
+            firstTeam.setItemEncounterList(new MatchDetails(firstTeam.getName(), secondTeam.getName(), counterGoalsFirstTeam, counterGoalsSecondTeam));
+            secondTeam.setItemEncounterList(new MatchDetails(secondTeam.getName(), firstTeam.getName(), counterGoalsSecondTeam, counterGoalsFirstTeam));
             currentTourney.winnerAndLooser(secondTeam.getName(), counterGoalsSecondTeam, 3, firstTeam.getName(), counterGoalsFirstTeam);
             controller.adjustingTable(secondTeam);
             
