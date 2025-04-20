@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package cr.ac.una.taskprogramll.controller;
 
 import cr.ac.una.taskprogramll.model.FileManager;
@@ -38,6 +34,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.paint.Color;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.ArcType;
 import javafx.util.StringConverter;
 
 /**
@@ -161,9 +158,7 @@ public class HistorialEquiposController extends Controller implements Initializa
                 .orElse(null);
             String sportName;
             if (sport != null) {
-                sportName
-
- = sport.getName();
+                sportName = sport.getName();
             } else {
                 sportName = "Sin deporte";
             }
@@ -180,33 +175,51 @@ public class HistorialEquiposController extends Controller implements Initializa
             if (selectedTeam == null) {
                 return new SimpleStringProperty("Selecciona un equipo");
             }
-            return new SimpleStringProperty(tourney.returnTeamPosition(selectedTeam));
+            // Buscar la versión actualizada del equipo en el torneo
+            Team updatedTeam = findUpdatedTeamInTourneys(selectedTeam);
+            if (updatedTeam == null) {
+                return new SimpleStringProperty("Equipo no encontrado en torneo");
+            }
+            return new SimpleStringProperty(tourney.returnTeamPosition(updatedTeam));
         });
 
         tourneyTable.getColumns().clear();
         tourneyTable.getColumns().addAll(tourneyIdColumn, tourneyNameColumn, tourneyMinutesColumn, tourneySportColumn, tourneyStateColumn, tourneyPositionColumn);
+
+        // Configurar columnas de tourneyStatsTable
         tourneyStatsNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         tourneyStatsPointsColumn.setCellValueFactory(cellData -> {
             Tourney tourney = (Tourney) cellData.getValue();
             if (selectedTeam == null) {
                 return new ReadOnlyObjectWrapper<>(0);
             }
-            return new ReadOnlyObjectWrapper<>(selectedTeam.getPoints());
+            Team updatedTeam = findUpdatedTeamInTourneys(selectedTeam);
+            if (updatedTeam == null) {
+                return new ReadOnlyObjectWrapper<>(0);
+            }
+            return new ReadOnlyObjectWrapper<>(updatedTeam.getPoints());
         });
         tourneyStatsGoalsColumn.setCellValueFactory(cellData -> {
             Tourney tourney = (Tourney) cellData.getValue();
-            Integer goals = 0;
-            if (selectedTeam != null) {
-                goals = selectedTeam.getGoals();
+            if (selectedTeam == null) {
+                return new ReadOnlyObjectWrapper<>(0);
             }
-            return new ReadOnlyObjectWrapper<>(goals);
+            Team updatedTeam = findUpdatedTeamInTourneys(selectedTeam);
+            if (updatedTeam == null) {
+                return new ReadOnlyObjectWrapper<>(0);
+            }
+            return new ReadOnlyObjectWrapper<>(updatedTeam.getGoals());
         });
         tourneyStatsRankingColumn.setCellValueFactory(cellData -> {
             Tourney tourney = (Tourney) cellData.getValue();
             if (selectedTeam == null) {
                 return new SimpleStringProperty("Selecciona un equipo");
             }
-            return new SimpleStringProperty(tourney.returnTeamPosition(selectedTeam));
+            Team updatedTeam = findUpdatedTeamInTourneys(selectedTeam);
+            if (updatedTeam == null) {
+                return new SimpleStringProperty("Equipo no encontrado en torneo");
+            }
+            return new SimpleStringProperty(tourney.returnTeamPosition(updatedTeam));
         });
     }
 
@@ -248,6 +261,7 @@ public class HistorialEquiposController extends Controller implements Initializa
         } else {
             System.out.println("Equipos ya cargados en AppContext: " + teams);
         }
+
         availableTeams.clear();
         availableTeams.addAll(teams);
         teamTable.setItems(availableTeams);
@@ -258,45 +272,47 @@ public class HistorialEquiposController extends Controller implements Initializa
         }
     }
 
-private void loadTourneys() {
-    if (AppContext.getInstance().get("tourneys") == null) {
-        AppContext.getInstance().set("tourneys", new ArrayList<Tourney>());
-    }
-    @SuppressWarnings("unchecked")
-    List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
-    File tourneyFile = new File("Tourney.txt");
-    if (tourneyFile.exists() && tourneyFile.length() > 0) {
-        try {
-            System.out.println("Intentando deserializar Tourney.txt...");
-            List<Tourney> deserializedTourneys = fileManager.deserialization("Tourney", Tourney.class);
-            if (deserializedTourneys == null || deserializedTourneys.isEmpty()) {
-                System.out.println("Tourney.txt está vacío o deserialización falló.");
-                message.show(Alert.AlertType.WARNING, "Sin datos", "No se encontraron torneos en Tourney.txt.");
-            } else {
-                tourneys.addAll(deserializedTourneys);
-                AppContext.getInstance().set("tourneys", tourneys);
-                System.out.println("Torneos deserializados y añadidos: " + tourneys.size());
-            }
-        } catch (Exception e) {
-            System.out.println("Error al deserializar Tourney.txt: " + e.getMessage());
-            e.printStackTrace();
-            message.show(Alert.AlertType.ERROR, "Error al cargar torneos", "No se pudieron cargar los torneos: " + e.getMessage());
+    private void loadTourneys() {
+        if (AppContext.getInstance().get("tourneys") == null) {
+            AppContext.getInstance().set("tourneys", new ArrayList<Tourney>());
         }
-    } else {
-        System.out.println("Tourney.txt no existe o está vacío.");
-        message.show(Alert.AlertType.WARNING, "Archivo no encontrado", "Tourney.txt no existe en el directorio raíz.");
-    }
-    System.out.println("Actualizando availableTourneys...");
-    availableTourneys.clear();
-    availableTourneys.addAll(tourneys);
+        @SuppressWarnings("unchecked")
+        List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
+        File tourneyFile = new File("Tourney.txt");
+        if (tourneyFile.exists() && tourneyFile.length() > 0) {
+            try {
+                System.out.println("Intentando deserializar Tourney.txt...");
+                List<Tourney> deserializedTourneys = fileManager.deserialization("Tourney", Tourney.class);
+                if (deserializedTourneys == null || deserializedTourneys.isEmpty()) {
+                    System.out.println("Tourney.txt está vacío o deserialización falló.");
+                    message.show(Alert.AlertType.WARNING, "Sin datos", "No se encontraron torneos en Tourney.txt.");
+                } else {
+                    tourneys.clear();
+                    tourneys.addAll(deserializedTourneys);
+                    AppContext.getInstance().set("tourneys", tourneys);
+                    System.out.println("Torneos deserializados y añadidos: " + tourneys.size());
+                }
+            } catch (Exception e) {
+                System.out.println("Error al deserializar Tourney.txt: " + e.getMessage());
+                e.printStackTrace();
+                message.show(Alert.AlertType.ERROR, "Error al cargar torneos", "No se pudieron cargar los torneos: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Tourney.txt no existe o está vacío.");
+            message.show(Alert.AlertType.WARNING, "Archivo no encontrado", "Tourney.txt no existe en el directorio raíz.");
+        }
 
-    System.out.println("Torneos en availableTourneys: " + availableTourneys);
-    tourneyTable.setItems(FXCollections.observableArrayList(availableTourneys));
-    if (availableTourneys.isEmpty()) {
-        System.out.println("No hay torneos para mostrar en tourneyTable.");
-        message.show(Alert.AlertType.WARNING, "Lista vacía", "No hay torneos disponibles para mostrar.");
+        System.out.println("Actualizando availableTourneys...");
+        availableTourneys.clear();
+        availableTourneys.addAll(tourneys);
+
+        System.out.println("Torneos en availableTourneys: " + availableTourneys);
+        tourneyTable.setItems(FXCollections.observableArrayList(availableTourneys));
+        if (availableTourneys.isEmpty()) {
+            System.out.println("No hay torneos para mostrar en tourneyTable.");
+            message.show(Alert.AlertType.WARNING, "Lista vacía", "No hay torneos disponibles para mostrar.");
+        }
     }
-}
 
     private void loadSports() {
         if (AppContext.getInstance().get("sports") == null) {
@@ -339,14 +355,15 @@ private void loadTourneys() {
                 selectedTeamLabel.setText(selectedTeam.getName());
                 ObservableList<Tourney> teamTourneys = FXCollections.observableArrayList();
                 for (Tourney tourney : availableTourneys) {
-                    if (tourney.getTeamList().contains(selectedTeam) || tourney.getLoosersList().contains(selectedTeam)) {
+                    if (tourney.getTeamList().stream().anyMatch(t -> t.getId() == selectedTeam.getId())
+                            || tourney.getLoosersList().stream().anyMatch(t -> t.getId() == selectedTeam.getId())) {
                         teamTourneys.add(tourney);
                     }
                 }
                 tourneyTable.setItems(teamTourneys);
                 tourneyStatsTable.setItems(teamTourneys);
                 updateStatsLabels();
-                drawTeamStats();
+                drawTeamStats(); // Esto asegura que los gráficos se actualicen
                 updateMatchAccordion();
             } else {
                 selectedTeamLabel.setText("Ningún equipo seleccionado");
@@ -361,7 +378,7 @@ private void loadTourneys() {
             tourneyTable.refresh();
         });
     }
-    
+
     private void setupTeamFilterDisplay() {
         teamFilter.setConverter(new StringConverter<Team>() {
             @Override
@@ -415,40 +432,110 @@ private void loadTourneys() {
         });
     }
 
-private void applyFilters() {
-    String query;
-    if (teamSearch.getText() != null) {
-        query = teamSearch.getText().trim().toLowerCase();
-    } else {
-        query = "";
-    }
-    Sport selectedSport = sportFilter.getSelectionModel().getSelectedItem();
-    Team selectedTeamFilter = teamFilter.getSelectionModel().getSelectedItem();
+    private void applyFilters() {
+        String query;
+        if (teamSearch.getText() != null) {
+            query = teamSearch.getText().trim().toLowerCase();
+        } else {
+            query = "";
+        }
+        Sport selectedSport = sportFilter.getSelectionModel().getSelectedItem();
+        Team selectedTeamFilter = teamFilter.getSelectionModel().getSelectedItem();
 
-    // Filtrar equipos
-    ObservableList<Team> filteredTeams = FXCollections.observableArrayList();
-    for (Team team : availableTeams) {
-        boolean matchesSearch = query.isEmpty() ||
-            team.getName().toLowerCase().contains(query) ||
-            String.valueOf(team.getId()).equals(query);
-        boolean matchesTeamFilter = selectedTeamFilter == null || team.equals(selectedTeamFilter);
-        boolean matchesSportFilter = true; 
-        if (selectedSport != null) {
-            matchesSportFilter = false;
-            for (Tourney tourney : availableTourneys) {
-                if ((tourney.getTeamList().contains(team) || tourney.getLoosersList().contains(team)) &&
-                    tourney.getSportTypeId() == selectedSport.getId()) {
-                    matchesSportFilter = true;
-                    break;
+        // Filtrar equipos
+        ObservableList<Team> filteredTeams = FXCollections.observableArrayList();
+        for (Team team : availableTeams) {
+            boolean matchesSearch = query.isEmpty() ||
+                team.getName().toLowerCase().contains(query) ||
+                String.valueOf(team.getId()).equals(query);
+            boolean matchesTeamFilter = selectedTeamFilter == null || team.equals(selectedTeamFilter);
+            boolean matchesSportFilter = true;
+            if (selectedSport != null) {
+                matchesSportFilter = false;
+                for (Tourney tourney : availableTourneys) {
+                    if ((tourney.getTeamList().stream().anyMatch(t -> t.getId() == team.getId()) ||
+                         tourney.getLoosersList().stream().anyMatch(t -> t.getId() == team.getId())) &&
+                        tourney.getSportTypeId() == selectedSport.getId()) {
+                        matchesSportFilter = true;
+                        break;
+                    }
+                }
+            }
+            if (matchesSearch && matchesTeamFilter && matchesSportFilter) {
+                filteredTeams.add(team);
+            }
+        }
+        teamTable.setItems(filteredTeams);
+    }
+
+    // Nuevo método para buscar el equipo actualizado en los torneos
+    private Team findUpdatedTeamInTourneys(Team team) {
+        if (team == null) {
+            return null;
+        }
+        for (Tourney tourney : availableTourneys) {
+            // Buscar en teamList
+            for (Team tourneyTeam : tourney.getTeamList()) {
+                if (tourneyTeam.getId() == team.getId()) {
+                    return tourneyTeam; // Devolvemos la primera versión encontrada
+                }
+            }
+            // Buscar en loosersList
+            for (Team tourneyTeam : tourney.getLoosersList()) {
+                if (tourneyTeam.getId() == team.getId()) {
+                    return tourneyTeam;
+                }
+            }
+            // Buscar en continueGame (rondas y ganador)
+            Game game = tourney.getContinueGame();
+            if (game != null) {
+                // Round 1
+                for (Team tourneyTeam : game.getRound1()) {
+                    if (tourneyTeam.getId() == team.getId()) {
+                        return tourneyTeam;
+                    }
+                }
+                // Round 2
+                for (Team tourneyTeam : game.getRound2()) {
+                    if (tourneyTeam.getId() == team.getId()) {
+                        return tourneyTeam;
+                    }
+                }
+                // Round 3
+                for (Team tourneyTeam : game.getRound3()) {
+                    if (tourneyTeam.getId() == team.getId()) {
+                        return tourneyTeam;
+                    }
+                }
+                // Round 4
+                for (Team tourneyTeam : game.getRound4()) {
+                    if (tourneyTeam.getId() == team.getId()) {
+                        return tourneyTeam;
+                    }
+                }
+                // Round 5
+                for (Team tourneyTeam : game.getRound5()) {
+                    if (tourneyTeam.getId() == team.getId()) {
+                        return tourneyTeam;
+                    }
+                }
+                // Round 6
+                for (Team tourneyTeam : game.getRound6()) {
+                    if (tourneyTeam.getId() == team.getId()) {
+                        return tourneyTeam;
+                    }
+                }
+                // Winner
+                for (Team tourneyTeam : game.getWinner()) {
+                    if (tourneyTeam.getId() == team.getId()) {
+                        return tourneyTeam;
+                    }
                 }
             }
         }
-        if (matchesSearch && matchesTeamFilter && matchesSportFilter) {
-            filteredTeams.add(team);
-        }
+        System.out.println("Equipo con ID " + team.getId() + " no encontrado en ningún torneo.");
+        return null;
     }
-    teamTable.setItems(filteredTeams);
-}
 
     private void updateStatsLabels() {
         if (selectedTeam == null) {
@@ -457,15 +544,37 @@ private void applyFilters() {
             generalRankingLabel.setText("Ranking: -");
             return;
         }
-        int totalPoints = selectedTeam.getPoints();
-        int totalMatches = 0; 
-        List<Team> sortedTeams = new ArrayList<>(availableTeams);
-        sortedTeams.sort((t1, t2) -> Integer.compare(t2.getPoints(), t1.getPoints()));
-        int rank = sortedTeams.indexOf(selectedTeam) + 1;
+        // Usar la versión actualizada del equipo desde los torneos
+        Team updatedTeam = findUpdatedTeamInTourneys(selectedTeam);
+        if (updatedTeam == null) {
+            totalPointsLabel.setText("Puntos: 0");
+            totalMatchesLabel.setText("Partidos: 0");
+            generalRankingLabel.setText("Ranking: -");
+            return;
+        }
+        int totalPoints = updatedTeam.getPoints();
+        int totalMatches = updatedTeam.getEncounterList() != null ? updatedTeam.getEncounterList().size() : 0;
+        List<Team> sortedTeams = new ArrayList<>();
+        // Recolectar todos los equipos de los torneos para el ranking
+        for (Tourney tourney : availableTourneys) {
+            sortedTeams.addAll(tourney.getTeamList());
+            sortedTeams.addAll(tourney.getLoosersList());
+        }
+        // Eliminar duplicados por ID
+        List<Team> uniqueTeams = new ArrayList<>();
+        List<Integer> seenIds = new ArrayList<>();
+        for (Team t : sortedTeams) {
+            if (!seenIds.contains(t.getId())) {
+                seenIds.add(t.getId());
+                uniqueTeams.add(t);
+            }
+        }
+        uniqueTeams.sort((t1, t2) -> Integer.compare(t2.getPoints(), t1.getPoints()));
+        int rank = uniqueTeams.indexOf(updatedTeam) + 1;
 
         totalPointsLabel.setText("Puntos: " + totalPoints);
         totalMatchesLabel.setText("Partidos: " + totalMatches);
-        generalRankingLabel.setText("Ranking: " + rank);
+        generalRankingLabel.setText("Ranking: " + (rank >= 0 ? rank : "-"));
     }
 
     private void drawTeamStats() {
@@ -473,8 +582,18 @@ private void applyFilters() {
         clearCanvases();
 
         if (selectedTeam == null) {
+            System.out.println("No hay equipo seleccionado para dibujar estadísticas.");
             return;
         }
+
+        // Usar la versión actualizada del equipo desde los torneos
+        Team updatedTeam = findUpdatedTeamInTourneys(selectedTeam);
+        if (updatedTeam == null) {
+            System.out.println("Equipo no encontrado en torneos para dibujar estadísticas.");
+            return;
+        }
+
+        System.out.println("Dibujando estadísticas para el equipo: " + updatedTeam.getName());
 
         // Preparar datos para los gráficos
         List<Integer> goalsPerMatch = new ArrayList<>();
@@ -484,20 +603,54 @@ private void applyFilters() {
         // Obtener los torneos en los que participa el equipo
         List<Tourney> teamTourneys = new ArrayList<>();
         for (Tourney tourney : availableTourneys) {
-            if (tourney.getTeamList().contains(selectedTeam) || tourney.getLoosersList().contains(selectedTeam)) {
+            if (tourney.getTeamList().stream().anyMatch(t -> t.getId() == updatedTeam.getId())
+                    || tourney.getLoosersList().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                 teamTourneys.add(tourney);
                 pointsPerTourney.add(0); // Inicializar los puntos del torneo
             }
         }
+        System.out.println("Torneos en los que participa " + updatedTeam.getName() + ": " + teamTourneys);
 
-        // Obtener los partidos del equipo seleccionado
-        List<MatchDetails> matches = selectedTeam.getEncounterList();
+        // Obtener los partidos del equipo actualizado
+        List<MatchDetails> matches = updatedTeam.getEncounterList();
+        System.out.println("Partidos del equipo " + updatedTeam.getName() + ": " + matches);
+
+        // Determinar la última ronda en la que participó el equipo
+        int lastRoundParticipated = 0;
+        for (Tourney tourney : teamTourneys) {
+            Game game = tourney.getContinueGame();
+            if (game.getRound1().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                lastRoundParticipated = Math.max(lastRoundParticipated, 1);
+            }
+            if (game.getRound2().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                lastRoundParticipated = Math.max(lastRoundParticipated, 2);
+            }
+            if (game.getRound3().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                lastRoundParticipated = Math.max(lastRoundParticipated, 3);
+            }
+            if (game.getRound4().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                lastRoundParticipated = Math.max(lastRoundParticipated, 4);
+            }
+            if (game.getRound5().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                lastRoundParticipated = Math.max(lastRoundParticipated, 5);
+            }
+            if (game.getRound6().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                lastRoundParticipated = Math.max(lastRoundParticipated, 6);
+            }
+            if (game.getWinner().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                lastRoundParticipated = Math.max(lastRoundParticipated, 7);
+            }
+        }
+
+        // Usar un arreglo para almacenar los goles por ronda
+        int[] goalsPerRound = new int[lastRoundParticipated];
+
         if (matches != null && !matches.isEmpty()) {
             int matchIndex = 0;
             for (MatchDetails match : matches) {
                 // Goles del equipo seleccionado en este partido
-                int teamGoals = match.getNameFirstTeam().equals(selectedTeam.getName()) ? match.getCounterFirstTeamGoals() : match.getCounterSecondTeamGoals();
-                int opponentGoals = match.getNameFirstTeam().equals(selectedTeam.getName()) ? match.getCounterSecondTeamGoals() : match.getCounterFirstTeamGoals();
+                int teamGoals = match.getNameFirstTeam().equals(updatedTeam.getName()) ? match.getCounterFirstTeamGoals() : match.getCounterSecondTeamGoals();
+                int opponentGoals = match.getNameFirstTeam().equals(updatedTeam.getName()) ? match.getCounterSecondTeamGoals() : match.getCounterFirstTeamGoals();
                 goalsPerMatch.add(teamGoals);
 
                 // Calcular puntos del partido (3 por victoria, 1 por empate, 0 por derrota)
@@ -509,6 +662,16 @@ private void applyFilters() {
                 }
                 pointsPerMatch.add(points);
 
+                // Estimar la ronda del partido
+                int matchesPerRound = teamTourneys.isEmpty() ? 1 : teamTourneys.get(0).getTeamList().size() / 2;
+                if (matchesPerRound <= 0) {
+                    matchesPerRound = 1;
+                }
+                int matchRound = Math.min((matchIndex / matchesPerRound) + 1, lastRoundParticipated);
+
+                // Sumar goles a la ronda correspondiente usando el arreglo
+                goalsPerRound[matchRound - 1] += teamGoals;
+
                 // Distribuir los puntos entre los torneos (estimación)
                 if (!teamTourneys.isEmpty()) {
                     int tourneyIndex = Math.min(matchIndex / (matches.size() / teamTourneys.size() + 1), teamTourneys.size() - 1);
@@ -516,25 +679,62 @@ private void applyFilters() {
                 }
                 matchIndex++;
             }
+        } else {
+            System.out.println("No se encontraron partidos para dibujar estadísticas de " + updatedTeam.getName());
         }
 
-        // Dibujar en matchGoalsCanvas (goles por partido)
+        // Dibujar en matchGoalsCanvas (gráfico de pastel: goles por ronda)
         GraphicsContext gcGoals = matchGoalsCanvas.getGraphicsContext2D();
         double width = matchGoalsCanvas.getWidth();
         double height = matchGoalsCanvas.getHeight();
-        if (goalsPerMatch.isEmpty()) {
+
+        // Calcular el total de goles para el gráfico de pastel
+        int totalGoals = 0;
+        for (int goals : goalsPerRound) {
+            totalGoals += goals;
+        }
+
+        if (totalGoals == 0) {
             gcGoals.setFill(Color.BLACK);
-            gcGoals.fillText("No hay datos de goles", width / 4, height / 2);
+            gcGoals.fillText("No hay goles registrados", width / 4, height / 2);
         } else {
-            double barWidth = width / goalsPerMatch.size() * 0.8;
-            double maxGoals = Collections.max(goalsPerMatch);
-            maxGoals = Math.max(maxGoals, 1); // Evitar división por cero
-            for (int i = 0; i < goalsPerMatch.size(); i++) {
-                double barHeight = (goalsPerMatch.get(i) / maxGoals) * (height * 0.8);
-                gcGoals.setFill(Color.RED);
-                gcGoals.fillRect(i * barWidth * 1.25, height - barHeight, barWidth, barHeight);
-                gcGoals.setFill(Color.BLACK);
-                gcGoals.fillText(String.valueOf(goalsPerMatch.get(i)), i * barWidth * 1.25 + barWidth / 4, height - barHeight - 5);
+            double centerX = width / 2;
+            double centerY = height / 3; // Mover el pastel un poco hacia arriba para dejar espacio a la leyenda
+            double radius = Math.min(width, height) / 3;
+            double startAngle = 0;
+
+            // Colores para cada ronda
+            Color[] colors = new Color[]{Color.LIGHTBLUE, Color.LIGHTGREEN, Color.LIGHTPINK, Color.LIGHTYELLOW, Color.LIGHTCORAL, Color.LIGHTGRAY, Color.LIGHTCYAN};
+
+            // Dibujar el pastel
+            int colorIndex = 0;
+            for (int round = 1; round <= lastRoundParticipated; round++) {
+                int goals = goalsPerRound[round - 1];
+                if (goals > 0) {
+                    double percentage = (double) goals / totalGoals;
+                    double angle = percentage * 360;
+
+                    gcGoals.setFill(colors[colorIndex % colors.length]);
+                    gcGoals.fillArc(centerX - radius, centerY - radius, radius * 2, radius * 2, startAngle, angle, ArcType.ROUND);
+                    startAngle += angle;
+                    colorIndex++;
+                }
+            }
+
+            // Dibujar la leyenda debajo del pastel
+            double legendX = centerX - 80; // Centrar la leyenda horizontalmente
+            double legendY = centerY + radius + 20; // Posicionar debajo del pastel
+            colorIndex = 0;
+            for (int round = 1; round <= lastRoundParticipated; round++) {
+                int goals = goalsPerRound[round - 1];
+                if (goals > 0) {
+                    gcGoals.setFill(colors[colorIndex % colors.length]);
+                    gcGoals.fillRect(legendX, legendY, 15, 15);
+                    gcGoals.setFill(Color.BLACK);
+                    gcGoals.fillText("Ronda " + round + ": " + goals + " goles", legendX + 20, legendY + 12);
+                    legendY += 20; // Apilar verticalmente
+                    colorIndex++;
+                }
             }
         }
 
@@ -580,66 +780,204 @@ private void applyFilters() {
         pointsPerMatchCanvas.getGraphicsContext2D().clearRect(0, 0, pointsPerMatchCanvas.getWidth(), pointsPerMatchCanvas.getHeight());
         tourneyPointsPerMatchCanvas.getGraphicsContext2D().clearRect(0, 0, tourneyPointsPerMatchCanvas.getWidth(), tourneyPointsPerMatchCanvas.getHeight());
     }
+    
+    private void updateMatchAccordion() {
+        matchAccordion.getPanes().clear();
+        if (selectedTeam == null) {
+            System.out.println("No hay equipo seleccionado para actualizar matchAccordion.");
+            return;
+        }
 
-private void updateMatchAccordion() {
-    matchAccordion.getPanes().clear();
-    if (selectedTeam == null) {
-        return;
-    }
+        // Usar la versión actualizada del equipo desde los torneos
+        Team updatedTeam = findUpdatedTeamInTourneys(selectedTeam);
+        if (updatedTeam == null) {
+            System.out.println("Equipo no encontrado en torneos para actualizar matchAccordion.");
+            return;
+        }
 
-    // Buscar torneos en los que participa el equipo seleccionado
-    for (Tourney tourney : availableTourneys) {
-        if (tourney.getTeamList().contains(selectedTeam) || tourney.getLoosersList().contains(selectedTeam)) {
-            TitledPane pane = new TitledPane();
-            pane.setText(tourney.getName());
+        System.out.println("Actualizando matchAccordion para el equipo: " + updatedTeam.getName());
+        System.out.println("Lista de partidos del equipo: " + updatedTeam.getEncounterList());
 
-            VBox content = new VBox();
-            List<MatchDetails> matches = selectedTeam.getEncounterList();
-            Game game = tourney.getContinueGame();
-            int lastRoundParticipated = 0;
+        // Buscar torneos en los que participa el equipo actualizado
+        for (Tourney tourney : availableTourneys) {
+            if (tourney.getTeamList().stream().anyMatch(t -> t.getId() == updatedTeam.getId())
+                    || tourney.getLoosersList().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                System.out.println("Equipo " + updatedTeam.getName() + " participa en torneo: " + tourney.getName());
 
-            // Determinar en qué rondas participó el equipo
-            if (game.getRound1().contains(selectedTeam)) lastRoundParticipated = 1;
-            if (game.getRound2().contains(selectedTeam)) lastRoundParticipated = 2;
-            if (game.getRound3().contains(selectedTeam)) lastRoundParticipated = 3;
-            if (game.getRound4().contains(selectedTeam)) lastRoundParticipated = 4;
-            if (game.getRound5().contains(selectedTeam)) lastRoundParticipated = 5;
-            if (game.getRound6().contains(selectedTeam)) lastRoundParticipated = 6;
-            if (game.getWinner().contains(selectedTeam)) lastRoundParticipated = 7;
+                // Crear un TitledPane para el torneo
+                TitledPane tourneyPane = new TitledPane();
+                tourneyPane.setText(tourney.getName());
+                VBox tourneyContent = new VBox();
+                Accordion roundsAccordion = new Accordion();
 
-            // Si el equipo está en loosersList y no en las rondas posteriores, perdió
-            boolean isLooser = tourney.getLoosersList().contains(selectedTeam);
+                List<MatchDetails> matches = updatedTeam.getEncounterList();
+                System.out.println("Partidos encontrados para " + updatedTeam.getName() + " en torneo " + tourney.getName() + ": " + matches);
 
-            // Mostrar los partidos del equipo
-            if (matches != null && !matches.isEmpty()) {
-                int matchIndex = 0;
-                for (MatchDetails match : matches) {
-                    String opponentName = match.getNameFirstTeam().equals(selectedTeam.getName()) ? match.getNameSecondTeam() : match.getNameFirstTeam();
-                    int teamGoals = match.getNameFirstTeam().equals(selectedTeam.getName()) ? match.getCounterFirstTeamGoals() : match.getCounterSecondTeamGoals();
-                    int opponentGoals = match.getNameFirstTeam().equals(selectedTeam.getName()) ? match.getCounterSecondTeamGoals() : match.getCounterFirstTeamGoals();
+                Game game = tourney.getContinueGame();
+                int lastRoundParticipated = 0;
 
-                    // Intentar inferir la ronda del partido
-                    int matchRound = Math.min(matchIndex + 1, lastRoundParticipated);
-                    String roundInfo = "Ronda " + matchRound;
-                    if (isLooser && matchRound == lastRoundParticipated) {
-                        roundInfo += " (Perdió)";
-                    } else if (lastRoundParticipated == 7 && matchRound == lastRoundParticipated - 1) {
-                        roundInfo = "Final (Ganador)";
+                // Determinar en qué rondas participó el equipo
+                if (game.getRound1().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                    lastRoundParticipated = 1;
+                }
+                if (game.getRound2().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                    lastRoundParticipated = 2;
+                }
+                if (game.getRound3().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                    lastRoundParticipated = 3;
+                }
+                if (game.getRound4().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                    lastRoundParticipated = 4;
+                }
+                if (game.getRound5().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                    lastRoundParticipated = 5;
+                }
+                if (game.getRound6().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                    lastRoundParticipated = 6;
+                }
+                if (game.getWinner().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                    lastRoundParticipated = 7;
+                }
+
+                // Si el equipo está en loosersList y no en las rondas posteriores, perdió
+                boolean isLooser = tourney.getLoosersList().stream().anyMatch(t -> t.getId() == updatedTeam.getId());
+
+                // Agrupar partidos por ronda
+                if (matches != null && !matches.isEmpty()) {
+                    // Crear una lista de VBox para cada ronda (hasta lastRoundParticipated)
+                    List<VBox> roundContents = new ArrayList<>();
+                    for (int i = 0; i < lastRoundParticipated; i++) {
+                        roundContents.add(new VBox());
                     }
 
-                    Label matchLabel = new Label(roundInfo + ": vs " + opponentName + " - " + teamGoals + " - " + opponentGoals);
-                    content.getChildren().add(matchLabel);
-                    matchIndex++;
+                    int matchIndex = 0;
+                    for (MatchDetails match : matches) {
+                        try {
+                            System.out.println("Procesando partido: " + match);
+                            if (match == null) {
+                                System.out.println("Partido nulo encontrado en la lista de partidos.");
+                                continue;
+                            }
+
+                            // Obtener nombres y goles con manejo de null
+                            String nameFirstTeam = match.getNameFirstTeam() != null ? match.getNameFirstTeam() : "Equipo 1 Desconocido";
+                            String nameSecondTeam = match.getNameSecondTeam() != null ? match.getNameSecondTeam() : "Equipo 2 Desconocido";
+                            String opponentName = nameFirstTeam.equals(updatedTeam.getName()) ? nameSecondTeam : nameFirstTeam;
+                            int teamGoals = nameFirstTeam.equals(updatedTeam.getName()) ? match.getCounterFirstTeamGoals() : match.getCounterSecondTeamGoals();
+                            int opponentGoals = nameFirstTeam.equals(updatedTeam.getName()) ? match.getCounterSecondTeamGoals() : match.getCounterFirstTeamGoals();
+
+                            // Calcular puntos
+                            int teamPoints = 0;
+                            int opponentPoints = 0;
+                            if (teamGoals > opponentGoals) {
+                                teamPoints = 3; // Victoria
+                                opponentPoints = 0;
+                            } else if (teamGoals < opponentGoals) {
+                                teamPoints = 0;
+                                opponentPoints = 3; // Derrota
+                            } else {
+                                teamPoints = 1; // Empate
+                                opponentPoints = 1;
+                            }
+
+                            // Determinar el resultado
+                            String result;
+                            if (teamGoals > opponentGoals) {
+                                result = "Resultado: " + updatedTeam.getName() + " Ganó";
+                            } else if (teamGoals < opponentGoals) {
+                                result = "Resultado: " + updatedTeam.getName() + " Perdió";
+                            } else {
+                                result = "Resultado: Empate";
+                            }
+
+                            System.out.println("Partido procesado - Oponente: " + opponentName + ", Goles: " + teamGoals + " - " + opponentGoals);
+
+                            // Estimar la ronda del partido basándonos en el número de partidos por ronda
+                            int matchesPerRound = tourney.getTeamList().size() / 2; // Aproximación simple
+                            if (matchesPerRound <= 0) {
+                                matchesPerRound = 1;
+                            }
+                            int matchRound = Math.min((matchIndex / matchesPerRound) + 1, lastRoundParticipated);
+                            String roundInfo = "Ronda " + matchRound;
+
+                            // Crear los detalles del partido
+                            VBox matchDetails = new VBox();
+                            Label matchLabel = new Label(updatedTeam.getName() + " vs " + opponentName + " - " + teamGoals + " - " + opponentGoals);
+                            Label opponentLabel = new Label("Contrincante: " + opponentName);
+                            Label teamGoalsLabel = new Label("Goles de " + updatedTeam.getName() + ": " + teamGoals);
+                            Label opponentGoalsLabel = new Label("Goles de " + opponentName + ": " + opponentGoals);
+                            Label teamPointsLabel = new Label("Puntos de " + updatedTeam.getName() + ": " + teamPoints);
+                            Label opponentPointsLabel = new Label("Puntos de " + opponentName + ": " + opponentPoints);
+                            Label drawLabel = new Label("Empate: " + (match.isDraw()? "Sí" : "No"));
+                            Label resultLabel = new Label(result);
+
+                            // Crear un Canvas para el gráfico de barras
+                            Canvas goalsBarCanvas = new Canvas(200, 100);
+                            GraphicsContext gc = goalsBarCanvas.getGraphicsContext2D();
+                            double maxGoals = Math.max(teamGoals, opponentGoals);
+                            maxGoals = Math.max(maxGoals, 1); // Evitar división por cero
+                            double barHeightTeam = (teamGoals / maxGoals) * 80;
+                            double barHeightOpponent = (opponentGoals / maxGoals) * 80;
+                            double barWidth = 40;
+
+                            // Dibujar barras
+                            gc.setFill(Color.BLUE);
+                            gc.fillRect(50, 100 - barHeightTeam, barWidth, barHeightTeam); // Barra del jugador
+                            gc.setFill(Color.RED);
+                            gc.fillRect(100, 100 - barHeightOpponent, barWidth, barHeightOpponent); // Barra del contrincante
+                            // Etiquetas
+                            gc.setFill(Color.BLACK);
+                            gc.fillText(updatedTeam.getName() + ": " + teamGoals, 50, 100 - barHeightTeam - 5);
+                            gc.fillText(opponentName + ": " + opponentGoals, 100, 100 - barHeightOpponent - 5);
+
+                            matchDetails.getChildren().addAll(
+                                    matchLabel,
+                                    opponentLabel,
+                                    teamGoalsLabel,
+                                    opponentGoalsLabel,
+                                    teamPointsLabel,
+                                    opponentPointsLabel,
+                                    drawLabel,
+                                    resultLabel,
+                                    goalsBarCanvas
+                            );
+
+                            roundContents.get(matchRound - 1).getChildren().add(matchDetails);
+                            System.out.println("Partido añadido a la ronda " + matchRound + ": " + matchLabel.getText());
+                            matchIndex++;
+                        } catch (Exception e) {
+                            System.out.println("Error al procesar partido: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    }
+
+                    // Crear un TitledPane para cada ronda que tenga partidos
+                    for (int i = 0; i < roundContents.size(); i++) {
+                        if (!roundContents.get(i).getChildren().isEmpty()) {
+                            String roundTitle = "Ronda " + (i + 1);
+                            if (isLooser && (i + 1) == lastRoundParticipated) {
+                                roundTitle += " (Perdió)";
+                            } else if (lastRoundParticipated == 7 && (i + 1) == lastRoundParticipated - 1) {
+                                roundTitle = "Final (Ganador)";
+                            }
+                            TitledPane roundPane = new TitledPane(roundTitle, roundContents.get(i));
+                            roundsAccordion.getPanes().add(roundPane);
+                        }
+                    }
                 }
+
+                if (roundsAccordion.getPanes().isEmpty()) {
+                    tourneyContent.getChildren().add(new Label("No hay partidos disponibles para este torneo"));
+                    System.out.println("No se añadieron rondas al roundsAccordion para el torneo " + tourney.getName());
+                } else {
+                    tourneyContent.getChildren().add(roundsAccordion);
+                }
+
+                tourneyPane.setContent(tourneyContent);
+                matchAccordion.getPanes().add(tourneyPane);
             }
-            if (content.getChildren().isEmpty()) {
-                content.getChildren().add(new Label("No hay partidos disponibles para este torneo"));
-            }
-            pane.setContent(content);
-            matchAccordion.getPanes().add(pane);
         }
     }
-}
 
     @Override
     public void initialize() {
