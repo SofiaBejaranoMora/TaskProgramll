@@ -266,58 +266,55 @@ public class HistorialEquiposController extends Controller implements Initializa
         }
     }
 
-    private void loadTourneys() {
-        // Inicializar lista de torneos si es nula
-        if (AppContext.getInstance().get("tourneys") == null) {
-            AppContext.getInstance().set("tourneys", new ArrayList<Tourney>());
-        }
-        @SuppressWarnings("unchecked")
-        List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
-        System.out.println("Torneos iniciales en AppContext: " + tourneys);
-
-        // Verificar y cargar torneos desde el archivo
-        if (tourneys.isEmpty()) {
-            File tourneyFile = new File("Tourney.txt");
-            System.out.println("Ruta absoluta del archivo Tourney.txt: " + tourneyFile.getAbsolutePath());
-            if (!tourneyFile.exists()) {
-                System.out.println("Archivo Tourney.txt no encontrado en: " + tourneyFile.getAbsolutePath());
-                message.show(Alert.AlertType.WARNING, "Archivo no encontrado", "Tourney.txt no existe en el directorio raíz.");
-            } else if (tourneyFile.length() == 0) {
-                System.out.println("Archivo Tourney.txt está vacío.");
-                message.show(Alert.AlertType.WARNING, "Archivo vacío", "Tourney.txt está vacío.");
-            } else {
-                try {
-                    // Deserializar directamente con fileManager
-                    System.out.println("Deserializando Tourney.txt...");
-                    List<Tourney> deserializedTourneys = fileManager.deserialization("Tourney", Tourney.class);
-                    if (deserializedTourneys == null || deserializedTourneys.isEmpty()) {
-                        System.out.println("Deserialización de Tourney.txt devolvió null o lista vacía.");
-                        message.show(Alert.AlertType.WARNING, "Sin datos", "No se encontraron torneos en Tourney.txt.");
-                    } else {
-                        tourneys.addAll(deserializedTourneys);
-                        AppContext.getInstance().set("tourneys", tourneys);
-                        System.out.println("Torneos cargados y añadidos a AppContext: " + tourneys);
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error al deserializar Tourney.txt: " + e.getMessage());
-                    e.printStackTrace();
-                    message.show(Alert.AlertType.ERROR, "Error al Cargar Torneos", "No se pudieron cargar los torneos: " + e.getMessage());
-                }
-            }
-        } else {
-            System.out.println("Torneos ya cargados en AppContext: " + tourneys);
-        }
-
-        // Actualizar availableTourneys y tourneyTable
-        availableTourneys.clear();
-        availableTourneys.addAll(tourneys);
-        tourneyTable.setItems(availableTourneys);
-        System.out.println("tourneyTable items después de cargar: " + tourneyTable.getItems());
-        if (tourneyTable.getItems().isEmpty()) {
-            System.out.println("No hay torneos para mostrar en tourneyTable.");
-            message.show(Alert.AlertType.WARNING, "Lista vacía", "No hay torneos disponibles para mostrar.");
-        }
+private void loadTourneys() {
+    // Inicializar la lista en AppContext si es nula
+    if (AppContext.getInstance().get("tourneys") == null) {
+        AppContext.getInstance().set("tourneys", new ArrayList<Tourney>());
     }
+    @SuppressWarnings("unchecked")
+    List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
+
+    // Verificar si el archivo Tourney.txt existe y tiene contenido
+    File tourneyFile = new File("Tourney.txt");
+    if (tourneyFile.exists() && tourneyFile.length() > 0) {
+        try {
+            System.out.println("Deserializando Tourney.txt...");
+            
+            // Intentar deserializar el archivo
+            List<Tourney> deserializedTourneys = fileManager.deserialization("Tourney", Tourney.class);
+            if (deserializedTourneys == null || deserializedTourneys.isEmpty()) {
+                System.out.println("Deserialización de Tourney.txt devolvió null o lista vacía.");
+                message.show(Alert.AlertType.WARNING, "Sin datos", "No se encontraron torneos en Tourney.txt.");
+            } else {
+                // Limpiar y actualizar la lista de torneos
+                tourneys.clear();
+                tourneys.addAll(deserializedTourneys);
+                AppContext.getInstance().set("tourneys", tourneys);
+                System.out.println("Torneos cargados y añadidos a AppContext: " + tourneys.size());
+            }
+        } catch (Exception e) {
+            System.out.println("Error al deserializar Tourney.txt: " + e.getMessage());
+            e.printStackTrace();
+            message.show(Alert.AlertType.ERROR, "Error al cargar torneos", "No se pudieron cargar los torneos: " + e.getMessage());
+        }
+    } else {
+        // Manejar el caso de archivo inexistente o vacío
+        System.out.println("Archivo Tourney.txt no existe o está vacío.");
+        message.show(Alert.AlertType.WARNING, "Archivo no encontrado", "Tourney.txt no existe en el directorio raíz.");
+    }
+
+    // Actualizar la lista disponible y la tabla en la interfaz
+    availableTourneys.clear();
+    availableTourneys.addAll(tourneys);
+    tourneyTable.setItems(FXCollections.observableArrayList(availableTourneys));
+    System.out.println("Items de tourneyTable después de cargar: " + tourneyTable.getItems().size());
+
+    // Mostrar advertencia si no hay datos en la tabla
+    if (availableTourneys.isEmpty()) {
+        System.out.println("No hay torneos para mostrar en tourneyTable.");
+        message.show(Alert.AlertType.WARNING, "Lista vacía", "No hay torneos disponibles para mostrar.");
+    }
+}
 
     private void loadSports() {
         if (AppContext.getInstance().get("sports") == null) {
