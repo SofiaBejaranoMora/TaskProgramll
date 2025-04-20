@@ -40,6 +40,7 @@ public class GameController extends Controller implements Initializable {
     private Team firstTeam;
     private Team secondTeam;
     private int timeLimit;
+    private int coinNumber = 1;
     private int timeCalculate = 0;
     private int counterGoalsFirstTeam = 0;
     private int counterGoalsSecondTeam = 0;
@@ -190,7 +191,28 @@ public class GameController extends Controller implements Initializable {
                 System.out.println("\nEl balon toca al equipo #2\n");
         }
     }
-    
+        
+    private void determinateWinner(int team, int points) {
+        MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
+        if (team == 1) {
+            System.out.println("Ganador del partido: " + firstTeam.getName());
+            mgvWinFirstTeam.setVisible(true);
+            currentTourney.winnerAndLooser(firstTeam.getName(), counterGoalsFirstTeam, points, secondTeam.getName(), counterGoalsSecondTeam);
+            controller.adjustingTable(firstTeam);
+            firstTeam.setItemEncounterList(new MatchDetails(firstTeam.getName(), secondTeam.getName(), counterGoalsFirstTeam, counterGoalsSecondTeam));
+            secondTeam.setItemEncounterList(new MatchDetails(secondTeam.getName(), firstTeam.getName(), counterGoalsSecondTeam, counterGoalsFirstTeam));
+            winnerAnimatic(mgvWinFirstTeam);
+        } else {
+            System.out.println("Ganador del partido: " + secondTeam.getName());
+            mgvWinSecondTeam.setVisible(true);
+            currentTourney.winnerAndLooser(secondTeam.getName(), counterGoalsSecondTeam, points, firstTeam.getName(), counterGoalsFirstTeam);
+            controller.adjustingTable(secondTeam);
+            firstTeam.setItemEncounterList(new MatchDetails(firstTeam.getName(), secondTeam.getName(), counterGoalsFirstTeam, counterGoalsSecondTeam));
+            secondTeam.setItemEncounterList(new MatchDetails(secondTeam.getName(), firstTeam.getName(), counterGoalsSecondTeam, counterGoalsFirstTeam));
+            winnerAnimatic(mgvWinSecondTeam);
+        }
+    }
+        
     private void winnerAnimatic(ImageView starWinner) {
         Scale scale = new Scale();
         starWinner.getTransforms().add(scale);
@@ -202,36 +224,47 @@ public class GameController extends Controller implements Initializable {
         timeline.play();
     }
     
-    private void drawAnimatic(int team){
-        String coinPath = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
+    private void drawAnimatic(int team) {
+        Scale scale = new Scale();
+        mgvCoin.getTransforms().clear();
+        mgvCoin.getTransforms().add(scale);
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), event -> {
+            mgvCoin.setImage(new Image(ResourceUtil.getCoinPath(coinNumber)));
+            if (coinNumber == 14) {
+                coinNumber = 1;
+            } else {
+                coinNumber++;
+            }
+        }),
+                new KeyFrame(Duration.millis(500), new KeyValue(scale.xProperty(), 1.5), new KeyValue(scale.yProperty(), 1.5)),
+                new KeyFrame(Duration.millis(1000), new KeyValue(scale.xProperty(), 1.0), new KeyValue(scale.yProperty(), 1.0))
+        );
+
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+        stpDraw.setOnMouseReleased(null);
+        stpDraw.setOnMouseReleased(event -> {
+            timeline.stop();
+            if (coinNumber < 5 && coinNumber > 11) {
+                determinateWinner(team, 2);
+            } else {
+                determinateWinner(2, 2);
+            }
+        });
     }
-    
+
     private void afterGame() {
-        MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
-        if (counterGoalsFirstTeam > counterGoalsSecondTeam){
-            System.out.println("Ganador del partido: " + firstTeam.getName());
-            mgvWinFirstTeam.setVisible(true);
-            currentTourney.winnerAndLooser(firstTeam.getName(), counterGoalsFirstTeam, 3, secondTeam.getName(), counterGoalsSecondTeam);
-            controller.adjustingTable(firstTeam);
-            firstTeam.setItemEncounterList(new MatchDetails(firstTeam.getName(), secondTeam.getName(), counterGoalsFirstTeam, counterGoalsSecondTeam));
-            secondTeam.setItemEncounterList(new MatchDetails(secondTeam.getName(), firstTeam.getName(), counterGoalsSecondTeam, counterGoalsFirstTeam));
-            winnerAnimatic(mgvWinFirstTeam);
-            
+        if (counterGoalsFirstTeam > counterGoalsSecondTeam) {
+            determinateWinner(1, 3);
         } else if (counterGoalsFirstTeam < counterGoalsSecondTeam) {
-            System.out.println("Ganador del partido: " + secondTeam.getName());
-            mgvWinSecondTeam.setVisible(true);
-            currentTourney.winnerAndLooser(secondTeam.getName(), counterGoalsSecondTeam, 3, firstTeam.getName(), counterGoalsFirstTeam);
-            controller.adjustingTable(secondTeam);
-            firstTeam.setItemEncounterList(new MatchDetails(firstTeam.getName(), secondTeam.getName(), counterGoalsFirstTeam, counterGoalsSecondTeam));
-            secondTeam.setItemEncounterList(new MatchDetails(secondTeam.getName(), firstTeam.getName(), counterGoalsSecondTeam, counterGoalsFirstTeam));
-            winnerAnimatic(mgvWinSecondTeam); 
-            
+            determinateWinner(2, 3);
         } else {
             stpDraw.setVisible(true);
-            /*Animatica de empate*/
+            mgvCoin.setImage(new Image(ResourceUtil.getCoinPath(1)));
         }
     }
-    
+
     private void resetGame() {
         lblTimer.setText("00:00");
         lblFirstTeam.setText("0");
