@@ -522,6 +522,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     private void viewGameTable() {
         organizedRound();        
         loadColumns();
+        btnCetificate.setVisible(true);
         btnStart.setManaged(false);
         btnStart.setVisible(false);
         btnBack.setVisible(true);
