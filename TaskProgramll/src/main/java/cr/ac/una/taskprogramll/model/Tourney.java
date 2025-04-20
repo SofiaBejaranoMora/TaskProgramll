@@ -215,7 +215,7 @@ public class Tourney {
         return null;
     }
     
-    public String getTeamPosition(Team team) {
+    public String returnTeamPosition(Team team) {
         if (team == null || (!teamList.contains(team) && !loosersList.contains(team))) {
             return "No participa";
         }
@@ -227,6 +227,6 @@ public class Tourney {
         }
         List<Team> ranking = new ArrayList<>(loosersList);
         int position = ranking.size() - ranking.indexOf(team);
-        return "Posición: " + position + " (Eliminado)";
+        return "Posición: " + position;
     }
 }

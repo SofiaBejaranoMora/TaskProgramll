@@ -36,7 +36,7 @@ public class LobbyController extends Controller implements Initializable {
     private MFXComboBox<String> cmbMenu;
 
     public void comboxInitializer() {
-        cmbMenu.getItems().addAll("Registro y Mantenimiento", "Crear Torneo", "Ver Torneos", "Mini Juego Menu", "Historial de Torneos");
+        cmbMenu.getItems().addAll("Registro y Mantenimiento", "Crear Torneo", "Ver Torneos", "Mini Juego Menu", "Historial de Torneos",  "HistorialEquipos");
     }
 
     public void clean() {
@@ -72,6 +72,9 @@ public class LobbyController extends Controller implements Initializable {
              case "Historial de Torneos":
             FlowController.getInstance().goViewInStage("TournamentHistory", (Stage) cmbMenu.getScene().getWindow());
             break;
+             case "HistorialEquipos":
+             FlowController.getInstance().goViewInStage("HistorialEquipos", (Stage) cmbMenu.getScene().getWindow());
+             break;
             default:
                 throw new AssertionError();
         }

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.HistorialEquiposController">
+    <children>
+        <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <tabs>
+                <!-- Tab Equipos y Torneos: Combinación de General y Torneos -->
+                <Tab text="Equipos y Torneos">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="PurpleBackground" stylesheets="@Style.css">
+                            <children>
+                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" styleClass="BackTicket" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="title-bar" stylesheets="@Style.css" text="Historial de equipos" />
+                                        <HBox alignment="CENTER" spacing="10.0" styleClass="hbox-cute" stylesheets="@Style.css">
+                                            <children>
+                                                <MFXTextField fx:id="teamSearch" floatingText="Buscar equipo" prefWidth="200.0" styleClass="mfx-text-field" stylesheets="@Style.css" />
+                                                <MFXComboBox fx:id="teamFilter" floatingText="Equipo" prefWidth="150.0" styleClass="mfx-combo-box" stylesheets="@Style.css" />
+                                                <MFXComboBox fx:id="sportFilter" floatingText="Deporte" prefWidth="150.0" />
+                                                <MFXButton fx:id="searchButton" styleClass="mfx-button" stylesheets="@Style.css" text="Buscar" />
+                                                <MFXButton fx:id="clearButton" styleClass="mfx-button" stylesheets="@Style.css" text="Limpiar" />
+                                            </children>
+                                        </HBox>
+                                        <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0" styleClass="StoreBackground" stylesheets="@Style.css" VBox.vgrow="ALWAYS">
+                                            <items>
+                                                <!-- Lista de Equipos -->
+                                                <VBox alignment="CENTER" spacing="10.0" styleClass="InteractiveVBox" stylesheets="@Style.css">
+                                                    <children>
+                                                        <Label styleClass="SmallLabel" stylesheets="@Style.css" text="Equipos" />
+                                                        <TableView fx:id="teamTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" styleClass="TableViewRose" stylesheets="@Style.css">
+                                                            <columns>
+                                                                <TableColumn fx:id="teamNameColumn" prefWidth="150.0" text="Nombre" />
+                                                                <TableColumn fx:id="teamRankingColumn" prefWidth="100.0" text="Ranking" />
+                                                                <TableColumn fx:id="teamPointsColumn" prefWidth="100.0" text="Puntos" />
+                                                            </columns>
+                                                        </TableView>
+                                                    </children>
+                                                </VBox>
+                                                <VBox alignment="CENTER" spacing="10.0" styleClass="InteractiveVBox" stylesheets="@Style.css">
+                                                    <children>
+                                                        <Label fx:id="selectedTeamLabel" styleClass="SmallLabel" stylesheets="@Style.css" text="Seleccioná un equipo" />
+                                                        <TableView fx:id="tourneyTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" styleClass="TableViewLightdBlue" stylesheets="@Style.css">
+                                                            <columns>
+                                                                <TableColumn fx:id="tourneyNameColumn" prefWidth="150.0" text="Nombre" />
+                                                                <TableColumn fx:id="tourneyMinutesColumn" prefWidth="80.0" text="Minutos" />
+                                                                <TableColumn fx:id="tourneySportColumn" prefWidth="100.0" text="Deporte" />
+                                                                <TableColumn fx:id="tourneyStateColumn" prefWidth="100.0" text="Estado" />
+                                                                <TableColumn fx:id="tourneyPositionColumn" prefWidth="100.0" text="Posición" />
+                                                            </columns>
+                                                        </TableView>
+                                                    </children>
+                                                </VBox>
+                                            </items>
+                                        </SplitPane>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <!-- Tab Partidos: Detalle de partidos del equipo con Accordion -->
+                <Tab text="Partidos">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="BusStopBackground" stylesheets="@Style.css">
+                            <children>
+                                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="title-bar" stylesheets="@Style.css" text="Detalles del Partido" />
+                                        <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" stylesheets="@Style.css" VBox.vgrow="ALWAYS">
+                                            <children>
+                                                <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" styleClass="InteractiveVBox" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
+                                                    <children>
+                                                        <Label styleClass="SmallLabel" stylesheets="@Style.css" text="Rondas" />
+                                                        <Accordion fx:id="matchAccordion" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                                                    </children>
+                                                </VBox>
+                                                <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" styleClass="InteractiveVBox" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
+                                                    <children>
+                                                        <Label alignment="CENTER" styleClass="SmallLabel" stylesheets="@Style.css" text="Distribución de Goles por Ronda" />
+                                          <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="hbox-cute" stylesheets="@Style.css" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                              <Canvas fx:id="matchGoalsCanvas" height="150.0" width="200.0" />
+                                             </children>
+                                          </HBox>
+                                                    </children>
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                                </VBox>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <!-- Tab Estadísticas: Estadísticas generales y por torneo -->
+                <Tab text="Estadísticas">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="title-bar" stylesheets="@Style.css" text="Estadísticas del equipo" />
+                                        <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                            <items>
+                                                <!-- Estadísticas Generales -->
+                                                <VBox alignment="CENTER" spacing="10.0">
+                                                    <children>
+                                                        <Label styleClass="SmallLabel" stylesheets="@Style.css" text="Estadísticas Generales" />
+                                                        <VBox spacing="5.0">
+                                                            <children>
+                                                                <Label fx:id="totalPointsLabel" text="Puntos Totales: 0" />
+                                                                <Label fx:id="totalMatchesLabel" text="Partidos Jugados: 0" />
+                                                                <Label fx:id="generalRankingLabel" text="Ranking General: N/A" />
+                                                            </children>
+                                                        </VBox>
+                                                        <Label styleClass="SmallLabel" stylesheets="@Style.css" text="Puntos por Partido (Global)" />
+                                                        <ScrollPane fitToHeight="true" pannable="true">
+                                                            <Canvas fx:id="pointsPerMatchCanvas" height="200.0" />
+                                                        </ScrollPane>
+                                                    </children>
+                                                </VBox>
+                                                <!-- Estadísticas por Torneo -->
+                                                <VBox alignment="CENTER" spacing="10.0">
+                                                    <children>
+                                                        <Label styleClass="SmallLabel" stylesheets="@Style.css" text="Estadísticas por Torneo" />
+                                                        <TableView fx:id="tourneyStatsTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0">
+                                                            <columns>
+                                                                <TableColumn fx:id="tourneyStatsNameColumn" prefWidth="100.0" text="Torneo" />
+                                                                <TableColumn fx:id="tourneyStatsPointsColumn" prefWidth="80.0" text="Puntos" />
+                                                                <TableColumn fx:id="tourneyStatsGoalsColumn" prefWidth="80.0" text="Goles" />
+                                                                <TableColumn fx:id="tourneyStatsRankingColumn" prefWidth="80.0" text="Ranking" />
+                                                            </columns>
+                                                        </TableView>
+                                                        <Label styleClass="SmallLabel" stylesheets="@Style.css" text="Puntos por Partido (por Torneo)" />
+                                                        <ScrollPane fitToHeight="true" pannable="true">
+                                                            <Canvas fx:id="tourneyPointsPerMatchCanvas" height="200.0" />
+                                                        </ScrollPane>
+                                                    </children>
+                                                </VBox>
+                                            </items>
+                                        </SplitPane>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </children>
+</AnchorPane>

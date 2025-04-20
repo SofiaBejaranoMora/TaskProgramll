@@ -375,7 +375,8 @@ public class TournamentHistoryController extends Controller implements Initializ
             return;
         }
         detailsTitle.setText(tourney.getName());
-        positionLabel.setText(tourney.getTeamPosition(team));
+        positionLabel.setText(tourney.returnTeamPosition(team));
+        
         if (tourney.getLoosersList().contains(team)) {
             matchesLabel.setText("Resultado: Eliminado");
         } else if (tourney.getTeamList().contains(team)) {
@@ -386,6 +387,11 @@ public class TournamentHistoryController extends Controller implements Initializ
         statsLabel.setText("Puntos: " + team.getPoints() + ", Goles: " + team.getGoals());
         generalStatsLabel.setText("Estado del torneo: " + tourney.returnState());
         drawTeamStats(team);
+         //Detalle de los partiidos: x equipo se enfrento con este y gano - contra quiennes se enfrento + resultados: 
+          //estadisticas generales y por partido
+           //obtener goles y empates y cuantas veces gano o perdio (buscar toda la informacion parra lo general)
+            //Ranking global:
+
     }
     
     
