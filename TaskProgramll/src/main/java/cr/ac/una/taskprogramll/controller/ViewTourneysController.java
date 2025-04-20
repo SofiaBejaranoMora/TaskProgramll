@@ -63,7 +63,6 @@ public class ViewTourneysController extends Controller implements Initializable 
         if (selectedTourney != null) {
             // Lógica para jugar/continuar torneo
             AppContext.getInstance().set("SelectedTourney", selectedTourney);
-            // Navegar a la vista de información 
             MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
             controller.initializeFromAppContext();
             FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnPlay.getScene().getWindow());
@@ -80,7 +79,6 @@ public class ViewTourneysController extends Controller implements Initializable 
             TourneysInfoController controller = (TourneysInfoController) FlowController.getInstance().getController("TourneysInfo");
             controller.initialPanelConditions();
             FlowController.getInstance().goViewInStage("TourneysInfo", (Stage) btnInfo.getScene().getWindow());
-
             System.out.println("Mostrando info de: " + selectedTourney.getName());
         }
     }
@@ -98,8 +96,11 @@ public class ViewTourneysController extends Controller implements Initializable 
                 for (Tourney tourney : tourneys) {
                     if (tourney.getSportTypeId() == selectedSport.getId()) {
                         torneosList.add(tourney);
+                        System.out.println("Torneo añadido a la lista filtrada: " + tourney.getName() + " - Estado: " + tourney.returnState());
                     }
                 }
+            } else {
+                System.out.println("No se encontraron torneos para el deporte seleccionado: " + selectedSport.getId());
             }
 
             boolean state = !torneosList.isEmpty();
@@ -132,7 +133,7 @@ public class ViewTourneysController extends Controller implements Initializable 
         }
 
         String state = selectedTourney.returnState();
-        System.out.println("Actualizando botones para estado: " + state); // Debug
+        System.out.println("Actualizando botones para estado: " + state);
 
         btnInfo.setDisable(false);
 
@@ -161,13 +162,18 @@ public class ViewTourneysController extends Controller implements Initializable 
             try {
                 sports = fileManager.deserialization("Sport", Sport.class);
                 AppContext.getInstance().set("sports", sports);
+                System.out.println("Deportes cargados desde Sport.txt: " + (sports != null ? sports.size() : 0));
             } catch (Exception e) {
                 System.err.println("Error al deserializar deportes: " + e.getMessage());
+                e.printStackTrace();
             }
         }
         if (sports != null) {
             sportList.addAll(sports);
+        } else {
+            sportList = new ArrayList<>();
         }
+        System.out.println("Lista de deportes cargada: " + sportList);
     }
 
     private List<Tourney> loadTourneyList() {
@@ -175,30 +181,33 @@ public class ViewTourneysController extends Controller implements Initializable 
         List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
         if (tourneys == null || tourneys.isEmpty()) {
             File tourneyFile = new File("Tourney.txt");
+            System.out.println("Verificando Tourney.txt en: " + tourneyFile.getAbsolutePath());
             if (tourneyFile.exists() && tourneyFile.length() > 0) {
                 try {
                     tourneys = fileManager.deserialization("Tourney", Tourney.class);
-                    if (tourneys != null) {
+                    if (tourneys != null && !tourneys.isEmpty()) {
+                        System.out.println("Torneos deserializados correctamente: " + tourneys);
                         AppContext.getInstance().set("tourneys", tourneys);
                         System.out.println("Torneos cargados desde Tourney.txt: " + tourneys.size());
                     } else {
-                        System.out.println("Error al leer Tourney.txt, reiniciando archivo.");
-                        tourneyFile.delete();
+                        System.out.println("Deserialización devolvió null o lista vacía, inicializando lista vacía.");
                         tourneys = new ArrayList<>();
                         AppContext.getInstance().set("tourneys", tourneys);
                     }
                 } catch (Exception e) {
                     System.err.println("Error al deserializar torneos: " + e.getMessage());
-                    System.out.println("Borrando Tourney.txt por incompatibilidad.");
-                    tourneyFile.delete();
+                    e.printStackTrace();
+                    System.out.println("No se eliminará Tourney.txt, inicializando lista vacía.");
                     tourneys = new ArrayList<>();
                     AppContext.getInstance().set("tourneys", tourneys);
                 }
             } else {
                 tourneys = new ArrayList<>();
                 AppContext.getInstance().set("tourneys", tourneys);
-                System.out.println("No hay Tourney.txt, iniciando con lista vacía.");
+                System.out.println("No hay Tourney.txt o está vacío, iniciando con lista vacía.");
             }
+        } else {
+            System.out.println("Torneos ya cargados en AppContext: " + tourneys);
         }
         return tourneys;
     }
