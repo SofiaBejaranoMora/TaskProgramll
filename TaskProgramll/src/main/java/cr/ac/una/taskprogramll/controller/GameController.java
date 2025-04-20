@@ -230,6 +230,7 @@ public class GameController extends Controller implements Initializable {
     public void InitializeGame(Team firstTeam, Team secondTeam) {
         this.firstTeam = firstTeam;
         this.secondTeam = secondTeam;
+        btnFastFinish.setVisible(true);
         chargeImages();
     }
              

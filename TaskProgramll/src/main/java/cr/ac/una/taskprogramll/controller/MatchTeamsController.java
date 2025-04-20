@@ -4,9 +4,11 @@ import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
+import cr.ac.una.taskprogramll.util.Certificate;
 import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.ResourceUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import java.awt.Desktop;
 import java.io.File;
 import java.net.URL;
 import java.util.Collections;
@@ -39,6 +41,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     private Tourney currentTourney;
     private List<Tourney> tourneyList;
     private List<Team> currentTeamList;
+    private Team winnerCertificate;
     private FileManager fileManager = new FileManager();
     private File file;
     private Boolean viewButton = false;
@@ -114,7 +117,12 @@ public class MatchTeamsController extends Controller implements Initializable {
     
     @FXML
     private void onActionBtnCertificate(ActionEvent event) {
-        //Desktop.getDesktop().open(new File (System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/"+winner.get(0).getName()+"_"+currentTourney.getName()+".pdf";));
+        try {
+            Desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/Certificates/" + winnerCertificate.getName() + "_" + currentTourney.getName() + ".pdf"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error al abrir el certificado: " + e.getMessage());
+        }
     }
 
     private int discoverRounds() {
@@ -368,6 +376,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         lblWinnerName.setText(winnerTeam.getName());
         lblWinnerPoints.setText("Puntos obtenidos: " + winnerTeam.getPoints());
         lblWinnerGoals.setText("Goles realizados: " + winnerTeam.getGoals());
+        Certificate.certificate(winnerCertificate, currentTourney.getName());
     }
     
     private void saveData() {
@@ -519,6 +528,12 @@ public class MatchTeamsController extends Controller implements Initializable {
                 return tourney;
         }
         return null;
+    }
+    
+    public void initializeToTicket() {
+        this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("SelectedTourney"));
+        this.currentTeamList = currentTourney.getTeamList();
+        viewGameTable();
     }
     
     public void initializeFromAppContext() {

@@ -34,7 +34,7 @@ public class ViewTourneysController extends Controller implements Initializable 
     private final FileManager fileManager = new FileManager();
     private ObservableList<Tourney> torneosList;
     private List<Sport> sportList = new ArrayList<>();
-    
+
     @FXML
     private MFXComboBox<Sport> sportsComboBox;
     @FXML
@@ -51,8 +51,8 @@ public class ViewTourneysController extends Controller implements Initializable 
     private MFXButton btnPlay;
     @FXML
     private MFXButton btnInfo;
-    
-        @FXML
+
+    @FXML
     private void goBack(ActionEvent event) {
         FlowController.getInstance().goViewInStage("Lobby", (Stage) btnBack.getScene().getWindow());
     }
@@ -84,7 +84,7 @@ public class ViewTourneysController extends Controller implements Initializable 
             System.out.println("Mostrando info de: " + selectedTourney.getName());
         }
     }
-   
+
     @FXML
     private void mostrarTorneos(ActionEvent event) {
         Sport selectedSport = sportsComboBox.getSelectionModel().getSelectedItem();
@@ -96,7 +96,7 @@ public class ViewTourneysController extends Controller implements Initializable 
             List<Tourney> tourneys = loadTourneyList();
             if (tourneys != null) {
                 for (Tourney tourney : tourneys) {
-                    if (tourney.getSportTypeId()== selectedSport.getId()) {
+                    if (tourney.getSportTypeId() == selectedSport.getId()) {
                         torneosList.add(tourney);
                     }
                 }
@@ -121,41 +121,6 @@ public class ViewTourneysController extends Controller implements Initializable 
             tourneysTable.setVisible(false);
             btnPlay.setDisable(true);
             btnInfo.setDisable(true);
-        }
-    }
- 
-    public void initialPanelConditions() {
-                try {
-            torneosList = FXCollections.observableArrayList();
-            tourneysTable.setItems(torneosList);
-
-            colTourney.setCellValueFactory(new PropertyValueFactory<>("name"));
-            colState.setCellValueFactory(cellData -> {
-                Tourney tourney = cellData.getValue();
-                return new SimpleStringProperty(tourney.returnState());
-            });
-
-            // Inicialmente deshabilitados
-            btnPlay.setDisable(true);
-            btnInfo.setDisable(true);
-            tourneysTable.setVisible(false);
-
-            loadSportList();
-            sportsComboBox.setItems(FXCollections.observableArrayList(sportList));
-
-            tourneysTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-                if (newVal != null) {
-                    System.out.println("Torneo seleccionado: " + newVal.getName() + " - Estado: " + newVal.returnState());
-                    actualizarBotones(newVal);
-                } else {
-                    btnPlay.setDisable(true);
-                    btnInfo.setDisable(true);
-                }
-            });
-
-        } catch (Exception e) {
-            System.err.println("Error en initialize: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -188,8 +153,6 @@ public class ViewTourneysController extends Controller implements Initializable 
                 btnPlay.setDisable(true);
         }
     }
-
-
 
     private void loadSportList() {
         @SuppressWarnings("unchecked")
@@ -240,9 +203,46 @@ public class ViewTourneysController extends Controller implements Initializable 
         return tourneys;
     }
 
+    public void initialPanelConditions() {
+        try {
+            torneosList = FXCollections.observableArrayList();
+            tourneysTable.setItems(torneosList);
+
+            colTourney.setCellValueFactory(new PropertyValueFactory<>("name"));
+            colState.setCellValueFactory(cellData -> {
+                Tourney tourney = cellData.getValue();
+                return new SimpleStringProperty(tourney.returnState());
+            });
+
+            // Inicialmente deshabilitados
+            btnPlay.setDisable(true);
+            btnInfo.setDisable(true);
+            tourneysTable.setVisible(false);
+
+            sportsComboBox.setItems(FXCollections.observableArrayList(sportList));
+
+            tourneysTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null) {
+                    System.out.println("Torneo seleccionado: " + newVal.getName() + " - Estado: " + newVal.returnState());
+                    actualizarBotones(newVal);
+                } else {
+                    btnPlay.setDisable(true);
+                    btnInfo.setDisable(true);
+                }
+            });
+
+        } catch (Exception e) {
+            System.err.println("Error en initialize: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     @Override
-    public void initialize(URL url, ResourceBundle rb) {}
-    
+    public void initialize(URL url, ResourceBundle rb) {
+        loadSportList();
+    }
+
     @Override
-    public void initialize() {}
+    public void initialize() {
+    }
 }
