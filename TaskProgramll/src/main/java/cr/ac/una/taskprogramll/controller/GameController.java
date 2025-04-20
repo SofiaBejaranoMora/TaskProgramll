@@ -24,6 +24,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -65,6 +66,10 @@ public class GameController extends Controller implements Initializable {
     private MFXButton btnOut;
     @FXML
     private MFXButton btnFastFinish;
+    @FXML
+    private ImageView mgvCoin;
+    @FXML
+    private StackPane stpDraw;
     
     @FXML
     void onDragDetectedMgvBall(MouseEvent event) {
@@ -99,6 +104,17 @@ public class GameController extends Controller implements Initializable {
                 ncpRoot.setOnMouseReleased(null);
             });
         }
+    }
+    
+    @FXML
+    private void onMouseReleasedMgvCoin(MouseEvent event) {
+        Bounds firstTeamBounds = mgvFirstTeam.localToScene(mgvFirstTeam.getBoundsInLocal());
+        Bounds secondTeamBounds = mgvSecondTeam.localToScene(mgvSecondTeam.getBoundsInLocal());
+         if (firstTeamBounds.contains(event.getSceneX(), event.getSceneY())) {
+             drawAnimatic(1);
+         } else if (secondTeamBounds.contains(event.getSceneX(), event.getSceneY())) {
+             drawAnimatic(2);
+         }
     }
     
     @FXML
@@ -186,8 +202,8 @@ public class GameController extends Controller implements Initializable {
         timeline.play();
     }
     
-    private void drawAnimatic(){
-        
+    private void drawAnimatic(int team){
+        String coinPath = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
     }
     
     private void afterGame() {
@@ -210,7 +226,10 @@ public class GameController extends Controller implements Initializable {
             secondTeam.setItemEncounterList(new MatchDetails(secondTeam.getName(), firstTeam.getName(), counterGoalsSecondTeam, counterGoalsFirstTeam));
             winnerAnimatic(mgvWinSecondTeam); 
             
-        } else {/*Animatica de empate*/}
+        } else {
+            stpDraw.setVisible(true);
+            /*Animatica de empate*/
+        }
     }
     
     private void resetGame() {
@@ -222,6 +241,7 @@ public class GameController extends Controller implements Initializable {
         counterGoalsFirstTeam = 0;
         counterGoalsSecondTeam = 0;
         mgvBall.setVisible(true);
+        stpDraw.setVisible(false);
         timeCalculate = 0;
         isFinished = false;
         timerStarted =false;

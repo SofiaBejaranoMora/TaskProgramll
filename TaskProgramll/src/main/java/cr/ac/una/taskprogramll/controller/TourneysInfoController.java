@@ -91,6 +91,7 @@ public class TourneysInfoController extends Controller implements Initializable 
     @FXML
     private void onActionBtnShowKeys(ActionEvent event) {        
         System.out.println("Show keys for " + selectedTourney.getName());
+        AppContext.getInstance().set("Visualize", selectedTourney);
         MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
         controller.initializeToTicket();
         FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnShowKeys.getScene().getWindow());

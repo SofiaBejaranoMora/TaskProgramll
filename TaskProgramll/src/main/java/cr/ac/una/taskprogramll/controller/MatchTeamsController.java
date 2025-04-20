@@ -520,6 +520,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
 
     private void viewGameTable() {
+        organizedRound();        
         loadColumns();
         btnStart.setManaged(false);
         btnStart.setVisible(false);
@@ -535,7 +536,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
     
     public void initializeToTicket() {
-        this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("SelectedTourney"));
+        this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("Visualize"));
         this.currentTeamList = currentTourney.getTeamList();
         viewGameTable();
     }
