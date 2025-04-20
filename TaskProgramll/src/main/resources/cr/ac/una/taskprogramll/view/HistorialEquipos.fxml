@@ -3,6 +3,7 @@
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Accordion?>
@@ -88,7 +89,7 @@
                                                 <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" styleClass="InteractiveVBox" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
                                                     <children>
                                                         <Label styleClass="SmallLabel" stylesheets="@Style.css" text="Rondas" />
-                                                        <Accordion fx:id="matchAccordion" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                                                        <Accordion fx:id="matchAccordion" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="Accordion" stylesheets="@Style.css" VBox.vgrow="ALWAYS" />
                                                     </children>
                                                 </VBox>
                                                 <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" styleClass="InteractiveVBox" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
@@ -115,25 +116,33 @@
                 <!-- Tab Estadísticas: Estadísticas generales y por torneo -->
                 <Tab text="Estadísticas">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="PurpleBackground" stylesheets="@Style.css">
                             <children>
                                 <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
                                         <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="title-bar" stylesheets="@Style.css" text="Estadísticas del equipo" />
-                                        <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                        <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0" styleClass="BusStopBackground" stylesheets="@Style.css" VBox.vgrow="ALWAYS">
                                             <items>
                                                 <!-- Estadísticas Generales -->
                                                 <VBox alignment="CENTER" spacing="10.0">
                                                     <children>
-                                                        <Label styleClass="SmallLabel" stylesheets="@Style.css" text="Estadísticas Generales" />
-                                                        <VBox spacing="5.0">
+                                                        <Label stylesheets="@Style.css" text="Estadísticas Generales">
+                                             <styleClass>
+                                                <String fx:value="SmallLabel" />
+                                                <String fx:value="hbox-cute" />
+                                             </styleClass></Label>
+                                                        <VBox spacing="5.0" styleClass="hbox-cute" stylesheets="@Style.css">
                                                             <children>
                                                                 <Label fx:id="totalPointsLabel" text="Puntos Totales: 0" />
                                                                 <Label fx:id="totalMatchesLabel" text="Partidos Jugados: 0" />
                                                                 <Label fx:id="generalRankingLabel" text="Ranking General: N/A" />
                                                             </children>
                                                         </VBox>
-                                                        <Label styleClass="SmallLabel" stylesheets="@Style.css" text="Puntos por Partido (Global)" />
+                                                        <Label stylesheets="@Style.css" text="Puntos por Partido (Global)">
+                                             <styleClass>
+                                                <String fx:value="SmallLabel" />
+                                                <String fx:value="hbox-cute" />
+                                             </styleClass></Label>
                                                         <ScrollPane fitToHeight="true" pannable="true">
                                                             <Canvas fx:id="pointsPerMatchCanvas" height="200.0" />
                                                         </ScrollPane>
@@ -142,8 +151,12 @@
                                                 <!-- Estadísticas por Torneo -->
                                                 <VBox alignment="CENTER" spacing="10.0">
                                                     <children>
-                                                        <Label styleClass="SmallLabel" stylesheets="@Style.css" text="Estadísticas por Torneo" />
-                                                        <TableView fx:id="tourneyStatsTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0">
+                                                        <Label stylesheets="@Style.css" text="Estadísticas por Torneo">
+                                             <styleClass>
+                                                <String fx:value="SmallLabel" />
+                                                <String fx:value="hbox-cute" />
+                                             </styleClass></Label>
+                                                        <TableView fx:id="tourneyStatsTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" styleClass="TableViewLightdBlue">
                                                             <columns>
                                                                 <TableColumn fx:id="tourneyStatsNameColumn" prefWidth="100.0" text="Torneo" />
                                                                 <TableColumn fx:id="tourneyStatsPointsColumn" prefWidth="80.0" text="Puntos" />
@@ -151,7 +164,11 @@
                                                                 <TableColumn fx:id="tourneyStatsRankingColumn" prefWidth="80.0" text="Ranking" />
                                                             </columns>
                                                         </TableView>
-                                                        <Label styleClass="SmallLabel" stylesheets="@Style.css" text="Puntos por Partido (por Torneo)" />
+                                                        <Label stylesheets="@Style.css" text="Puntos por Partido (por Torneo)">
+                                             <styleClass>
+                                                <String fx:value="SmallLabel" />
+                                                <String fx:value="hbox-cute" />
+                                             </styleClass></Label>
                                                         <ScrollPane fitToHeight="true" pannable="true">
                                                             <Canvas fx:id="tourneyPointsPerMatchCanvas" height="200.0" />
                                                         </ScrollPane>
