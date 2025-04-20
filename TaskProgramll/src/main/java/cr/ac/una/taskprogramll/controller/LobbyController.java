@@ -76,9 +76,10 @@ public class LobbyController extends Controller implements Initializable {
              case "Historial de Torneos":
             FlowController.getInstance().goViewInStage("TournamentHistory", (Stage) cmbMenu.getScene().getWindow());
             break;
-             case "HistorialEquipos":
-             FlowController.getInstance().goViewInStage("HistorialEquipos", (Stage) cmbMenu.getScene().getWindow());
+            case "HistorialEquipos":
+                  FlowController.getInstance().goViewInStage("HistorialEquipos", (Stage) cmbMenu.getScene().getWindow());
              break;
+             
             default:
                 throw new AssertionError();
         }

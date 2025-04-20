@@ -185,8 +185,6 @@ public class HistorialEquiposController extends Controller implements Initializa
 
         tourneyTable.getColumns().clear();
         tourneyTable.getColumns().addAll(tourneyIdColumn, tourneyNameColumn, tourneyMinutesColumn, tourneySportColumn, tourneyStateColumn, tourneyPositionColumn);
-
-        // Configurar columnas de tourneyStatsTable
         tourneyStatsNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         tourneyStatsPointsColumn.setCellValueFactory(cellData -> {
             Tourney tourney = (Tourney) cellData.getValue();
@@ -213,15 +211,12 @@ public class HistorialEquiposController extends Controller implements Initializa
     }
 
     private void loadData() {
-        // Inicializar lista de equipos si es nula
         if (AppContext.getInstance().get("teams") == null) {
             AppContext.getInstance().set("teams", new ArrayList<Team>());
         }
         @SuppressWarnings("unchecked")
         List<Team> teams = (List<Team>) AppContext.getInstance().get("teams");
         System.out.println("Equipos iniciales en AppContext: " + teams);
-
-        // Verificar y cargar equipos desde el archivo
         if (teams.isEmpty()) {
             File teamFile = new File("Team.txt");
             System.out.println("Ruta absoluta del archivo Team.txt: " + teamFile.getAbsolutePath());
@@ -233,7 +228,6 @@ public class HistorialEquiposController extends Controller implements Initializa
                 message.show(Alert.AlertType.WARNING, "Archivo vacío", "Team.txt está vacío.");
             } else {
                 try {
-                    // Deserializar directamente con fileManager
                     System.out.println("Deserializando Team.txt...");
                     List<Team> deserializedTeams = fileManager.deserialization("Team", Team.class);
                     if (deserializedTeams == null || deserializedTeams.isEmpty()) {
@@ -254,8 +248,6 @@ public class HistorialEquiposController extends Controller implements Initializa
         } else {
             System.out.println("Equipos ya cargados en AppContext: " + teams);
         }
-
-        // Actualizar availableTeams y teamTable
         availableTeams.clear();
         availableTeams.addAll(teams);
         teamTable.setItems(availableTeams);
@@ -267,30 +259,23 @@ public class HistorialEquiposController extends Controller implements Initializa
     }
 
 private void loadTourneys() {
-    // Inicializar la lista en AppContext si es nula
     if (AppContext.getInstance().get("tourneys") == null) {
         AppContext.getInstance().set("tourneys", new ArrayList<Tourney>());
     }
     @SuppressWarnings("unchecked")
     List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
-
-    // Verificar si el archivo Tourney.txt existe y tiene contenido
     File tourneyFile = new File("Tourney.txt");
     if (tourneyFile.exists() && tourneyFile.length() > 0) {
         try {
-            System.out.println("Deserializando Tourney.txt...");
-            
-            // Intentar deserializar el archivo
+            System.out.println("Intentando deserializar Tourney.txt...");
             List<Tourney> deserializedTourneys = fileManager.deserialization("Tourney", Tourney.class);
             if (deserializedTourneys == null || deserializedTourneys.isEmpty()) {
-                System.out.println("Deserialización de Tourney.txt devolvió null o lista vacía.");
+                System.out.println("Tourney.txt está vacío o deserialización falló.");
                 message.show(Alert.AlertType.WARNING, "Sin datos", "No se encontraron torneos en Tourney.txt.");
             } else {
-                // Limpiar y actualizar la lista de torneos
-                tourneys.clear();
                 tourneys.addAll(deserializedTourneys);
                 AppContext.getInstance().set("tourneys", tourneys);
-                System.out.println("Torneos cargados y añadidos a AppContext: " + tourneys.size());
+                System.out.println("Torneos deserializados y añadidos: " + tourneys.size());
             }
         } catch (Exception e) {
             System.out.println("Error al deserializar Tourney.txt: " + e.getMessage());
@@ -298,18 +283,15 @@ private void loadTourneys() {
             message.show(Alert.AlertType.ERROR, "Error al cargar torneos", "No se pudieron cargar los torneos: " + e.getMessage());
         }
     } else {
-        // Manejar el caso de archivo inexistente o vacío
-        System.out.println("Archivo Tourney.txt no existe o está vacío.");
+        System.out.println("Tourney.txt no existe o está vacío.");
         message.show(Alert.AlertType.WARNING, "Archivo no encontrado", "Tourney.txt no existe en el directorio raíz.");
     }
-
-    // Actualizar la lista disponible y la tabla en la interfaz
+    System.out.println("Actualizando availableTourneys...");
     availableTourneys.clear();
     availableTourneys.addAll(tourneys);
-    tourneyTable.setItems(FXCollections.observableArrayList(availableTourneys));
-    System.out.println("Items de tourneyTable después de cargar: " + tourneyTable.getItems().size());
 
-    // Mostrar advertencia si no hay datos en la tabla
+    System.out.println("Torneos en availableTourneys: " + availableTourneys);
+    tourneyTable.setItems(FXCollections.observableArrayList(availableTourneys));
     if (availableTourneys.isEmpty()) {
         System.out.println("No hay torneos para mostrar en tourneyTable.");
         message.show(Alert.AlertType.WARNING, "Lista vacía", "No hay torneos disponibles para mostrar.");
@@ -355,7 +337,6 @@ private void loadTourneys() {
             selectedTeam = newSelection;
             if (selectedTeam != null) {
                 selectedTeamLabel.setText(selectedTeam.getName());
-                // Filtrar torneos en los que participó el equipo seleccionado
                 ObservableList<Tourney> teamTourneys = FXCollections.observableArrayList();
                 for (Tourney tourney : availableTourneys) {
                     if (tourney.getTeamList().contains(selectedTeam) || tourney.getLoosersList().contains(selectedTeam)) {
@@ -402,10 +383,7 @@ private void loadTourneys() {
     }
 
     private void setupFilters() {
-        // Llenar teamFilter con los equipos disponibles
         teamFilter.setItems(availableTeams);
-
-        // Listener para teamSearch
         teamSearch.textProperty().addListener((obs, oldText, newText) -> {
             if (newText == null || newText.isEmpty()) {
                 teamFilter.setItems(availableTeams);
@@ -421,21 +399,13 @@ private void loadTourneys() {
             }
             applyFilters();
         });
-
-        // Listener para teamFilter
         teamFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldTeam, newTeam) -> {
             applyFilters();
         });
-
-        // Listener para sportFilter
         sportFilter.getSelectionModel().selectedItemProperty().addListener((obs, oldSport, newSport) -> {
             applyFilters();
         });
-
-        // Acción del botón searchButton
         searchButton.setOnAction(event -> applyFilters());
-
-        // Acción del botón clearButton
         clearButton.setOnAction(event -> {
             teamSearch.clear();
             teamFilter.getSelectionModel().clearSelection();
@@ -462,10 +432,9 @@ private void applyFilters() {
             team.getName().toLowerCase().contains(query) ||
             String.valueOf(team.getId()).equals(query);
         boolean matchesTeamFilter = selectedTeamFilter == null || team.equals(selectedTeamFilter);
-        boolean matchesSportFilter = true; // Por defecto, pasa si no hay deporte seleccionado
+        boolean matchesSportFilter = true; 
         if (selectedSport != null) {
             matchesSportFilter = false;
-            // Verificar si el equipo participa en algún torneo del deporte seleccionado
             for (Tourney tourney : availableTourneys) {
                 if ((tourney.getTeamList().contains(team) || tourney.getLoosersList().contains(team)) &&
                     tourney.getSportTypeId() == selectedSport.getId()) {
@@ -479,8 +448,6 @@ private void applyFilters() {
         }
     }
     teamTable.setItems(filteredTeams);
-
-    // No aplicamos filtros a tourneyTable aquí, se manejará en setupTeamSelectionListener
 }
 
     private void updateStatsLabels() {
@@ -490,16 +457,14 @@ private void applyFilters() {
             generalRankingLabel.setText("Ranking: -");
             return;
         }
-
-        // Calcular estadísticas totales
         int totalPoints = selectedTeam.getPoints();
-        int totalMatches = 0; // Necesitamos datos de partidos para esto
+        int totalMatches = 0; 
         List<Team> sortedTeams = new ArrayList<>(availableTeams);
         sortedTeams.sort((t1, t2) -> Integer.compare(t2.getPoints(), t1.getPoints()));
         int rank = sortedTeams.indexOf(selectedTeam) + 1;
 
         totalPointsLabel.setText("Puntos: " + totalPoints);
-        totalMatchesLabel.setText("Partidos: " + totalMatches); // Ajustar cuando tengamos datos de partidos
+        totalMatchesLabel.setText("Partidos: " + totalMatches);
         generalRankingLabel.setText("Ranking: " + rank);
     }
 
