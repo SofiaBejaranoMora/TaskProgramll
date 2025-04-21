@@ -17,11 +17,11 @@
     </stylesheets>
     <VBox fx:id="mapContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <HBox fx:id="row1" maxHeight="Infinity" minHeight="200.0" VBox.vgrow="ALWAYS">
-            <VBox fx:id="registro" alignment="CENTER" maxWidth="200.0" minWidth="150.0" HBox.hgrow="SOMETIMES">
-                <Label fx:id="registroLabel" text="Registro" styleClass="building-label" />
+            <VBox fx:id="historialEquipos" alignment="CENTER" maxWidth="200.0" minWidth="150.0" HBox.hgrow="SOMETIMES">
+                <Label fx:id="historialEquiposLabel" text="Historial Equipos" styleClass="building-label" />
                 <StackPane layoutX="15.0" layoutY="40.0">
-                    <Rectangle fx:id="registroHitbox" height="182.0" width="211.0" fill="transparent" />
-                    <ImageView fx:id="registroImage" fitHeight="164.0" fitWidth="225.0" preserveRatio="true" />
+                    <Rectangle fx:id="historialEquiposHitbox" height="182.0" width="211.0" fill="transparent" />
+                    <ImageView fx:id="historialEquiposImage" fitHeight="164.0" fitWidth="225.0" preserveRatio="true" />
                 </StackPane>
             </VBox>
             <Pane fx:id="path1" HBox.hgrow="ALWAYS" />
@@ -34,11 +34,11 @@
             </VBox>
         </HBox>
         <HBox fx:id="row2" maxHeight="Infinity" minHeight="200.0" VBox.vgrow="ALWAYS">
-            <VBox fx:id="mantenimiento" alignment="CENTER" maxWidth="200.0" minWidth="150.0" HBox.hgrow="SOMETIMES">
-                <Label fx:id="mantenimientoLabel" text="Mantenimiento" styleClass="building-label" />
+            <VBox fx:id="gomain" alignment="CENTER" maxWidth="200.0" minWidth="150.0" HBox.hgrow="SOMETIMES">
+                <Label fx:id="gomainLabel" text="Gomain" styleClass="building-label" />
                 <StackPane layoutX="15.0" layoutY="40.0">
-                    <Rectangle fx:id="mantenimientoHitbox" height="228.0" width="217.0" fill="transparent" />
-                    <ImageView fx:id="mantenimientoImage" fitHeight="229.0" fitWidth="228.0" preserveRatio="true" />
+                    <Rectangle fx:id="gomainHitbox" height="228.0" width="217.0" fill="transparent" />
+                    <ImageView fx:id="gomainImage" fitHeight="229.0" fitWidth="228.0" preserveRatio="true" />
                 </StackPane>
             </VBox>
             <Pane fx:id="mainPath" HBox.hgrow="ALWAYS" />
