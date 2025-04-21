@@ -177,10 +177,14 @@
                                                         </Label>
                                                         <ScrollPane fitToHeight="true" pannable="true">
                                                             <content>
-                                                                <Canvas fx:id="pointsPerMatchCanvas" height="200.0" />
+                                                                <VBox spacing="5.0">
+                                                                    <children>
+                                                                        <Canvas fx:id="pointsPerMatchCanvas" height="200.0" />
+                                                                        <VBox fx:id="pointsPerTourneyLegend" spacing="5.0" styleClass="hbox-cute" stylesheets="@Style.css" />
+                                                                    </children>
+                                                                </VBox>
                                                             </content>
                                                         </ScrollPane>
-                                                        <!-- Nueva gráfica de ranking global -->
                                                         <Label stylesheets="@Style.css" text="Ranking Global (Mismo Deporte)">
                                                             <styleClass>
                                                                 <String fx:value="SmallLabel" />
