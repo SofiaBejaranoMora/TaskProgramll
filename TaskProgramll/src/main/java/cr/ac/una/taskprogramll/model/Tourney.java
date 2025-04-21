@@ -12,7 +12,7 @@ import java.util.List;
 public class Tourney {
 
     private int id;
-    private String name; // Nuevo campo
+    private String name; 
     private int time;
     private int sportTypeId;
     private Game continueGame;
@@ -109,14 +109,57 @@ public class Tourney {
         this.sportTypeId = sportType;
     }
 
-    public void setTeamList(List<Team> teamList) {
-        if (teamList == null) {
+    public void setTeamList(List<Team> currentTeamList) {
+        FileManager fileManager = new FileManager();
+
+        if (currentTeamList == null) {
             this.teamList = new ArrayList<>();
-        } else {
-            this.teamList = new ArrayList<>(teamList);
+            try {
+                fileManager.serialization(this.teamList, "Teams");
+            } catch (Exception e) {
+                System.out.println("Error al serializar teamList (null): " + e.getMessage());
+            }
+            return;
+        }
+        List<Team> newTeamList = new ArrayList<>();
+
+        for (Team newTeam : currentTeamList) {
+            if (newTeam == null || newTeam.getId() <= 0) {
+                continue;
+            }
+
+            boolean found = false;
+            for (int i = 0; i < this.teamList.size(); i++) {
+                Team existingTeam = this.teamList.get(i);
+                if (existingTeam != null && existingTeam.getId() > 0 && existingTeam.getId() == newTeam.getId()) {
+                    if(existingTeam.getId()!=newTeam.getId()){
+                    this.teamList.set(i, newTeam);
+                }
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                newTeamList.add(newTeam);
+            }
+        }
+        this.teamList.addAll(newTeamList);
+        this.teamList.removeIf(existingTeam
+                -> existingTeam != null
+                && existingTeam.getId() > 0
+                && currentTeamList.stream().noneMatch(newTeam
+                        -> newTeam != null
+                && newTeam.getId() > 0
+                && newTeam.getId() == existingTeam.getId()
+                )
+        );
+        this.teamList.removeIf(team -> team != null && loosersList.contains(team));
+        try {
+            fileManager.serialization(this.teamList, "Teams");
+        } catch (Exception e) {
+            System.out.println("Error al serializar teamList: " + e.getMessage());
         }
     }
-
     public void addTeam(Team team) {
         if (team == null) {
             return;

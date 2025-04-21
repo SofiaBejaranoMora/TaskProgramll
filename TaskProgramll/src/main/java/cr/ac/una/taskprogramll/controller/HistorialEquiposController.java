@@ -171,8 +171,8 @@ public class HistorialEquiposController extends Controller implements Initializa
 
     public void initialize(URL url, ResourceBundle rb) {
         setupTableColumns();
-        loadData();     // Primero cargar equipos
-        loadTourneys(); // Luego cargar torneos
+        loadData(); 
+        loadTourneys(); 
         loadSports();
         setupTeamSelectionListener();
         setupTeamFilterDisplay();
@@ -180,7 +180,6 @@ public class HistorialEquiposController extends Controller implements Initializa
     }
 
     private void setupTableColumns() {
-        // Configurar columnas de teamTable
         TableColumn<Team, Integer> teamIdColumn = new TableColumn<>("ID");
         teamIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -199,7 +198,6 @@ public class HistorialEquiposController extends Controller implements Initializa
         teamTable.getColumns().clear();
         teamTable.getColumns().addAll(teamIdColumn, teamNameColumn, teamPointsColumn, teamRankingColumn);
 
-        // Configurar columnas de tourneyTable
         TableColumn<Tourney, Integer> tourneyIdColumn = new TableColumn<>("ID");
         tourneyIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         tourneyNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -236,7 +234,6 @@ public class HistorialEquiposController extends Controller implements Initializa
         tourneyTable.getColumns().clear();
         tourneyTable.getColumns().addAll(tourneyIdColumn, tourneyNameColumn, tourneyMinutesColumn, tourneySportColumn, tourneyStateColumn, tourneyPositionColumn);
 
-        // Configurar columnas de tourneyStatsTable con TourneyStats
         tourneyStatsNameColumn.setCellValueFactory(cellData -> cellData.getValue().tourneyNameProperty());
         tourneyStatsPointsColumn.setCellValueFactory(cellData -> cellData.getValue().pointsProperty().asObject());
         tourneyStatsGoalsColumn.setCellValueFactory(cellData -> cellData.getValue().goalsProperty().asObject());
@@ -342,7 +339,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             message.show(Alert.AlertType.WARNING, "Lista vacía", "No hay torneos disponibles para mostrar.");
         }
 
-        // Asegurarse de que AppContext.get("teams") esté inicializado
         if (AppContext.getInstance().get("teams") == null) {
             AppContext.getInstance().set("teams", new ArrayList<Team>());
         }
@@ -360,7 +356,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             allTeamsInTourney.addAll(game.getRound6());
             allTeamsInTourney.addAll(game.getWinner());
 
-            // Verificar que los equipos en el torneo estén en la lista de equipos
             for (Team team : allTeamsInTourney) {
                 if (!existingTeams.contains(team)) {
                     System.out.println("Equipo en torneo no está en AppContext teams: " + team.getName() + " (ID: " + team.getId() + ")");
@@ -368,7 +363,6 @@ public class HistorialEquiposController extends Controller implements Initializa
                 }
             }
         }
-        // Eliminar duplicados después de procesar los torneos
         Set<Team> uniqueTeams = new HashSet<>(existingTeams);
         existingTeams.clear();
         existingTeams.addAll(uniqueTeams);
@@ -444,7 +438,11 @@ public class HistorialEquiposController extends Controller implements Initializa
         teamFilter.setConverter(new StringConverter<Team>() {
             @Override
             public String toString(Team team) {
-                return team != null ? team.getName() : "";
+                if (team != null) {
+                    return team.getName();
+                } else {
+                    return "";
+                }
             }
 
             @Override
@@ -588,15 +586,13 @@ public class HistorialEquiposController extends Controller implements Initializa
     }
 
     private void globalTourneyPointsGraphic() {
-        // --- Gráfica: Puntos por Torneo (Global) ---
         GraphicsContext gcPoints = pointsPerMatchCanvas.getGraphicsContext2D();
         gcPoints.clearRect(0, 0, pointsPerMatchCanvas.getWidth(), pointsPerMatchCanvas.getHeight());
-        pointsPerTourneyLegend.getChildren().clear(); // Limpiar la leyenda
+        pointsPerTourneyLegend.getChildren().clear(); 
 
         List<String> tourneyNames = new ArrayList<>();
         List<Integer> tourneyPointsList = new ArrayList<>();
 
-        // Recolectar los nombres de los torneos y los puntos
         for (Tourney tourney : availableTourneys) {
             List<Team> allTeamsInTourney = new ArrayList<>();
             allTeamsInTourney.addAll(tourney.getTeamList());
@@ -611,7 +607,7 @@ public class HistorialEquiposController extends Controller implements Initializa
             allTeamsInTourney.addAll(game.getWinner());
 
             for (Team tourneyTeam : allTeamsInTourney) {
-                if (tourneyTeam.getId() == updatedTeam.getId()) { // Usar el campo de clase
+                if (tourneyTeam.getId() == updatedTeam.getId()) { 
                     int tourneyPoints = 0;
                     List<MatchDetails> matches = tourneyTeam.getEncounterList();
                     if (matches != null) {
@@ -647,7 +643,6 @@ public class HistorialEquiposController extends Controller implements Initializa
         maxPoints = Math.max(maxPoints, 1);
         double scale = 150.0 / maxPoints;
 
-        // Dibujar las barras y añadir la leyenda
         for (int index = 0; index < tourneyNames.size(); index++) {
             String tourneyName = tourneyNames.get(index);
             int points = tourneyPointsList.get(index);
@@ -660,7 +655,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             gcPoints.setFill(Color.BLACK);
             gcPoints.fillText(String.valueOf(points), x + barWidth / 2 - 10, 200 - barHeight - 10);
 
-            // Añadir el nombre del torneo y los puntos al VBox como leyenda
             Label legendLabel = new Label(tourneyName + ": " + points + " puntos");
             pointsPerTourneyLegend.getChildren().add(legendLabel);
         }
@@ -697,7 +691,7 @@ public class HistorialEquiposController extends Controller implements Initializa
             double barWidth = teamPoints * scaleRanking;
 
             if (barWidth < 5) {
-                barWidth = 5; // Ancho mínimo para que se vea
+                barWidth = 5;
             }
             if (team.getId() == updatedTeam.getId()) {
                 gcRanking.setFill(Color.GOLD);
@@ -718,8 +712,6 @@ public class HistorialEquiposController extends Controller implements Initializa
         }
 
         globalRankingCanvas.setHeight(Math.max(200, 20 + rankedTeams.size() * (barHeight + 10)));
-
-        // Forzar el renderizado del Canvas
         Platform.runLater(() -> {
             globalRankingCanvas.requestFocus();
             globalRankingCanvas.getParent().requestLayout();
@@ -832,7 +824,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             List<Integer> rounds = roundsPerTourney.get(i);
             List<Integer> goalsPerRound = goalsPerRoundPerTourney.get(i);
 
-            // Calcular la posición inicial y final del grupo de barras
             double startX = 20 + barIndex * (barWidthRound + 10);
             for (int j = 0; j < rounds.size(); j++) {
                 int goals = goalsPerRound.get(j);
@@ -844,7 +835,7 @@ public class HistorialEquiposController extends Controller implements Initializa
 
                 gcTourneyPoints.setFill(Color.GREEN);
                 double x = 20 + barIndex * (barWidthRound + 10);
-                double y = tourneyPointsPerMatchCanvas.getHeight() - barHeight - 30; // Dejar espacio para el título
+                double y = tourneyPointsPerMatchCanvas.getHeight() - barHeight - 30;
                 gcTourneyPoints.fillRect(x, y, barWidthRound, barHeight);
 
                 gcTourneyPoints.setFill(Color.BLACK);
@@ -856,17 +847,15 @@ public class HistorialEquiposController extends Controller implements Initializa
             }
             double endX = 20 + (barIndex - 1) * (barWidthRound + 10);
 
-            // Dibujar el nombre del torneo debajo del grupo de barras
             gcTourneyPoints.setFill(Color.BLACK);
-            double titleX = startX + (endX - startX) / 2 - (tourneyName.length() * 3); // Aproximar el centro
+            double titleX = startX + (endX - startX) / 2 - (tourneyName.length() * 3); 
             gcTourneyPoints.fillText(tourneyName, titleX, tourneyPointsPerMatchCanvas.getHeight() - 5);
 
-            // Añadir un espacio visual entre torneos
-            barIndex++; // Incrementar el índice para dejar un espacio
+            barIndex++; 
         }
 
         tourneyPointsPerMatchCanvas.setWidth(Math.max(300, 20 + (totalBars + tourneyNames.size()) * (barWidthRound + 10)));
-        tourneyPointsPerMatchCanvas.setHeight(230); // Aumentar la altura para el título
+        tourneyPointsPerMatchCanvas.setHeight(230); 
 
         Platform.runLater(() -> {
             tourneyPointsPerMatchCanvas.requestFocus();
@@ -883,11 +872,11 @@ public class HistorialEquiposController extends Controller implements Initializa
             generalRankingLabel.setText("Ranking General: N/A");
             tournamentsLabel.setText("Torneos Participados: 0");
             clearCanvases();
-            updatedTeam = null; // Asegurarnos de limpiar el campo
+            updatedTeam = null;
             return;
         }
 
-        updatedTeam = findUpdatedTeamInTourneys(selectedTeam); // Asignar al campo de clase
+        updatedTeam = findUpdatedTeamInTourneys(selectedTeam); 
         if (updatedTeam == null) {
             System.out.println("Equipo no encontrado en torneos para actualizar el tab de estadísticas.");
             tourneyStatsTable.getItems().clear();
@@ -896,20 +885,18 @@ public class HistorialEquiposController extends Controller implements Initializa
             generalRankingLabel.setText("Ranking General: N/A");
             tournamentsLabel.setText("Torneos Participados: 0");
             clearCanvases();
-            updatedTeam = null; // Asegurarnos de limpiar el campo
+            updatedTeam = null;
             return;
         }
 
         System.out.println("Actualizando tab de estadísticas para el equipo: " + updatedTeam.getName());
 
-        // --- Estadísticas Generales ---
         int totalPoints = calculateGlobalPoints(updatedTeam);
         totalPointsLabel.setText("Puntos Totales: " + totalPoints);
 
         int totalMatches = updatedTeam.getEncounterList() != null ? updatedTeam.getEncounterList().size() : 0;
         totalMatchesLabel.setText("Partidos Jugados: " + totalMatches);
 
-        // Cantidad de torneos participados
         Set<String> tournamentsParticipated = new HashSet<>();
         for (Tourney tourney : availableTourneys) {
             List<Team> allTeamsInTourney = new ArrayList<>();
@@ -930,7 +917,6 @@ public class HistorialEquiposController extends Controller implements Initializa
         }
         tournamentsLabel.setText("Torneos Participados: " + tournamentsParticipated.size());
 
-        // Ranking global mejorado (para el mismo deporte)
         List<Team> allTeamsInSport = new ArrayList<>();
         for (Tourney tourney : availableTourneys) {
             if (tourney.getSportTypeId() == updatedTeam.getIdSportType()) {
@@ -949,7 +935,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             }
         }
 
-        // Evitar duplicados sin usar Map
         List<Team> uniqueTeams = new ArrayList<>();
         List<Integer> teamIds = new ArrayList<>();
         for (Team team : allTeamsInSport) {
@@ -971,11 +956,9 @@ public class HistorialEquiposController extends Controller implements Initializa
         }
         generalRankingLabel.setText("Ranking General: " + globalRanking + " de " + rankedTeams.size());
 
-        // Actualizar las gráficas
         globalTourneyPointsGraphic();
         globalSportRankingGraphic(rankedTeams);
 
-        // --- Estadísticas por Torneo (Tabla) ---
         tourneyStatsTable.getItems().clear();
         for (Tourney tourney : availableTourneys) {
             List<Team> allTeamsInTourney = new ArrayList<>();
@@ -1033,8 +1016,6 @@ public class HistorialEquiposController extends Controller implements Initializa
                 }
             }
         }
-
-        // Actualizar la gráfica de goles por ronda
         tourneyGoalsPerRoundGraphic();
     }
     
@@ -1209,7 +1190,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             }
         }
 
-        // Dibujar en matchGoalsCanvas (gráfico de pastel: goles por ronda)
         GraphicsContext gcGoals = matchGoalsCanvas.getGraphicsContext2D();
         gcGoals.clearRect(0, 0, matchGoalsCanvas.getWidth(), matchGoalsCanvas.getHeight());
         double width = matchGoalsCanvas.getWidth();
