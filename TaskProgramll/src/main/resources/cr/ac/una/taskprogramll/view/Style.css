@@ -133,8 +133,8 @@
 }
 
 .mfx-text-field {
-    -mfx-main: #00cc99;
-    -fx-prompt-text-fill: #0099cc;
+    -mfx-main: #9999ff;
+    -fx-prompt-text-fill: #333333;
     -mfx-float-mode: BORDER;
     -fx-font-size: 12px;
     -fx-min-height: 20px;

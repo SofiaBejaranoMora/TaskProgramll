@@ -25,6 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -71,6 +72,8 @@ public class GameController extends Controller implements Initializable {
     private ImageView mgvCoin;
     @FXML
     private StackPane stpDraw;
+    @FXML
+    private VBox txfNumberTeam;
     
     @FXML
     void onDragDetectedMgvBall(MouseEvent event) {
@@ -106,20 +109,6 @@ public class GameController extends Controller implements Initializable {
 
             });
         }
-    }
-    
-    @FXML
-    private void onMousePressedMgvCoin(MouseEvent event) {
-
-        ncpRoot.setOnMousePressed((pressEvent) -> {
-                   Bounds firstTeamBounds = mgvFirstTeam.localToScene(mgvFirstTeam.getBoundsInLocal());
-        Bounds secondTeamBounds = mgvSecondTeam.localToScene(mgvSecondTeam.getBoundsInLocal());
-        if (firstTeamBounds.contains(pressEvent.getSceneX(), pressEvent.getSceneY())) {
-                drawAnimatic(1);
-            } else if (secondTeamBounds.contains(pressEvent.getSceneX(), pressEvent.getSceneY())) {
-                drawAnimatic(2);
-            }
-        });
     }
 
     @FXML
