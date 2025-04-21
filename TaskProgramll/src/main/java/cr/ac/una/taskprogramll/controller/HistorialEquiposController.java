@@ -638,9 +638,7 @@ public class HistorialEquiposController extends Controller implements Initializa
         maxPointsRanking = Math.max(maxPointsRanking, 1);
         double scaleRanking = 200.0 / maxPointsRanking;
 
-        // Añadir un fondo para confirmar que el Canvas se renderiza
-        gcRanking.setFill(Color.LIGHTGRAY);
-        gcRanking.fillRect(0, 0, globalRankingCanvas.getWidth(), globalRankingCanvas.getHeight());
+       
 
         int barIndex = 0;
         for (Team team : rankedTeams) {
@@ -773,9 +771,7 @@ public class HistorialEquiposController extends Controller implements Initializa
         maxGoals = Math.max(maxGoals, 1);
         double scaleGoals = 150.0 / maxGoals;
 
-        // Añadir un fondo para confirmar que el Canvas se renderiza
-        gcTourneyPoints.setFill(Color.LIGHTGRAY);
-        gcTourneyPoints.fillRect(0, 0, tourneyPointsPerMatchCanvas.getWidth(), tourneyPointsPerMatchCanvas.getHeight());
+      
 
         int barIndex = 0;
         for (int i = 0; i < tourneyNames.size(); i++) {
