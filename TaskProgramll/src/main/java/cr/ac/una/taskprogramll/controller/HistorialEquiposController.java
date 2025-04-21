@@ -116,12 +116,15 @@ public class HistorialEquiposController extends Controller implements Initializa
     @FXML
     private Canvas globalRankingCanvas; // Nuevo Canvas para la gráfica de ranking global
 
+    private Team updatedTeam;
     private Team selectedTeam;
     private final Mensaje message = new Mensaje();
     private FileManager fileManager = new FileManager();
     private ObservableList<Team> availableTeams = FXCollections.observableArrayList();
     private ObservableList<Tourney> availableTourneys = FXCollections.observableArrayList();
     private final List<Sport> sportList = new ArrayList<>();
+    @FXML
+    private VBox pointsPerTourneyLegend;
 
     /**
      * Clase auxiliar para la tabla de estadísticas por torneo
@@ -529,6 +532,241 @@ public class HistorialEquiposController extends Controller implements Initializa
         return totalPoints;
     }
 
+    private void globalTourneyPointsGraphic() {
+        // --- Gráfica: Puntos por Torneo (Global) ---
+        GraphicsContext gcPoints = pointsPerMatchCanvas.getGraphicsContext2D();
+        gcPoints.clearRect(0, 0, pointsPerMatchCanvas.getWidth(), pointsPerMatchCanvas.getHeight());
+        pointsPerTourneyLegend.getChildren().clear(); // Limpiar la leyenda
+
+        List<String> tourneyNames = new ArrayList<>();
+        List<Integer> tourneyPointsList = new ArrayList<>();
+
+        // Recolectar los nombres de los torneos y los puntos
+        for (Tourney tourney : availableTourneys) {
+            List<Team> allTeamsInTourney = new ArrayList<>();
+            allTeamsInTourney.addAll(tourney.getTeamList());
+            allTeamsInTourney.addAll(tourney.getLoosersList());
+            Game game = tourney.getContinueGame();
+            allTeamsInTourney.addAll(game.getRound1());
+            allTeamsInTourney.addAll(game.getRound2());
+            allTeamsInTourney.addAll(game.getRound3());
+            allTeamsInTourney.addAll(game.getRound4());
+            allTeamsInTourney.addAll(game.getRound5());
+            allTeamsInTourney.addAll(game.getRound6());
+            allTeamsInTourney.addAll(game.getWinner());
+
+            for (Team tourneyTeam : allTeamsInTourney) {
+                if (tourneyTeam.getId() == updatedTeam.getId()) { // Usar el campo de clase
+                    int tourneyPoints = 0;
+                    List<MatchDetails> matches = tourneyTeam.getEncounterList();
+                    if (matches != null) {
+                        for (MatchDetails match : matches) {
+                            if (match.getNameFirstTeam().equals(tourneyTeam.getName())) {
+                                int teamGoals = match.getCounterFirstTeamGoals();
+                                int opponentGoals = match.getCounterSecondTeamGoals();
+                                boolean isDraw = match.isDraw();
+                                tourneyPoints += teamGoals;
+                                if (isDraw) {
+                                    tourneyPoints += 1;
+                                } else if (teamGoals > opponentGoals) {
+                                    tourneyPoints += 3;
+                                }
+                            }
+                        }
+                    }
+                    tourneyNames.add(tourney.getName());
+                    tourneyPointsList.add(tourneyPoints);
+                    break;
+                }
+            }
+        }
+
+        // Calcular el máximo para la escala
+        double barWidth = 50;
+        double maxPoints = 1;
+        for (int points : tourneyPointsList) {
+            if (points > maxPoints) {
+                maxPoints = points;
+            }
+        }
+        maxPoints = Math.max(maxPoints, 1);
+        double scale = 150.0 / maxPoints;
+
+        // Dibujar las barras y añadir la leyenda
+        for (int index = 0; index < tourneyNames.size(); index++) {
+            String tourneyName = tourneyNames.get(index);
+            int points = tourneyPointsList.get(index);
+            double barHeight = points * scale;
+
+            gcPoints.setFill(Color.PURPLE);
+            double x = 20 + index * (barWidth + 10);
+            gcPoints.fillRect(x, 200 - barHeight, barWidth, barHeight);
+
+            gcPoints.setFill(Color.BLACK);
+            gcPoints.fillText(String.valueOf(points), x + barWidth / 2 - 10, 200 - barHeight - 10);
+
+            // Añadir el nombre del torneo y los puntos al VBox como leyenda
+            Label legendLabel = new Label(tourneyName + ": " + points + " puntos");
+            pointsPerTourneyLegend.getChildren().add(legendLabel);
+        }
+
+        pointsPerMatchCanvas.setWidth(20 + tourneyNames.size() * (barWidth + 10));
+    }
+    
+    private void globalSportRankingGraphic(List<Team> rankedTeams) {
+        // --- Gráfica: Ranking Global (Mismo Deporte) ---
+        GraphicsContext gcRanking = globalRankingCanvas.getGraphicsContext2D();
+        gcRanking.clearRect(0, 0, globalRankingCanvas.getWidth(), globalRankingCanvas.getHeight());
+
+        if (rankedTeams.isEmpty()) {
+            gcRanking.setFill(Color.BLACK);
+            gcRanking.fillText("No hay equipos en este deporte", 20, 100);
+        } else {
+            double barHeight = 30;
+            double maxPointsRanking = 1;
+            for (Team team : rankedTeams) {
+                int teamPoints = calculateGlobalPoints(team);
+                if (teamPoints > maxPointsRanking) {
+                    maxPointsRanking = teamPoints;
+                }
+            }
+            maxPointsRanking = Math.max(maxPointsRanking, 1);
+            double scaleRanking = 200.0 / maxPointsRanking;
+
+            int barIndex = 0;
+            for (Team team : rankedTeams) {
+                int teamPoints = calculateGlobalPoints(team);
+                double barWidth = teamPoints * scaleRanking;
+
+                if (team.getId() == updatedTeam.getId()) { // Usar el campo de clase
+                    gcRanking.setFill(Color.GOLD);
+                } else {
+                    gcRanking.setFill(Color.LIGHTBLUE);
+                }
+
+                double y = 20 + barIndex * (barHeight + 10);
+                gcRanking.fillRect(20, y, barWidth, barHeight);
+
+                gcRanking.setFill(Color.BLACK);
+                gcRanking.fillText(team.getName() + ": " + teamPoints + " (Posición " + (barIndex + 1) + ")", 25, y + barHeight / 2 + 5);
+
+                barIndex++;
+            }
+
+            globalRankingCanvas.setHeight(20 + rankedTeams.size() * (barHeight + 10));
+        }
+    }
+    
+    private void tourneyGoalsPerRoundGraphic() {
+        // --- Gráfica: Goles por Ronda (por Torneo) ---
+        GraphicsContext gcTourneyPoints = tourneyPointsPerMatchCanvas.getGraphicsContext2D();
+        gcTourneyPoints.clearRect(0, 0, tourneyPointsPerMatchCanvas.getWidth(), tourneyPointsPerMatchCanvas.getHeight());
+
+        // Listas para almacenar torneos, rondas y goles
+        List<String> tourneyNames = new ArrayList<>();
+        List<List<Integer>> roundsPerTourney = new ArrayList<>(); // Lista de rondas por torneo
+        List<List<Integer>> goalsPerRoundPerTourney = new ArrayList<>(); // Lista de goles por ronda por torneo
+
+        for (Tourney tourney : availableTourneys) {
+            List<Team> allTeamsInTourney = new ArrayList<>();
+            allTeamsInTourney.addAll(tourney.getTeamList());
+            allTeamsInTourney.addAll(tourney.getLoosersList());
+            Game game = tourney.getContinueGame();
+            allTeamsInTourney.addAll(game.getRound1());
+            allTeamsInTourney.addAll(game.getRound2());
+            allTeamsInTourney.addAll(game.getRound3());
+            allTeamsInTourney.addAll(game.getRound4());
+            allTeamsInTourney.addAll(game.getRound5());
+            allTeamsInTourney.addAll(game.getRound6());
+            allTeamsInTourney.addAll(game.getWinner());
+
+            for (Team tourneyTeam : allTeamsInTourney) {
+                if (tourneyTeam.getId() == updatedTeam.getId()) { // Usar el campo de clase
+                    List<Integer> rounds = new ArrayList<>();
+                    List<Integer> goalsPerRound = new ArrayList<>();
+                    List<MatchDetails> matches = tourneyTeam.getEncounterList();
+                    if (matches != null) {
+                        int matchIndex = 0;
+                        int matchesPerRound = tourney.getTeamList().size() / 2;
+                        if (matchesPerRound <= 0) {
+                            matchesPerRound = 1;
+                        }
+
+                        int currentRound = 1;
+                        int goalsInCurrentRound = 0;
+                        for (MatchDetails match : matches) {
+                            int teamGoals = match.getNameFirstTeam().equals(tourneyTeam.getName())
+                                    ? match.getCounterFirstTeamGoals() : match.getCounterSecondTeamGoals();
+                            int matchRound = (matchIndex / matchesPerRound) + 1;
+
+                            if (matchRound != currentRound) {
+                                rounds.add(currentRound);
+                                goalsPerRound.add(goalsInCurrentRound);
+                                goalsInCurrentRound = 0;
+                                currentRound = matchRound;
+                            }
+                            goalsInCurrentRound += teamGoals;
+                            matchIndex++;
+                        }
+                        // Añadir la última ronda
+                        if (goalsInCurrentRound > 0 || matchIndex > 0) {
+                            rounds.add(currentRound);
+                            goalsPerRound.add(goalsInCurrentRound);
+                        }
+                    }
+                    tourneyNames.add(tourney.getName());
+                    roundsPerTourney.add(rounds);
+                    goalsPerRoundPerTourney.add(goalsPerRound);
+                    break;
+                }
+            }
+        }
+
+        // Calcular el total de barras y el máximo de goles
+        double barWidthRound = 30;
+        int totalBars = 0;
+        for (List<Integer> rounds : roundsPerTourney) {
+            totalBars += rounds.size();
+        }
+
+        double maxGoals = 1;
+        for (List<Integer> goalsPerRound : goalsPerRoundPerTourney) {
+            for (int goals : goalsPerRound) {
+                if (goals > maxGoals) {
+                    maxGoals = goals;
+                }
+            }
+        }
+        maxGoals = Math.max(maxGoals, 1);
+        double scaleGoals = 150.0 / maxGoals;
+
+        // Dibujar las barras
+        int barIndex = 0;
+        for (int i = 0; i < tourneyNames.size(); i++) {
+            String tourneyName = tourneyNames.get(i);
+            List<Integer> rounds = roundsPerTourney.get(i);
+            List<Integer> goalsPerRound = goalsPerRoundPerTourney.get(i);
+
+            for (int j = 0; j < rounds.size(); j++) {
+                int round = rounds.get(j);
+                int goals = goalsPerRound.get(j);
+                double barHeight = goals * scaleGoals;
+
+                gcTourneyPoints.setFill(Color.GREEN);
+                double x = 20 + barIndex * (barWidthRound + 10);
+                gcTourneyPoints.fillRect(x, 200 - barHeight, barWidthRound, barHeight);
+
+                gcTourneyPoints.setFill(Color.BLACK);
+                gcTourneyPoints.fillText(tourneyName + " R" + round, x, 220);
+                gcTourneyPoints.fillText(String.valueOf(goals), x + barWidthRound / 2 - 10, 200 - barHeight - 10);
+
+                barIndex++;
+            }
+        }
+
+        tourneyPointsPerMatchCanvas.setWidth(20 + totalBars * (barWidthRound + 10));
+    }
+    
     private void updateStatsTab() {
         if (selectedTeam == null) {
             System.out.println("No hay equipo seleccionado para actualizar el tab de estadísticas.");
@@ -538,10 +776,11 @@ public class HistorialEquiposController extends Controller implements Initializa
             generalRankingLabel.setText("Ranking General: N/A");
             tournamentsLabel.setText("Torneos Participados: 0");
             clearCanvases();
+            updatedTeam = null; // Asegurarnos de limpiar el campo
             return;
         }
 
-        Team updatedTeam = findUpdatedTeamInTourneys(selectedTeam);
+        updatedTeam = findUpdatedTeamInTourneys(selectedTeam); // Asignar al campo de clase
         if (updatedTeam == null) {
             System.out.println("Equipo no encontrado en torneos para actualizar el tab de estadísticas.");
             tourneyStatsTable.getItems().clear();
@@ -550,6 +789,7 @@ public class HistorialEquiposController extends Controller implements Initializa
             generalRankingLabel.setText("Ranking General: N/A");
             tournamentsLabel.setText("Torneos Participados: 0");
             clearCanvases();
+            updatedTeam = null; // Asegurarnos de limpiar el campo
             return;
         }
 
@@ -602,11 +842,17 @@ public class HistorialEquiposController extends Controller implements Initializa
             }
         }
 
-        Map<Integer, Team> uniqueTeams = new HashMap<>();
+        // Evitar duplicados sin usar Map
+        List<Team> uniqueTeams = new ArrayList<>();
+        List<Integer> teamIds = new ArrayList<>();
         for (Team team : allTeamsInSport) {
-            uniqueTeams.putIfAbsent(team.getId(), team);
+            if (!teamIds.contains(team.getId())) {
+                teamIds.add(team.getId());
+                uniqueTeams.add(team);
+            }
         }
-        List<Team> rankedTeams = new ArrayList<>(uniqueTeams.values());
+
+        List<Team> rankedTeams = new ArrayList<>(uniqueTeams);
         rankedTeams.sort((t1, t2) -> Integer.compare(calculateGlobalPoints(t2), calculateGlobalPoints(t1)));
 
         int globalRanking = 1;
@@ -618,113 +864,9 @@ public class HistorialEquiposController extends Controller implements Initializa
         }
         generalRankingLabel.setText("Ranking General: " + globalRanking + " de " + rankedTeams.size());
 
-        // --- Gráfica: Puntos por Torneo (Global) ---
-        GraphicsContext gcPoints = pointsPerMatchCanvas.getGraphicsContext2D();
-        gcPoints.clearRect(0, 0, pointsPerMatchCanvas.getWidth(), pointsPerMatchCanvas.getHeight());
-
-        Map<String, Integer> pointsPerTourney = new HashMap<>();
-        for (Tourney tourney : availableTourneys) {
-            List<Team> allTeamsInTourney = new ArrayList<>();
-            allTeamsInTourney.addAll(tourney.getTeamList());
-            allTeamsInTourney.addAll(tourney.getLoosersList());
-            Game game = tourney.getContinueGame();
-            allTeamsInTourney.addAll(game.getRound1());
-            allTeamsInTourney.addAll(game.getRound2());
-            allTeamsInTourney.addAll(game.getRound3());
-            allTeamsInTourney.addAll(game.getRound4());
-            allTeamsInTourney.addAll(game.getRound5());
-            allTeamsInTourney.addAll(game.getRound6());
-            allTeamsInTourney.addAll(game.getWinner());
-
-            for (Team tourneyTeam : allTeamsInTourney) {
-                if (tourneyTeam.getId() == updatedTeam.getId()) {
-                    int tourneyPoints = 0;
-                    List<MatchDetails> matches = tourneyTeam.getEncounterList();
-                    if (matches != null) {
-                        for (MatchDetails match : matches) {
-                            if (match.getNameFirstTeam().equals(tourneyTeam.getName())) {
-                                int teamGoals = match.getCounterFirstTeamGoals();
-                                int opponentGoals = match.getCounterSecondTeamGoals();
-                                boolean isDraw = match.isDraw();
-                                tourneyPoints += teamGoals;
-                                if (isDraw) {
-                                    tourneyPoints += 1;
-                                } else if (teamGoals > opponentGoals) {
-                                    tourneyPoints += 3;
-                                }
-                            }
-                        }
-                    }
-                    pointsPerTourney.put(tourney.getName(), tourneyPoints);
-                    break;
-                }
-            }
-        }
-
-        double barWidth = 50;
-        double maxPoints = pointsPerTourney.values().stream().mapToInt(Integer::intValue).max().orElse(1);
-        maxPoints = Math.max(maxPoints, 1);
-        double scale = 150.0 / maxPoints;
-        int index = 0;
-
-        for (Map.Entry<String, Integer> entry : pointsPerTourney.entrySet()) {
-            String tourneyName = entry.getKey();
-            int points = entry.getValue();
-            double barHeight = points * scale;
-
-            gcPoints.setFill(Color.PURPLE);
-            double x = 20 + index * (barWidth + 10);
-            gcPoints.fillRect(x, 200 - barHeight, barWidth, barHeight);
-
-            gcPoints.setFill(Color.BLACK);
-            gcPoints.fillText(tourneyName, x, 220);
-            gcPoints.fillText(String.valueOf(points), x + barWidth / 2 - 10, 200 - barHeight - 10);
-
-            index++;
-        }
-
-        pointsPerMatchCanvas.setWidth(20 + pointsPerTourney.size() * (barWidth + 10));
-
-        // --- Nueva Gráfica: Ranking Global (Mismo Deporte) ---
-        GraphicsContext gcRanking = globalRankingCanvas.getGraphicsContext2D();
-        gcRanking.clearRect(0, 0, globalRankingCanvas.getWidth(), globalRankingCanvas.getHeight());
-
-        if (rankedTeams.isEmpty()) {
-            gcRanking.setFill(Color.BLACK);
-            gcRanking.fillText("No hay equipos en este deporte", 20, 100);
-        } else {
-            double barHeight = 30;
-            double maxPointsRanking = rankedTeams.stream()
-                    .mapToInt(this::calculateGlobalPoints)
-                    .max()
-                    .orElse(1);
-            maxPointsRanking = Math.max(maxPointsRanking, 1);
-            double scaleRanking = 200.0 / maxPointsRanking; // Escala para el ancho de las barras
-
-            int barIndex = 0;
-            for (Team team : rankedTeams) {
-                int teamPoints = calculateGlobalPoints(team);
-                double barWidth2;
-                barWidth2 = teamPoints * scaleRanking;
-
-                // Usar un color diferente para el equipo seleccionado
-                if (team.getId() == updatedTeam.getId()) {
-                    gcRanking.setFill(Color.GOLD); // Resaltar el equipo seleccionado
-                } else {
-                    gcRanking.setFill(Color.LIGHTBLUE);
-                }
-
-                double y = 20 + barIndex * (barHeight + 10);
-                gcRanking.fillRect(20, y, barWidth, barHeight);
-
-                gcRanking.setFill(Color.BLACK);
-                gcRanking.fillText(team.getName() + ": " + teamPoints + " (Posición " + (barIndex + 1) + ")", 25, y + barHeight / 2 + 5);
-
-                barIndex++;
-            }
-
-            globalRankingCanvas.setHeight(20 + rankedTeams.size() * (barHeight + 10));
-        }
+        // Actualizar las gráficas
+        globalTourneyPointsGraphic();
+        globalSportRankingGraphic(rankedTeams);
 
         // --- Estadísticas por Torneo (Tabla) ---
         tourneyStatsTable.getItems().clear();
@@ -785,83 +927,10 @@ public class HistorialEquiposController extends Controller implements Initializa
             }
         }
 
-        // --- Gráfica: Goles por Ronda (por Torneo) ---
-        GraphicsContext gcTourneyPoints = tourneyPointsPerMatchCanvas.getGraphicsContext2D();
-        gcTourneyPoints.clearRect(0, 0, tourneyPointsPerMatchCanvas.getWidth(), tourneyPointsPerMatchCanvas.getHeight());
-
-        Map<String, Map<Integer, Integer>> goalsPerRoundPerTourney = new HashMap<>();
-        for (Tourney tourney : availableTourneys) {
-            List<Team> allTeamsInTourney = new ArrayList<>();
-            allTeamsInTourney.addAll(tourney.getTeamList());
-            allTeamsInTourney.addAll(tourney.getLoosersList());
-            Game game = tourney.getContinueGame();
-            allTeamsInTourney.addAll(game.getRound1());
-            allTeamsInTourney.addAll(game.getRound2());
-            allTeamsInTourney.addAll(game.getRound3());
-            allTeamsInTourney.addAll(game.getRound4());
-            allTeamsInTourney.addAll(game.getRound5());
-            allTeamsInTourney.addAll(game.getRound6());
-            allTeamsInTourney.addAll(game.getWinner());
-
-            for (Team tourneyTeam : allTeamsInTourney) {
-                if (tourneyTeam.getId() == updatedTeam.getId()) {
-                    Map<Integer, Integer> goalsPerRound = new TreeMap<>();
-                    List<MatchDetails> matches = tourneyTeam.getEncounterList();
-                    if (matches != null) {
-                        int matchIndex = 0;
-                        int matchesPerRound = tourney.getTeamList().size() / 2;
-                        if (matchesPerRound <= 0) {
-                            matchesPerRound = 1;
-                        }
-
-                        for (MatchDetails match : matches) {
-                            int teamGoals = match.getNameFirstTeam().equals(tourneyTeam.getName())
-                                    ? match.getCounterFirstTeamGoals() : match.getCounterSecondTeamGoals();
-                            int matchRound = (matchIndex / matchesPerRound) + 1;
-                            goalsPerRound.merge(matchRound, teamGoals, Integer::sum);
-                            matchIndex++;
-                        }
-                    }
-                    goalsPerRoundPerTourney.put(tourney.getName(), goalsPerRound);
-                    break;
-                }
-            }
-        }
-
-        double barWidthRound = 30;
-        int totalBars = goalsPerRoundPerTourney.values().stream().mapToInt(Map::size).sum();
-        double maxGoals = goalsPerRoundPerTourney.values().stream()
-                .flatMap(m -> m.values().stream())
-                .mapToInt(Integer::intValue)
-                .max().orElse(1);
-        maxGoals = Math.max(maxGoals, 1);
-        double scaleGoals = 150.0 / maxGoals;
-        int barIndex = 0;
-
-        for (Map.Entry<String, Map<Integer, Integer>> tourneyEntry : goalsPerRoundPerTourney.entrySet()) {
-            String tourneyName = tourneyEntry.getKey();
-            Map<Integer, Integer> goalsPerRound = tourneyEntry.getValue();
-
-            for (Map.Entry<Integer, Integer> roundEntry : goalsPerRound.entrySet()) {
-                int round = roundEntry.getKey();
-                int goals = roundEntry.getValue();
-                double barHeight = goals * scaleGoals;
-
-                gcTourneyPoints.setFill(Color.GREEN);
-                double x = 20 + barIndex * (barWidthRound + 10);
-                gcTourneyPoints.fillRect(x, 200 - barHeight, barWidthRound, barHeight);
-
-                gcTourneyPoints.setFill(Color.BLACK);
-                gcTourneyPoints.fillText(tourneyName + " R" + round, x, 220);
-                gcTourneyPoints.fillText(String.valueOf(goals), x + barWidthRound / 2 - 10, 200 - barHeight - 10);
-
-                barIndex++;
-            }
-        }
-
-        tourneyPointsPerMatchCanvas.setWidth(20 + totalBars * (barWidthRound + 10));
+        // Actualizar la gráfica de goles por ronda
+        tourneyGoalsPerRoundGraphic();
     }
-
+    
     private void updateMatchAccordion() {
         matchAccordion.getPanes().clear();
         if (selectedTeam == null) {
