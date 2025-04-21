@@ -638,9 +638,7 @@ public class HistorialEquiposController extends Controller implements Initializa
         maxPointsRanking = Math.max(maxPointsRanking, 1);
         double scaleRanking = 200.0 / maxPointsRanking;
 
-        // Añadir un fondo para confirmar que el Canvas se renderiza
-        gcRanking.setFill(Color.LIGHTGRAY);
-        gcRanking.fillRect(0, 0, globalRankingCanvas.getWidth(), globalRankingCanvas.getHeight());
+       
 
         int barIndex = 0;
         for (Team team : rankedTeams) {
@@ -773,42 +771,48 @@ public class HistorialEquiposController extends Controller implements Initializa
         maxGoals = Math.max(maxGoals, 1);
         double scaleGoals = 150.0 / maxGoals;
 
-        // Añadir un fondo para confirmar que el Canvas se renderiza
-        gcTourneyPoints.setFill(Color.LIGHTGRAY);
-        gcTourneyPoints.fillRect(0, 0, tourneyPointsPerMatchCanvas.getWidth(), tourneyPointsPerMatchCanvas.getHeight());
-
         int barIndex = 0;
         for (int i = 0; i < tourneyNames.size(); i++) {
             String tourneyName = tourneyNames.get(i);
             List<Integer> rounds = roundsPerTourney.get(i);
             List<Integer> goalsPerRound = goalsPerRoundPerTourney.get(i);
 
+            // Calcular la posición inicial y final del grupo de barras
+            double startX = 20 + barIndex * (barWidthRound + 10);
             for (int j = 0; j < rounds.size(); j++) {
-                int round = rounds.get(j);
                 int goals = goalsPerRound.get(j);
                 double barHeight = goals * scaleGoals;
 
                 if (barHeight < 5) {
-                    barHeight = 5; // Altura mínima para que se vea
+                    barHeight = 5;
                 }
+
                 gcTourneyPoints.setFill(Color.GREEN);
                 double x = 20 + barIndex * (barWidthRound + 10);
-                double y = tourneyPointsPerMatchCanvas.getHeight() - barHeight;
+                double y = tourneyPointsPerMatchCanvas.getHeight() - barHeight - 30; // Dejar espacio para el título
                 gcTourneyPoints.fillRect(x, y, barWidthRound, barHeight);
 
                 gcTourneyPoints.setFill(Color.BLACK);
-                gcTourneyPoints.fillText(tourneyName + " R" + round, x, tourneyPointsPerMatchCanvas.getHeight() + 20);
                 gcTourneyPoints.fillText(String.valueOf(goals), x + barWidthRound / 2 - 10, y - 10);
 
                 System.out.println("Barra " + (barIndex + 1) + ": x=" + x + ", y=" + y + ", ancho=" + barWidthRound + ", alto=" + barHeight);
 
                 barIndex++;
             }
+            double endX = 20 + (barIndex - 1) * (barWidthRound + 10);
+
+            // Dibujar el nombre del torneo debajo del grupo de barras
+            gcTourneyPoints.setFill(Color.BLACK);
+            double titleX = startX + (endX - startX) / 2 - (tourneyName.length() * 3); // Aproximar el centro
+            gcTourneyPoints.fillText(tourneyName, titleX, tourneyPointsPerMatchCanvas.getHeight() - 5);
+
+            // Añadir un espacio visual entre torneos
+            barIndex++; // Incrementar el índice para dejar un espacio
         }
 
-        tourneyPointsPerMatchCanvas.setWidth(Math.max(300, 20 + totalBars * (barWidthRound + 10)));
+        tourneyPointsPerMatchCanvas.setWidth(Math.max(300, 20 + (totalBars + tourneyNames.size()) * (barWidthRound + 10)));
+        tourneyPointsPerMatchCanvas.setHeight(230); // Aumentar la altura para el título
 
-        // Forzar el renderizado del Canvas
         Platform.runLater(() -> {
             tourneyPointsPerMatchCanvas.requestFocus();
             tourneyPointsPerMatchCanvas.getParent().requestLayout();
