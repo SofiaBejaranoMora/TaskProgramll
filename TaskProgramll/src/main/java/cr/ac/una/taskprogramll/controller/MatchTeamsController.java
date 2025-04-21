@@ -536,12 +536,6 @@ public class MatchTeamsController extends Controller implements Initializable {
         return null;
     }
     
-    public void initializeToTicket() {
-        this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("Visualize"));
-        this.currentTeamList = currentTourney.getTeamList();
-        viewGameTable();
-    }
-    
     public void initializeFromAppContext() {
         btnBack.setVisible(false);
         this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("SelectedTourney"));

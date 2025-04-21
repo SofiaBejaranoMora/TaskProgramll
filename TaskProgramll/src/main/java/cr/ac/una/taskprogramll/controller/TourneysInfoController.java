@@ -1,5 +1,8 @@
 package cr.ac.una.taskprogramll.controller;
 
+import cr.ac.una.taskprogramll.controller.Controller;
+import cr.ac.una.taskprogramll.controller.MatchTeamsController;
+import cr.ac.una.taskprogramll.controller.ViewTourneysController;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
@@ -20,59 +23,41 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 
 public class TourneysInfoController extends Controller implements Initializable {
-
+    
     private boolean isSuperiorInFront = true;
     private boolean isSlid = false;
     private Tourney selectedTourney;
-
-    @FXML
-    private StackPane ticketSuperior;
-    @FXML
-    private StackPane ticketInferior;
+    
     @FXML
     private MFXButton btnBack;
     @FXML
+    private StackPane ticketInferior;
+    @FXML
     private Label lblWinner;
+    @FXML
+    private MFXButton btnShowCertificate;
     @FXML
     private Label lblTeams;
     @FXML
     private Label lblRounds;
+    @FXML
+    private MFXButton btnShowKeys;
+    @FXML
+    private StackPane ticketSuperior;
     @FXML
     private Label lblTourney;
     @FXML
     private Label lblState;
     @FXML
     private Label lblTime;
-    @FXML
-    private MFXButton btnShowCertificate;
-    @FXML
-    private MFXButton btnShowKeys;
 
     @FXML
-    private void goBack() {
+    private void goBack(ActionEvent event) {
         ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
         controller.initialPanelConditions();
         FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) ticketSuperior.getScene().getWindow());
     }
 
-    @FXML
-    public void slideTicket(MouseEvent event) {
-        if (isSuperiorInFront) {
-            toggleSlideSuperior();
-        } else {
-            toggleSlideInferior();
-        }
-    }
-
-    @FXML
-    public void slideBackTicket(MouseEvent event) {
-        if (isSuperiorInFront) {
-            toggleSlideSuperior();
-        } else {
-            toggleSlideInferior();
-        }
-    }
-    
     @FXML
     private void onActionBtnShowCertificate(ActionEvent event) {
         if ("Finalizado".equals(selectedTourney.returnState())) {
@@ -85,18 +70,36 @@ public class TourneysInfoController extends Controller implements Initializable 
             }
         } else {
             System.out.println("Aún no hay ganador...");
-        }       
+        } 
     }
 
     @FXML
-    private void onActionBtnShowKeys(ActionEvent event) {        
+    private void onActionBtnShowKeys(ActionEvent event) {
         System.out.println("Show keys for " + selectedTourney.getName());
         AppContext.getInstance().set("Visualize", selectedTourney);
         MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
-        controller.initializeToTicket();
+        controller.initializeFromAppContext();
         FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnShowKeys.getScene().getWindow());
     }
 
+    @FXML
+    private void slideBackTicket(MouseEvent event) {
+        if (isSuperiorInFront) {
+            toggleSlideSuperior();
+        } else {
+            toggleSlideInferior();
+        }
+    }
+
+    @FXML
+    private void slideTicket(MouseEvent event) {
+        if (isSuperiorInFront) {
+            toggleSlideSuperior();
+        } else {
+            toggleSlideInferior();
+        }
+    }
+    
     private void toggleSlideSuperior() {
         if (!isSlid) {
             TranslateTransition transition = new TranslateTransition(Duration.millis(300), ticketSuperior);
@@ -172,13 +175,12 @@ public class TourneysInfoController extends Controller implements Initializable 
             System.err.println("No Tourney selected in AppContext");
         }
     }
+    
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+    }    
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-    }
-
-    @Override
-    public void initialize() {
-    }
+    public void initialize() { }
 
 }

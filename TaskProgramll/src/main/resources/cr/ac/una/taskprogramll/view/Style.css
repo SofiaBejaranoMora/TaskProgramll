@@ -145,7 +145,15 @@
 }
 
 .mfx-combo-box {
-    
+    -mfx-main: #0000cc;
+    -fx-prompt-text-fill: #333333;
+    -mfx-float-mode: BORDER;
+    -fx-font-size: 14px;
+    -fx-min-height: 40px;
+    -fx-pref-height: 40px;
+    -fx-max-heigth: 40px;
+    -fx-text-fill: black;
+    -fx-alignment: CENTER; 
 }
 
 .mfx-button:hover{
