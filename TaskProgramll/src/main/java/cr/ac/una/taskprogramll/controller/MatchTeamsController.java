@@ -6,6 +6,7 @@ import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.Certificate;
 import cr.ac.una.taskprogramll.util.FlowController;
+import cr.ac.una.taskprogramll.util.Mensaje;
 import cr.ac.una.taskprogramll.util.ResourceUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import java.awt.Desktop;
@@ -22,6 +23,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -44,6 +46,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     private Team winnerCertificate;
     private FileManager fileManager = new FileManager();
     private File file;
+    private Mensaje message;
     private Boolean viewButton = false;
     private Boolean isFinished = false;
     private int index = 0;
@@ -94,10 +97,16 @@ public class MatchTeamsController extends Controller implements Initializable {
 
     @FXML
     private void onActionBtnBack(ActionEvent event) {
-        saveData();
-        ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
-        controller.initialPanelConditions();
-        FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
+        if (winner != null) {
+            ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
+            controller.initialPanelConditions();
+            FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
+        } else {
+            saveData();
+            ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
+            controller.initialPanelConditions();
+            FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
+        }
     }
 
     @FXML
@@ -157,7 +166,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             protected void updateItem(Team item, boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty) {
-                    String style = (getIndex() % 4 < 2) ? "-fx-background-color: #d3d3d3; -fx-border-color: red; -fx-border-width: 1px;" : "-fx-background-color: #ffffff; -fx-border-color: black; -fx-border-width: 1px;";
+                    String style = (getIndex() % 4 < 2) ? "-fx-background-color: #6699ff; -fx-border-color: #660000; -fx-border-width: 1px;" : "-fx-background-color: #99ff66; -fx-border-color: #660066; -fx-border-width: 1px;";
                     setStyle(style);
                 } else {
                     setStyle("");
@@ -214,6 +223,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             if (index == currentTeamList.size()) {
                 currentRound++;
                 btnBack.setVisible(true);
+                message.show(Alert.AlertType.WARNING, "Actividades del partido", "Aviso, tras esta ronda se habilitará un receso por si quiere disfrutar del lugar. ¡Vuelva cuando guste!");
                 viewButton = true;
                 currentTeamList = currentTourney.getTeamList();
                 index = currentTeamList.size() - 1;
@@ -226,6 +236,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             if (index == -1) {
                 currentRound++;
                 btnBack.setVisible(true);
+                message.show(Alert.AlertType.WARNING, "Actividades del partido", "Aviso, tras esta ronda se habilitará un receso por si quiere disfrutar del lugar. ¡Vuelva cuando guste!");
                 viewButton = true;
                 currentTeamList = currentTourney.getTeamList();
                 index = 0;
@@ -403,13 +414,6 @@ public class MatchTeamsController extends Controller implements Initializable {
         }
         fileManager.serialization(tourneyList, "Tourney");
     }
-    
-    private void startGameParameters() {
-        globalSize = currentTeamList.size();
-        currentTourney.getContinueGame().setGlobalSize(globalSize);
-        organizedRound();
-        distributionOnTable();
-    }
 
     private void loadColumns() {
         round1.setAll(currentTourney.getContinueGame().getRound1());
@@ -498,6 +502,13 @@ public class MatchTeamsController extends Controller implements Initializable {
         });
     }
     
+    private void startGameParameters() {
+        globalSize = currentTeamList.size();
+        currentTourney.getContinueGame().setGlobalSize(globalSize);
+        organizedRound();
+        distributionOnTable();
+    }
+    
     private void continueGameParameters() {
         organizedRound();        
         loadColumns();
@@ -520,6 +531,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
 
     private void viewGameTable() {
+        globalSize = currentTourney.getContinueGame().getGlobalSize();
         organizedRound();        
         loadColumns();
         btnCetificate.setVisible(true);
