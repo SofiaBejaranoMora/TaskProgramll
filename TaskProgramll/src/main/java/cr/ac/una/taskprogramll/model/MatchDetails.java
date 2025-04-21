@@ -1,20 +1,26 @@
 package cr.ac.una.taskprogramll.model;
 
-/** * * @author ashly */
+/**
+ * * * @author ashly
+ */
 public class MatchDetails {
-    
+
     private String nameFirstTeam;
     private String nameSecondTeam;
     private int counterFirstTeamGoals;
     private int counterSecondTeamGoals;
+    private boolean draw;
+
+    public MatchDetails() {}
 
     public MatchDetails(String nameFirstTeam, String nameSecondTeam, int counterFirstTeamGoals, int counterSecondTeamGoals) {
         this.nameFirstTeam = nameFirstTeam;
         this.nameSecondTeam = nameSecondTeam;
         this.counterFirstTeamGoals = counterFirstTeamGoals;
         this.counterSecondTeamGoals = counterSecondTeamGoals;
+        this.draw = counterFirstTeamGoals == counterSecondTeamGoals;
     }
-    
+
     public String getNameFirstTeam() {
         return nameFirstTeam;
     }
@@ -46,9 +52,12 @@ public class MatchDetails {
     public void setCounterSecondTeamGoals(int counterSecondTeamGoals) {
         this.counterSecondTeamGoals = counterSecondTeamGoals;
     }
-    
-    public Boolean isDraw() {
-        if(counterFirstTeamGoals == counterSecondTeamGoals) return true;
-        else return false;
+
+    public boolean isDraw() {
+        return draw;
+    }
+
+    public void setDraw(boolean draw) {
+        this.draw = draw;
     }
 }

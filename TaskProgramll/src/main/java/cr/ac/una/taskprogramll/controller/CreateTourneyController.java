@@ -314,9 +314,6 @@ public class CreateTourneyController extends Controller implements Initializable
         SetupTableItems();
         ConfigureSlider();
         ConfigureTeamSelection();
-        LoadSportList();
-        LoadTeamList();
-        LoadTourneyList(); // Carga simple de torneos
         SetupSportFilter();
     }
 
@@ -325,7 +322,10 @@ public class CreateTourneyController extends Controller implements Initializable
     }
 
     @Override
-    public void initialize(URL url, ResourceBundle rb) {}
+    public void initialize(URL url, ResourceBundle rb) {        
+        LoadSportList();
+        LoadTeamList();
+        LoadTourneyList(); }
 
     @Override
     public void initialize() {

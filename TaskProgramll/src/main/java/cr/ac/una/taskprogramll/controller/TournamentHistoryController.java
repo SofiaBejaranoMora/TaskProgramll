@@ -52,7 +52,8 @@ public class TournamentHistoryController extends Controller implements Initializ
     @FXML
     private MFXButton clearButton;
     @FXML
-    private HBox content; @FXML
+    private HBox content; 
+    @FXML
     private HBox teamsPane;
     @FXML
     private VBox detailsPanel;

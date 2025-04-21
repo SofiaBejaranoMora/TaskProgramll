@@ -6,99 +6,99 @@
 }
 
 .StoreBackground {
-    -fx-background-image: url("../resources/StoreBackground.jpg");
+    -fx-background-image: url("../resources/ProgramImages/StoreBackground.jpg");
 }
 
 .StadiumStandBackground {
-    -fx-background-image: url("../resources/StadiumStandBackground.jpg");
+    -fx-background-image: url("../resources/ProgramImages/StadiumStandBackground.jpg");
 }
 
 .BusStopBackground {
-    -fx-background-image: url("../resources/BusStopBackground.jpg");
+    -fx-background-image: url("../resources/ProgramImages/BusStopBackground.jpg");
 }
 
 .LobbyBackground {
-    -fx-background-image: url("../resources/LobbyBackground.jpg");
+    -fx-background-image: url("../resources/ProgramImages/LobbyBackground.jpg");
 }
 
 .GameBackground {
-    -fx-background-image: url("../resources/GameBackground.jpg");
+    -fx-background-image: url("../resources/ProgramImages/GameBackground.jpg");
 }
 
 .FrontTicket {
-    -fx-image: url("../resources/FrontTicket.png");
+    -fx-image: url("../resources/ProgramImages/FrontTicket.png");
 }
 
 .BackTicket {
-    -fx-image: url("../resources/BackTicket.png");
+    -fx-image: url("../resources/ProgramImages/BackTicket.png");
 }
 
 .CameraIcon {
-    -fx-image: url("../resources/CameraIcon.png");
+    -fx-image: url("../resources/ProgramImages/CameraIcon.png");
 }
 
 .SelectIcon {
-    -fx-image: url("../resources/SelectIcon.png");
+    -fx-image: url("../resources/ProgramImages/SelectIcon.png");
 }
 
 .LobbyIcon {
-    -fx-image: url("../resources/LobbyIcon.png");
+    -fx-image: url("../resources/ProgramImages/LobbyIcon.png");
 }
 
 .ModifyIcon {
-    -fx-image: url("../resources/ModifyIcon.png");
+    -fx-image: url("../resources/ProgramImages/ModifyIcon.png");
 }
 
 .ExitIcon {
-    -fx-image: url("../resources/ExitIcon.png");
+    -fx-image: url("../resources/ProgramImages/ExitIcon.png");
 }
 
 .SearchIcon {
-    -fx-image: url("../resources/SearchIcon.png");
+    -fx-image: url("../resources/ProgramImages/SearchIcon.png");
 }
 
 .MaintenanceIcon {
-    -fx-image: url("../resources/MaintenanceIcon.png");
+    -fx-image: url("../resources/ProgramImages/MaintenanceIcon.png");
 }
 
 .SaveIcon {
-    -fx-image: url("../resources/SaveIcon.png");
+    -fx-image: url("../resources/ProgramImages/SaveIcon.png");
 }
 
 .StarIcon {
-    -fx-image: url("../resources/StarIcon.png");
+    -fx-image: url("../resources/ProgramImages/StarIcon.png");
 }
 
 .PrintIcon {
-    -fx-image: url("../resources/PrintIcon.png");
+    -fx-image: url("../resources/ProgramImages/PrintIcon.png");
 }
 
 .TrophyIcon {
-    -fx-image: url("../resources/TrophyIcon.png");
+    -fx-image: url("../resources/ProgramImages/TrophyIcon.png");
 }
 
 .TrophyKeysIcon{
-    -fx-image: url("../resources/TrophyKeysIcon.png");
+    -fx-image: url("../resources/ProgramImages/TrophyKeysIcon.png");
 }
 
 .VSIcon {
-    -fx-image: url("../resources/VSIcon.png");
+    -fx-image: url("../resources/ProgramImages/VSIcon.png");
 }
 
 .ClockIcon {
-    -fx-image: url("../resources/ClockIcon.png");
+    -fx-image: url("../resources/ProgramImages/ClockIcon.png");
 }
 
 .LookIcon {
-    -fx-image: url("../resources/LookIcon.png");
+    -fx-image: url("../resources/ProgramImages/LookIcon.png");
 }
 
 .GameIcon {
-    -fx-image: url("../resources/GameIcon.png");
+    -fx-image: url("../resources/ProgramImages/GameIcon.png");
 }
 
 .PixelStadium {
-    -fx-image: url("../resources/PixelStadium.png");
+    -fx-image: url("../resources/ProgramImages/PixelStadium.png");
 }
 
 .StoreBackground,
@@ -132,6 +132,22 @@
 
 .ImageView {
     -fx-opacity: 1;
+}
+
+.mfx-text-field {
+    -mfx-main: #9999ff;
+    -fx-prompt-text-fill: #333333;
+    -mfx-float-mode: BORDER;
+    -fx-font-size: 12px;
+    -fx-min-height: 20px;
+    -fx-pref-height: 20px;
+    -fx-max-heigth: 20px;
+    -fx-text-fill: black;
+    -fx-alignment: CENTER; 
+}
+
+.mfx-combo-box {
+    
 }
 
 .mfx-button:hover{

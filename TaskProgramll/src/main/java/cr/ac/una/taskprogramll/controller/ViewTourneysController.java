@@ -34,7 +34,7 @@ public class ViewTourneysController extends Controller implements Initializable 
     private final FileManager fileManager = new FileManager();
     private ObservableList<Tourney> torneosList;
     private List<Sport> sportList = new ArrayList<>();
-    
+
     @FXML
     private MFXComboBox<Sport> sportsComboBox;
     @FXML
@@ -51,8 +51,8 @@ public class ViewTourneysController extends Controller implements Initializable 
     private MFXButton btnPlay;
     @FXML
     private MFXButton btnInfo;
-    
-        @FXML
+
+    @FXML
     private void goBack(ActionEvent event) {
         FlowController.getInstance().goViewInStage("Lobby", (Stage) btnBack.getScene().getWindow());
     }
@@ -63,7 +63,6 @@ public class ViewTourneysController extends Controller implements Initializable 
         if (selectedTourney != null) {
             // Lógica para jugar/continuar torneo
             AppContext.getInstance().set("SelectedTourney", selectedTourney);
-            // Navegar a la vista de información 
             MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
             controller.initializeFromAppContext();
             FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnPlay.getScene().getWindow());
@@ -80,11 +79,10 @@ public class ViewTourneysController extends Controller implements Initializable 
             TourneysInfoController controller = (TourneysInfoController) FlowController.getInstance().getController("TourneysInfo");
             controller.initialPanelConditions();
             FlowController.getInstance().goViewInStage("TourneysInfo", (Stage) btnInfo.getScene().getWindow());
-
             System.out.println("Mostrando info de: " + selectedTourney.getName());
         }
     }
-   
+
     @FXML
     private void mostrarTorneos(ActionEvent event) {
         Sport selectedSport = sportsComboBox.getSelectionModel().getSelectedItem();
@@ -96,10 +94,13 @@ public class ViewTourneysController extends Controller implements Initializable 
             List<Tourney> tourneys = loadTourneyList();
             if (tourneys != null) {
                 for (Tourney tourney : tourneys) {
-                    if (tourney.getSportTypeId()== selectedSport.getId()) {
+                    if (tourney.getSportTypeId() == selectedSport.getId()) {
                         torneosList.add(tourney);
+                        System.out.println("Torneo añadido a la lista filtrada: " + tourney.getName() + " - Estado: " + tourney.returnState());
                     }
                 }
+            } else {
+                System.out.println("No se encontraron torneos para el deporte seleccionado: " + selectedSport.getId());
             }
 
             boolean state = !torneosList.isEmpty();
@@ -123,41 +124,6 @@ public class ViewTourneysController extends Controller implements Initializable 
             btnInfo.setDisable(true);
         }
     }
- 
-    public void initialPanelConditions() {
-                try {
-            torneosList = FXCollections.observableArrayList();
-            tourneysTable.setItems(torneosList);
-
-            colTourney.setCellValueFactory(new PropertyValueFactory<>("name"));
-            colState.setCellValueFactory(cellData -> {
-                Tourney tourney = cellData.getValue();
-                return new SimpleStringProperty(tourney.returnState());
-            });
-
-            // Inicialmente deshabilitados
-            btnPlay.setDisable(true);
-            btnInfo.setDisable(true);
-            tourneysTable.setVisible(false);
-
-            loadSportList();
-            sportsComboBox.setItems(FXCollections.observableArrayList(sportList));
-
-            tourneysTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-                if (newVal != null) {
-                    System.out.println("Torneo seleccionado: " + newVal.getName() + " - Estado: " + newVal.returnState());
-                    actualizarBotones(newVal);
-                } else {
-                    btnPlay.setDisable(true);
-                    btnInfo.setDisable(true);
-                }
-            });
-
-        } catch (Exception e) {
-            System.err.println("Error en initialize: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
     private void actualizarBotones(Tourney selectedTourney) {
         if (selectedTourney == null) {
@@ -167,7 +133,7 @@ public class ViewTourneysController extends Controller implements Initializable 
         }
 
         String state = selectedTourney.returnState();
-        System.out.println("Actualizando botones para estado: " + state); // Debug
+        System.out.println("Actualizando botones para estado: " + state);
 
         btnInfo.setDisable(false);
 
@@ -189,8 +155,6 @@ public class ViewTourneysController extends Controller implements Initializable 
         }
     }
 
-
-
     private void loadSportList() {
         @SuppressWarnings("unchecked")
         List<Sport> sports = (List<Sport>) AppContext.getInstance().get("sports");
@@ -198,13 +162,18 @@ public class ViewTourneysController extends Controller implements Initializable 
             try {
                 sports = fileManager.deserialization("Sport", Sport.class);
                 AppContext.getInstance().set("sports", sports);
+                System.out.println("Deportes cargados desde Sport.txt: " + (sports != null ? sports.size() : 0));
             } catch (Exception e) {
                 System.err.println("Error al deserializar deportes: " + e.getMessage());
+                e.printStackTrace();
             }
         }
         if (sports != null) {
             sportList.addAll(sports);
+        } else {
+            sportList = new ArrayList<>();
         }
+        System.out.println("Lista de deportes cargada: " + sportList);
     }
 
     private List<Tourney> loadTourneyList() {
@@ -212,37 +181,77 @@ public class ViewTourneysController extends Controller implements Initializable 
         List<Tourney> tourneys = (List<Tourney>) AppContext.getInstance().get("tourneys");
         if (tourneys == null || tourneys.isEmpty()) {
             File tourneyFile = new File("Tourney.txt");
+            System.out.println("Verificando Tourney.txt en: " + tourneyFile.getAbsolutePath());
             if (tourneyFile.exists() && tourneyFile.length() > 0) {
                 try {
                     tourneys = fileManager.deserialization("Tourney", Tourney.class);
-                    if (tourneys != null) {
+                    if (tourneys != null && !tourneys.isEmpty()) {
+                        System.out.println("Torneos deserializados correctamente: " + tourneys);
                         AppContext.getInstance().set("tourneys", tourneys);
                         System.out.println("Torneos cargados desde Tourney.txt: " + tourneys.size());
                     } else {
-                        System.out.println("Error al leer Tourney.txt, reiniciando archivo.");
-                        tourneyFile.delete();
+                        System.out.println("Deserialización devolvió null o lista vacía, inicializando lista vacía.");
                         tourneys = new ArrayList<>();
                         AppContext.getInstance().set("tourneys", tourneys);
                     }
                 } catch (Exception e) {
                     System.err.println("Error al deserializar torneos: " + e.getMessage());
-                    System.out.println("Borrando Tourney.txt por incompatibilidad.");
-                    tourneyFile.delete();
+                    e.printStackTrace();
+                    System.out.println("No se eliminará Tourney.txt, inicializando lista vacía.");
                     tourneys = new ArrayList<>();
                     AppContext.getInstance().set("tourneys", tourneys);
                 }
             } else {
                 tourneys = new ArrayList<>();
                 AppContext.getInstance().set("tourneys", tourneys);
-                System.out.println("No hay Tourney.txt, iniciando con lista vacía.");
+                System.out.println("No hay Tourney.txt o está vacío, iniciando con lista vacía.");
             }
+        } else {
+            System.out.println("Torneos ya cargados en AppContext: " + tourneys);
         }
         return tourneys;
     }
 
+    public void initialPanelConditions() {
+        try {
+            torneosList = FXCollections.observableArrayList();
+            tourneysTable.setItems(torneosList);
+
+            colTourney.setCellValueFactory(new PropertyValueFactory<>("name"));
+            colState.setCellValueFactory(cellData -> {
+                Tourney tourney = cellData.getValue();
+                return new SimpleStringProperty(tourney.returnState());
+            });
+
+            // Inicialmente deshabilitados
+            btnPlay.setDisable(true);
+            btnInfo.setDisable(true);
+            tourneysTable.setVisible(false);
+
+            sportsComboBox.setItems(FXCollections.observableArrayList(sportList));
+
+            tourneysTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null) {
+                    System.out.println("Torneo seleccionado: " + newVal.getName() + " - Estado: " + newVal.returnState());
+                    actualizarBotones(newVal);
+                } else {
+                    btnPlay.setDisable(true);
+                    btnInfo.setDisable(true);
+                }
+            });
+
+        } catch (Exception e) {
+            System.err.println("Error en initialize: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     @Override
-    public void initialize(URL url, ResourceBundle rb) {}
-    
+    public void initialize(URL url, ResourceBundle rb) {
+        loadSportList();
+    }
+
     @Override
-    public void initialize() {}
+    public void initialize() {
+    }
 }

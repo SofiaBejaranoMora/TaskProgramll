@@ -97,7 +97,7 @@ public class LobbyController extends Controller implements Initializable {
             case "Historial de Torneos":
                 file = new File("Tourney.txt");
                 if ((file.exists()) && (file.length() > 0)) {
-                    String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
+                     String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
                     if (!content.equals("[]") && !content.isEmpty()) {
                         FlowController.getInstance().goViewInStage("TournamentHistory", (Stage) cmbMenu.getScene().getWindow());
                     } else {

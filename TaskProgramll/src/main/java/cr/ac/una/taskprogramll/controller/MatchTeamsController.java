@@ -4,9 +4,11 @@ import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
+import cr.ac.una.taskprogramll.util.Certificate;
 import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.ResourceUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import java.awt.Desktop;
 import java.io.File;
 import java.net.URL;
 import java.util.Collections;
@@ -39,9 +41,11 @@ public class MatchTeamsController extends Controller implements Initializable {
     private Tourney currentTourney;
     private List<Tourney> tourneyList;
     private List<Team> currentTeamList;
+    private Team winnerCertificate;
     private FileManager fileManager = new FileManager();
     private File file;
     private Boolean viewButton = false;
+    private Boolean isFinished = false;
     private int index = 0;
     private int currentRound = 1;
     private int globalSize;
@@ -114,7 +118,12 @@ public class MatchTeamsController extends Controller implements Initializable {
     
     @FXML
     private void onActionBtnCertificate(ActionEvent event) {
-        //Desktop.getDesktop().open(new File (System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/"+winner.get(0).getName()+"_"+currentTourney.getName()+".pdf";));
+        try {
+            Desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/Certificates/" + winnerCertificate.getName() + "_" + currentTourney.getName() + ".pdf"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error al abrir el certificado: " + e.getMessage());
+        }
     }
 
     private int discoverRounds() {
@@ -340,6 +349,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                 tblPlayersTable.refresh();
                 btnCetificate.setVisible(true);
                 btnBack.setVisible(true);
+                isFinished = true;
                 winnerAnimatic(winnerTeam);
                 currentTourney.moveTeamToLoosers(winnerTeam);
             }
@@ -368,12 +378,16 @@ public class MatchTeamsController extends Controller implements Initializable {
         lblWinnerName.setText(winnerTeam.getName());
         lblWinnerPoints.setText("Puntos obtenidos: " + winnerTeam.getPoints());
         lblWinnerGoals.setText("Goles realizados: " + winnerTeam.getGoals());
+        Certificate.certificate(winnerTeam, currentTourney.getName());
+        winnerCertificate = winnerTeam;
     }
     
     private void saveData() {
         stpWinnerTourney.setVisible(false);
         AppContext.getInstance().set("SelectedTourney", null);
-        currentTourney.getContinueGame().setCurrentRound(currentRound);
+
+        if (!isFinished){
+            currentTourney.getContinueGame().setCurrentRound(currentRound);
         if (currentRound % 2 != 0) { 
             currentTourney.getContinueGame().setContinueIdFTeam(currentTeamList.get(index).getId());
             currentTourney.getContinueGame().setContinueIdSTeam(currentTeamList.get(index + 1).getId());
@@ -384,11 +398,10 @@ public class MatchTeamsController extends Controller implements Initializable {
             currentTourney.getContinueGame().setContinueIdSTeam(currentTeamList.get(index - 1).getId());
             currentTourney.getContinueGame().setContinueIndexTeam(index);
         }
+        } else {
+            System.out.println("Juego terminado");
+        }
         fileManager.serialization(tourneyList, "Tourney");
-    }
-    
-    private void printCertificate(){
-        
     }
     
     private void startGameParameters() {
@@ -507,7 +520,9 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
 
     private void viewGameTable() {
+        organizedRound();        
         loadColumns();
+        btnCetificate.setVisible(true);
         btnStart.setManaged(false);
         btnStart.setVisible(false);
         btnBack.setVisible(true);
@@ -519,6 +534,12 @@ public class MatchTeamsController extends Controller implements Initializable {
                 return tourney;
         }
         return null;
+    }
+    
+    public void initializeToTicket() {
+        this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("Visualize"));
+        this.currentTeamList = currentTourney.getTeamList();
+        viewGameTable();
     }
     
     public void initializeFromAppContext() {

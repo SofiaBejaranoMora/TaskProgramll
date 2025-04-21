@@ -23,4 +23,17 @@ public class ResourceUtil {
         }
     }
     
+    public static String getCoinPath(int coinNumber) {
+        try {
+            String path = BASE_PATH + "ProgramImages/" + coinNumber + ".png";
+            if (ResourceUtil.class.getResource(path) == null) {
+                System.err.println("No se encontró la imagen: " + path);
+                return null;
+            }
+            return ResourceUtil.class.getResource(path).toExternalForm();
+        } catch (Exception e) {
+            System.err.println("Error cargando imagen " + coinNumber + ": " + e.getMessage());
+            return null;
+        }
+    }
 }

@@ -4,6 +4,8 @@ import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import java.awt.Desktop;
+import java.io.File;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -15,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 
 public class TourneysInfoController extends Controller implements Initializable {
 
@@ -43,8 +46,6 @@ public class TourneysInfoController extends Controller implements Initializable 
     @FXML
     private MFXButton btnShowCertificate;
     @FXML
-    private MFXButton btnShowTeams;
-    @FXML
     private MFXButton btnShowKeys;
 
     @FXML
@@ -71,17 +72,29 @@ public class TourneysInfoController extends Controller implements Initializable 
             toggleSlideInferior();
         }
     }
-
-    private void showCertificate() {
-        System.out.println("Show certificate for " + selectedTourney.getName());
+    
+    @FXML
+    private void onActionBtnShowCertificate(ActionEvent event) {
+        if ("Finalizado".equals(selectedTourney.returnState())) {
+            System.out.println("Show certificate for " + selectedTourney.getName());
+            try {
+                Desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/Certificates/" + selectedTourney.getContinueGame().getWinner().get(0) + "_" + selectedTourney.getName() + ".pdf"));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al abrir el certificado: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Aún no hay ganador...");
+        }       
     }
 
-    private void showTeams() {
-        System.out.println("Show teams for " + selectedTourney.getName());
-    }
-
-    private void showKeys() {
+    @FXML
+    private void onActionBtnShowKeys(ActionEvent event) {        
         System.out.println("Show keys for " + selectedTourney.getName());
+        AppContext.getInstance().set("Visualize", selectedTourney);
+        MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
+        controller.initializeToTicket();
+        FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnShowKeys.getScene().getWindow());
     }
 
     private void toggleSlideSuperior() {
@@ -161,8 +174,11 @@ public class TourneysInfoController extends Controller implements Initializable 
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {}
+    public void initialize(URL location, ResourceBundle resources) {
+    }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+    }
+
 }
