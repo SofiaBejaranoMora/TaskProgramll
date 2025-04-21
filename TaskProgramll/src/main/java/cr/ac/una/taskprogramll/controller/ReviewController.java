@@ -8,8 +8,7 @@ import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Review;
 import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
-import cr.ac.una.taskprogramll.model.Tourney;
-import cr.ac.una.taskprogramll.util.AppContext;
+import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
@@ -43,6 +42,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -60,7 +60,7 @@ public class ReviewController extends Controller implements Initializable {
     private Image image;
     private Mensaje message = new Mensaje();
     private List<Review> reviewList = new ArrayList<>();
-    private String rute = "file:" + System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/s";
+    private String rute = "file:" + System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/ProgramImages/s";
 
     @FXML
     private MFXTextField txtNameSearch;
@@ -94,6 +94,13 @@ public class ReviewController extends Controller implements Initializable {
     private VBox vboxReview;
     @FXML
     private ScrollPane scrollPane;
+    @FXML
+    private ImageView LobbyIcon;
+
+    @FXML
+    private void OnMouseClickedLobbyIcon(MouseEvent event) {
+        FlowController.getInstance().goViewInStage("Lobby", (Stage) btnAccept.getScene().getWindow());
+    }
 
     @FXML
     private void OnKeyReleasedNameSearch(KeyEvent event) {
@@ -114,15 +121,14 @@ public class ReviewController extends Controller implements Initializable {
 
     @FXML
     private void OnActionBtnAccept(ActionEvent event) {
-        if((!txtReview.getText().isBlank())){
-        reviewList.add(new Review (txtReview.getText(),(float) sldTeamReviewScore.getValue()));
-        selectedTeam.setReviewList(reviewList);
-        fileManeger.serialization(teamOriginalList, "Team");
-        txtReview.setText("");
-        InitializeTabPane();
-        }
-        else{
-              message.show(Alert.AlertType.WARNING, "Alerta", "No se ha escrito ninguna reseña");
+        if ((!txtReview.getText().isBlank())) {
+            reviewList.add(new Review(txtReview.getText(), (float) sldTeamReviewScore.getValue()));
+            selectedTeam.setReviewList(reviewList);
+            fileManeger.serialization(teamOriginalList, "Team");
+            txtReview.setText("");
+            InitializeTabPane();
+        } else {
+            message.show(Alert.AlertType.WARNING, "Alerta", "No se ha escrito ninguna reseña");
         }
     }
 
@@ -134,16 +140,17 @@ public class ReviewController extends Controller implements Initializable {
                 tabReview.setDisable(false);
             }
             txtReview.setText("");
+            tabPane.getSelectionModel().select(tabReview);
             InitializeTabPane();
         }
     }
 
     public void LoadTeamReviewList() {
-         if ((reviewList !=null) && (!reviewList.isEmpty())) {
+        if ((reviewList != null) && (!reviewList.isEmpty())) {
             for (Review currentReview : reviewList) {
                 UploadReview(currentReview);
             }
-         }
+        }
     }
 
     public void UploadReview(Review review) {
@@ -152,8 +159,8 @@ public class ReviewController extends Controller implements Initializable {
         vbox.setSpacing(15);
         VBox.setMargin(vbox, new Insets(15));
         vbox.getStyleClass().add("boxRose");
-        
-        image = new Image(rute +  String.format("%.1f",review.getScore()) + ".png");
+
+        image = new Image(rute +  String.format("%.1f", Math.round(review.getScore()*2)/2.0f) + ".png");
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(182);
         imageView.setFitHeight(40);
@@ -201,10 +208,11 @@ public class ReviewController extends Controller implements Initializable {
     public void InitializeTabPane() {
         vboxReview.prefWidthProperty().bind(scrollPane.widthProperty().multiply(0.98));
         reviewList = selectedTeam.getReviewList();
-        labReviewTeamName.setText("Equipo: "+selectedTeam.getName());
-        labNumberReview.setText("Cantidad de Reseñas: "+String.valueOf(reviewList.size()));
-        float lala=selectedTeam.AverageGrade();
-        image = new Image(rute + String.format("%.1f",selectedTeam.AverageGrade())+ ".png");
+        labReviewTeamName.setText("Equipo: " + selectedTeam.getName());
+        labNumberReview.setText("Cantidad de Reseñas: " + String.valueOf(reviewList.size()));
+        float lala = selectedTeam.AverageGrade();
+        String dads=String.format("%.1f", selectedTeam.AverageGrade());
+        image = new Image(rute + String.format("%.1f", Math.round(selectedTeam.AverageGrade()*2)/2.0f) + ".png");
         imgTeamScore.setImage(image);
         tabPane.getSelectionModel().select(tabReview);
         vboxReview.getChildren().clear();
