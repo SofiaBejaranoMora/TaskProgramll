@@ -43,15 +43,6 @@ public class Sport {
         return System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/"+id+".png";
     }
     
-    /*public void ChangeName(String name) {
-        String rute = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
-        File imagenOriginal = new File(rute + this.name + ".png");
-        File imagenNueva = new File(rute + name + ".png");
-        imagenOriginal.renameTo(imagenNueva);
-        this.name = name;
-        this.nameBallImage = name;
-    }*/
-    
     @Override
     public String toString(){
         return name;

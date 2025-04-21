@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
+
 package cr.ac.una.taskprogramll.controller;
 
 import cr.ac.una.taskprogramll.model.FileManager;
@@ -32,14 +29,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author sofia
- */
 public class MassRemovalController extends Controller implements Initializable {
 
     Boolean isTourney;

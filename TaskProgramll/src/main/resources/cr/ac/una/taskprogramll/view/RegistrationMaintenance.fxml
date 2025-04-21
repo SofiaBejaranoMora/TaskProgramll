@@ -26,7 +26,7 @@
             </VBox>
             <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" styleClass="hbox-cute" VBox.vgrow="ALWAYS">
                <children>
-                  <Label text="Mantenimineto">
+                  <Label text="Mantenimiento">
                      <padding>
                         <Insets top="15.0" />
                      </padding>

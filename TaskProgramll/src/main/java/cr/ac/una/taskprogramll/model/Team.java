@@ -16,10 +16,11 @@ public class Team {
     private int idSportType;
     private int draw;
     private int wins;
-    private int goals; 
+    private int goals;
     private int points;
     private int id;
     private List<MatchDetails> encounterList;
+    private List<Review> reviewList;
 
     public Team() {
     }
@@ -39,6 +40,7 @@ public class Team {
         this.draw = 0;
         this.wins = 0;
         this.encounterList = new ArrayList<>();
+        reviewList = new ArrayList<>();
     }
 
     public Team(String name, int idSportType, int draw, int wins, int id) {
@@ -48,6 +50,15 @@ public class Team {
         this.wins = wins;
         this.id = id;
         this.encounterList = new ArrayList<>();
+        reviewList = new ArrayList<>();
+    }
+
+    public List<Review> getReviewList() {
+        return reviewList;
+    }
+
+    public void setReviewList(List<Review> reviewList) {
+        this.reviewList = reviewList;
     }
 
     public String getName() {
@@ -110,13 +121,16 @@ public class Team {
         return System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/" + id + ".png";
     }
 
-    /*public void ChangeName(String name) {
-        String rute = System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/";
-        File imagenOriginal = new File(rute + this.name + ".png");
-        File imagenNueva = new File(rute + name + ".png");
-        imagenOriginal.renameTo(imagenNueva);
-        this.name = name ;
-    }*/
+    public float AverageGrade() {
+        float result = 0;
+        if ((reviewList !=null) && (!reviewList.isEmpty())) {
+            for (Review currentReview : reviewList) {
+                result+=currentReview.getScore();
+            }
+            result/=reviewList.size();
+        }
+        return result;
+    }
 
     @JsonIgnore
     public Sport searchSportType() {
