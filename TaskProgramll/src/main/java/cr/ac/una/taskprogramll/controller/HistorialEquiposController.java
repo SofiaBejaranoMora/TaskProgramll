@@ -117,7 +117,7 @@ public class HistorialEquiposController extends Controller implements Initializa
     @FXML
     private Canvas tourneyPointsPerMatchCanvas;
     @FXML
-    private Canvas globalRankingCanvas; // Nuevo Canvas para la gráfica de ranking global
+    private Canvas globalRankingCanvas; 
 
     private Team updatedTeam;
     private Team selectedTeam;
@@ -210,7 +210,12 @@ public class HistorialEquiposController extends Controller implements Initializa
                     .filter(s -> s.getId() == tourney.getSportTypeId())
                     .findFirst()
                     .orElse(null);
-            String sportName = sport != null ? sport.getName() : "Sin deporte";
+            String sportName;
+            if (sport != null) {
+                sportName = sport.getName();
+            } else {
+                sportName = "Sin deporte";
+            }
             return new SimpleStringProperty(sportName);
         });
         tourneyStateColumn.setCellValueFactory(cellData -> {
@@ -686,8 +691,6 @@ public class HistorialEquiposController extends Controller implements Initializa
         maxPointsRanking = Math.max(maxPointsRanking, 1);
         double scaleRanking = 200.0 / maxPointsRanking;
 
-       
-
         int barIndex = 0;
         for (Team team : rankedTeams) {
             int teamPoints = calculateGlobalPoints(team);
@@ -767,10 +770,14 @@ public class HistorialEquiposController extends Controller implements Initializa
                         int currentRound = 1;
                         int goalsInCurrentRound = 0;
                         for (MatchDetails match : matches) {
-                            int teamGoals = match.getNameFirstTeam().equals(tourneyTeam.getName())
-                                    ? match.getCounterFirstTeamGoals() : match.getCounterSecondTeamGoals();
-                            int matchRound = (matchIndex / matchesPerRound) + 1;
+                            int teamGoals;
+                            if (match.getNameFirstTeam().equals(tourneyTeam.getName())) {
+                                teamGoals = match.getCounterFirstTeamGoals();
+                            } else {
+                                teamGoals = match.getCounterSecondTeamGoals();
+                            }
 
+                            int matchRound = (matchIndex / matchesPerRound) + 1;
                             if (matchRound != currentRound) {
                                 rounds.add(currentRound);
                                 goalsPerRound.add(goalsInCurrentRound);
@@ -1239,9 +1246,19 @@ public class HistorialEquiposController extends Controller implements Initializa
         if (matches != null) {
             int matchIndex = 0;
             for (MatchDetails match : matches) {
-                int teamGoals = match.getNameFirstTeam().equals(updatedTeam.getName())
-                        ? match.getCounterFirstTeamGoals() : match.getCounterSecondTeamGoals();
-                int matchesPerRound = availableTourneys.isEmpty() ? 1 : availableTourneys.get(0).getTeamList().size() / 2;
+                int teamGoals;
+                if (match.getNameFirstTeam().equals(updatedTeam.getName())) {
+                    teamGoals = match.getCounterFirstTeamGoals();
+                } else {
+                    teamGoals = match.getCounterSecondTeamGoals();
+                }
+
+                int matchesPerRound;
+                if (availableTourneys.isEmpty()) {
+                    matchesPerRound = 1;
+                } else {
+                    matchesPerRound = availableTourneys.get(0).getTeamList().size() / 2;
+                }
                 if (matchesPerRound <= 0) {
                     matchesPerRound = 1;
                 }
