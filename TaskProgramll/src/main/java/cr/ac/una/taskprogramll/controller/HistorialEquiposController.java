@@ -169,11 +169,10 @@ public class HistorialEquiposController extends Controller implements Initializa
         }
     }
 
-    @Override
     public void initialize(URL url, ResourceBundle rb) {
         setupTableColumns();
-        loadData();
-        loadTourneys();
+        loadData();     // Primero cargar equipos
+        loadTourneys(); // Luego cargar torneos
         loadSports();
         setupTeamSelectionListener();
         setupTeamFilterDisplay();
@@ -246,6 +245,7 @@ public class HistorialEquiposController extends Controller implements Initializa
         @SuppressWarnings("unchecked")
         List<Team> teams = (List<Team>) AppContext.getInstance().get("teams");
         System.out.println("Equipos iniciales en AppContext: " + teams);
+
         if (teams.isEmpty()) {
             File teamFile = new File("Team.txt");
             System.out.println("Ruta absoluta del archivo Team.txt: " + teamFile.getAbsolutePath());
@@ -263,9 +263,12 @@ public class HistorialEquiposController extends Controller implements Initializa
                         System.out.println("Deserialización de Team.txt devolvió null o lista vacía.");
                         message.show(Alert.AlertType.WARNING, "Sin datos", "No se encontraron equipos en Team.txt.");
                     } else {
-                        teams.addAll(deserializedTeams);
+                        // Eliminar duplicados al deserializar
+                        Set<Team> uniqueTeams = new HashSet<>(deserializedTeams);
+                        teams.clear();
+                        teams.addAll(uniqueTeams);
                         AppContext.getInstance().set("teams", teams);
-                        System.out.println("Equipos cargados y añadidos a AppContext: " + teams);
+                        System.out.println("Equipos cargados y añadidos a AppContext (sin duplicados): " + teams);
                     }
                 } catch (Exception e) {
                     System.out.println("Error al deserializar Team.txt: " + e.getMessage());
@@ -275,7 +278,12 @@ public class HistorialEquiposController extends Controller implements Initializa
                 }
             }
         } else {
-            System.out.println("Equipos ya cargados en AppContext: " + teams);
+            // Eliminar duplicados si ya hay equipos en AppContext
+            Set<Team> uniqueTeams = new HashSet<>(teams);
+            teams.clear();
+            teams.addAll(uniqueTeams);
+            AppContext.getInstance().set("teams", teams);
+            System.out.println("Equipos ya cargados en AppContext (sin duplicados): " + teams);
         }
 
         availableTeams.clear();
@@ -328,6 +336,39 @@ public class HistorialEquiposController extends Controller implements Initializa
             System.out.println("No hay torneos para mostrar en tourneyTable.");
             message.show(Alert.AlertType.WARNING, "Lista vacía", "No hay torneos disponibles para mostrar.");
         }
+
+        // Asegurarse de que AppContext.get("teams") esté inicializado
+        if (AppContext.getInstance().get("teams") == null) {
+            AppContext.getInstance().set("teams", new ArrayList<Team>());
+        }
+        List<Team> existingTeams = (List<Team>) AppContext.getInstance().get("teams");
+        for (Tourney tourney : tourneys) {
+            List<Team> allTeamsInTourney = new ArrayList<>();
+            allTeamsInTourney.addAll(tourney.getTeamList());
+            allTeamsInTourney.addAll(tourney.getLoosersList());
+            Game game = tourney.getContinueGame();
+            allTeamsInTourney.addAll(game.getRound1());
+            allTeamsInTourney.addAll(game.getRound2());
+            allTeamsInTourney.addAll(game.getRound3());
+            allTeamsInTourney.addAll(game.getRound4());
+            allTeamsInTourney.addAll(game.getRound5());
+            allTeamsInTourney.addAll(game.getRound6());
+            allTeamsInTourney.addAll(game.getWinner());
+
+            // Verificar que los equipos en el torneo estén en la lista de equipos
+            for (Team team : allTeamsInTourney) {
+                if (!existingTeams.contains(team)) {
+                    System.out.println("Equipo en torneo no está en AppContext teams: " + team.getName() + " (ID: " + team.getId() + ")");
+                    existingTeams.add(team);
+                }
+            }
+        }
+        // Eliminar duplicados después de procesar los torneos
+        Set<Team> uniqueTeams = new HashSet<>(existingTeams);
+        existingTeams.clear();
+        existingTeams.addAll(uniqueTeams);
+        AppContext.getInstance().set("teams", existingTeams);
+        System.out.println("Equipos en AppContext después de cargar torneos (sin duplicados): " + existingTeams);
     }
 
     private void loadSports() {
