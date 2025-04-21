@@ -1,8 +1,5 @@
 package cr.ac.una.taskprogramll.controller;
 
-import cr.ac.una.taskprogramll.controller.Controller;
-import cr.ac.una.taskprogramll.controller.MatchTeamsController;
-import cr.ac.una.taskprogramll.controller.ViewTourneysController;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
