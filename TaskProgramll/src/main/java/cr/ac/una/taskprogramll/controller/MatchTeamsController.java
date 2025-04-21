@@ -1,5 +1,14 @@
 package cr.ac.una.taskprogramll.controller;
 
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.geom.Rectangle;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
@@ -11,6 +20,7 @@ import cr.ac.una.taskprogramll.util.ResourceUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -52,6 +62,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     private int index = 0;
     private int currentRound = 1;
     private int globalSize;
+    private String rute=System.getProperty("user.dir")+"/src/main/resources/cr/ac/una/taskprogramll/resources/Certificates/";
     private ObservableList<Team> round1 = FXCollections.observableArrayList();
     private ObservableList<Team> round2 = FXCollections.observableArrayList();
     private ObservableList<Team> round3 = FXCollections.observableArrayList();
@@ -128,10 +139,56 @@ public class MatchTeamsController extends Controller implements Initializable {
     @FXML
     private void onActionBtnCertificate(ActionEvent event) {
         try {
-            Desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/Certificates/" + winnerCertificate.getName() + "_" + currentTourney.getName() + ".pdf"));
+            Desktop.getDesktop().open(new File(rute + winnerCertificate.getName() + "_" + currentTourney.getName() + ".pdf"));
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error al abrir el certificado: " + e.getMessage());
+        }
+    }
+    
+    public void Certificate(Team winner, String tourney){
+        String address=rute+winner.getName()+"_"+tourney+".pdf";
+        String backgroundImagePath=rute+"/CertificateImage.png";
+        String addresTeamPhotograsphs=System.getProperty("user.dir")+"/src/main/resources/cr/ac/una/taskprogramll/resources/"+winner.getId()+".png";
+        Document document;
+        try{
+            PdfWriter writePdf=  new PdfWriter(address);
+            PdfDocument pdf= new PdfDocument(writePdf);
+            PageSize pdfSize= new PageSize(549, 303);
+            
+            pdf.setDefaultPageSize(pdfSize);
+            document=new Document(pdf);
+            
+            ImageData backgroundImage=ImageDataFactory.create(backgroundImagePath);
+            PdfCanvas canva= new PdfCanvas(pdf.addNewPage());
+            canva.addImage(backgroundImage, 0,0,pdfSize.getWidth(), false);
+            
+            ImageData imageDataUser =ImageDataFactory.create(addresTeamPhotograsphs);
+            canva.addImage(imageDataUser,new Rectangle(420, 100, 115, 91), false);
+            
+            Paragraph paragraphName=new Paragraph("Nombre: "+winner.getName())
+                .setFontSize(14)
+                .setMarginTop(97)
+                .setMarginLeft(35);
+            
+            Paragraph paragraphAge=new Paragraph("Deporte: "+winner.getName())
+                .setFontSize(14)
+                .setMarginTop(6)
+                .setMarginLeft(35);
+            
+            Paragraph paragraphFolio=new Paragraph("Puntos: "+ winner.getPoints())
+                .setFontSize(14)
+                .setMarginTop(6)
+                .setMarginLeft(35);
+            
+            document.add(paragraphName);
+            document.add(paragraphAge);
+            document.add(paragraphFolio);
+            
+            document.close();
+        }
+        catch(IOException e){
+          System.out.println("Error:"+e);
         }
     }
 
@@ -389,7 +446,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         lblWinnerName.setText(winnerTeam.getName());
         lblWinnerPoints.setText("Puntos obtenidos: " + winnerTeam.getPoints());
         lblWinnerGoals.setText("Goles realizados: " + winnerTeam.getGoals());
-        Certificate.certificate(winnerTeam, currentTourney.getName());
+        Certificate(winnerTeam, currentTourney.getName());
         winnerCertificate = winnerTeam;
     }
     

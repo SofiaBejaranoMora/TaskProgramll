@@ -22,6 +22,11 @@
          <content>
             <VBox spacing="15.0">
                <children>
+                  <HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="20.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <ImageView fx:id="LobbyIcon" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#OnMouseClickedLobbyIcon" pickOnBounds="true" preserveRatio="true" styleClass="LobbyIcon" />
+                     </children>
+                  </HBox>
                   <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="boxLightBlue" VBox.vgrow="ALWAYS">
                      <children>
                         <Label text="Reseñas de Equipos" />
