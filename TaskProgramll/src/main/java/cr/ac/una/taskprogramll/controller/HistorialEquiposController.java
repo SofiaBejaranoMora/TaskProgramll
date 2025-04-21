@@ -30,6 +30,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -127,6 +128,12 @@ public class HistorialEquiposController extends Controller implements Initializa
     private final List<Sport> sportList = new ArrayList<>();
     @FXML
     private VBox pointsPerTourneyLegend;
+    @FXML
+    private MFXButton btnBackMenu;
+
+    @FXML
+    private void onActionBtnBackMenu(ActionEvent event) {
+    }
 
     /**
      * Clase auxiliar para la tabla de estadísticas por torneo
