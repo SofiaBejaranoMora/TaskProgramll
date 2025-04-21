@@ -1,6 +1,8 @@
 *{
-    -fx-lightBlue-base-color: #BBF6F9; /*#16D4A5*/
+    -fx-lightBlue-base-color: #BBF6F9;
+    -fx-lightBlue-transparent-base-color: rgb(187, 246, 249,0.85);
     -fx-rose-base-color:#FFA5DB;
+    -fx-rose-transparent-base-color:rgb(255, 165, 219,0.85);
 }
 
 .StoreBackground {
@@ -230,27 +232,23 @@
 }
 
 .boxRose{
-    -fx-background-color: -fx-rose-base-color;
-    -fx-opacity:0.85;
+    -fx-background-color: -fx-rose-transparent-base-color;
     -fx-background-radius: 15px;
     -fx-transition: 0.3s;
 }
 
 .boxRose:hover{
     -fx-background-color: -fx-rose-base-color;
-    -fx-opacity:1;
 }
 
 .boxLightBlue{
-    -fx-background-color: -fx-lightBlue-base-color;
-    -fx-opacity:0.85;
+    -fx-background-color: -fx-lightBlue-transparent-base-color;
     -fx-background-radius: 15px;
     -fx-transition: 0.3s;
 }
 
 .boxLightBlue:hover{
     -fx-background-color: -fx-lightBlue-base-color;
-    -fx-opacity:1;
 }
 
 .InteractiveVBox {
@@ -326,6 +324,14 @@
 .scroll-pane:hover {
     -fx-opacity: 1;
     -fx-effect: dropshadow(gaussian, rgba(89, 67, 104, 0.3), 8, 0.2, 0, 3); 
+}
+
+#scrollPane {
+    -fx-background: rgba(187, 246, 249, 0); 
+}
+
+#scrollPane.boxRose {
+    -fx-background-color:-fx-rose-base-color;
 }
 
 .Accordion {

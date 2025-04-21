@@ -21,7 +21,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class RegistrationMaintenanceController extends Controller implements Initializable {
@@ -81,7 +80,7 @@ public class RegistrationMaintenanceController extends Controller implements Ini
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "No puede registrar equipos porque aún no ha registrado ningún deporte. Por favor, registre al menos un deporte primero.");
                 }
             } else {
-                message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
+                message.show(Alert.AlertType.INFORMATION, "Aviso", "No puede registrar equipos porque aún no ha registrado ningún deporte. Por favor, registre al menos un deporte primero.");
             }
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
@@ -106,7 +105,7 @@ public class RegistrationMaintenanceController extends Controller implements Ini
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay deportes registrados para realizar mantenimiento. Por favor, registre al menos un deporte primero.");
                 }
             } else {
-                message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
+                message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay deportes registrados para realizar mantenimiento. Por favor, registre al menos un deporte primero.");
             }
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");

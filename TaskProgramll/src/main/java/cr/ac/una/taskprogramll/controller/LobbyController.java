@@ -11,7 +11,10 @@ import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -26,7 +29,7 @@ public class LobbyController extends Controller implements Initializable {
 
     private File file = new File("Sport.txt");
     private File file2 = new File("Team.txt");
-    
+
     private Mensaje message = new Mensaje();
     private List<Sport> sportList = new ArrayList<>();
     private List<Team> teamList = new ArrayList<>();
@@ -36,7 +39,7 @@ public class LobbyController extends Controller implements Initializable {
     private MFXComboBox<String> cmbMenu;
 
     public void comboxInitializer() {
-        cmbMenu.getItems().addAll("Registro y Mantenimiento", "Crear Torneo", "Ver Torneos", "Mini Juego Menu", "Historial de Torneos",  "HistorialEquipos");
+        cmbMenu.getItems().addAll("Registro y Mantenimiento", "Reseñas de Equipos", "Crear Torneo", "Ver Torneos", "Mini Juego Menu", "Historial de Torneos", "Historial de Equipos");
     }
 
     public void clean() {
@@ -45,11 +48,24 @@ public class LobbyController extends Controller implements Initializable {
     }
 
     @FXML
-    private void OnActionCmbMenu(ActionEvent event) {
+    private void OnActionCmbMenu(ActionEvent event) throws IOException {
         String menu = cmbMenu.getValue();
         switch (menu) {
             case "Registro y Mantenimiento":
                 FlowController.getInstance().goMain();
+                break;
+            case "Reseñas de Equipos":
+                file = new File("Team.txt");
+                if ((file.exists()) && (file.length() > 0)) {
+                    String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
+                    if (!content.equals("[]") && !content.isEmpty()) {
+                        FlowController.getInstance().goViewInStage("Review", (Stage) cmbMenu.getScene().getWindow());
+                    } else {
+                        message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
+                    }
+                } else {
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
+                }
                 break;
             case "Crear Torneo":
                 if (EnableTourney()) {
@@ -63,23 +79,47 @@ public class LobbyController extends Controller implements Initializable {
             case "Ver Torneos":
                 file = new File("Tourney.txt");
                 if ((file.exists()) && (file.length() > 0)) {
-                    ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
-                    controller.initialPanelConditions();
-                    FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) cmbMenu.getScene().getWindow());
+                    String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
+                    if (!content.equals("[]") && !content.isEmpty()) {
+                        ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
+                        controller.initialPanelConditions();
+                        FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) cmbMenu.getScene().getWindow());
+                    } else {
+                        message.show(Alert.AlertType.INFORMATION, "Aviso", "No puede ver o iniciar torneos porque aún no ha registrado ningún torneo. Por favor, registre al menos un torneo primero.");
+                    }
                 } else {
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "No puede ver o iniciar torneos porque aún no ha registrado ningún torneo. Por favor, registre al menos un torneo primero.");
                 }
                 break;
             case "Mini Juego Menu":
-            FlowController.getInstance().goViewInStage("MenuGame", (Stage) cmbMenu.getScene().getWindow());
-            break;
-             case "Historial de Torneos":
-            FlowController.getInstance().goViewInStage("TournamentHistory", (Stage) cmbMenu.getScene().getWindow());
-            break;
-            case "HistorialEquipos":
-                  FlowController.getInstance().goViewInStage("HistorialEquipos", (Stage) cmbMenu.getScene().getWindow());
-             break;
-             
+                FlowController.getInstance().goViewInStage("MenuGame", (Stage) cmbMenu.getScene().getWindow());
+                break;
+            case "Historial de Torneos":
+                file = new File("Tourney.txt");
+                if ((file.exists()) && (file.length() > 0)) {
+                     String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
+                    if (!content.equals("[]") && !content.isEmpty()) {
+                        FlowController.getInstance().goViewInStage("TournamentHistory", (Stage) cmbMenu.getScene().getWindow());
+                    } else {
+                        message.show(Alert.AlertType.INFORMATION, "Aviso", "No se puede ver el historial torneos porque aún no ha registrado ningún torneo. Por favor, registre al menos un torneo primero.");
+                    }
+                } else {
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No se puede ver el historial torneos porque aún no ha registrado ningún torneo. Por favor, registre al menos un torneo primero.");
+                }
+                break;
+            case "Historial de Equipos":
+                file = new File("Team.txt");
+                if ((file.exists()) && (file.length() > 0)) {
+                    String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
+                    if (!content.equals("[]") && !content.isEmpty()) {
+                        FlowController.getInstance().goViewInStage("HistorialEquipos", (Stage) cmbMenu.getScene().getWindow());
+                    } else {
+                        message.show(Alert.AlertType.INFORMATION, "Aviso", "No se puede ver el historial equipo porque aún no ha registrado ningún equipo. Por favor, registre al menos un equipo primero.");
+                    }
+                } else {
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No se puede ver el historial equipo porque aún no ha registrado ningún equipo. Por favor, registre al menos un equipo primero.");
+                }
+                break;
             default:
                 throw new AssertionError();
         }

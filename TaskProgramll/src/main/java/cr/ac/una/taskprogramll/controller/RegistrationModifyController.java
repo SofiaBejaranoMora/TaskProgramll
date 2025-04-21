@@ -176,7 +176,6 @@ public class RegistrationModifyController extends Controller implements Initiali
             fileManeger.serialization(sportList, "Sport");
             ClearPanel();
             if ((Boolean) AppContext.getInstance().get("neededTeamBoolean")) {
-                Team kwdwd=(Team) AppContext.getInstance().get("neededTeam");
                 AppContext.getInstance().set("selectedTeam", (Team) AppContext.getInstance().get("neededTeam"));
                 AppContext.getInstance().set("isSport", false);
                 AppContext.getInstance().set("isMaintenace", true);

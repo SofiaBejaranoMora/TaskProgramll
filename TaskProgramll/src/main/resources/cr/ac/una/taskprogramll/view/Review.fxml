@@ -1,35 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXSlider?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<TabPane prefHeight="382.0" prefWidth="560.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.ReviewController">
+<TabPane fx:id="tabPane" prefHeight="382.0" prefWidth="560.0" rotateGraphic="true" styleClass="BusStopBackground" stylesheets="@Style.css" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.ReviewController">
    <tabs>
       <Tab text="Equipos">
          <content>
-            <VBox prefHeight="200.0" prefWidth="100.0" />
-         </content>
-      </Tab>
-      <Tab text="Reseñas">
-         <content>
-            <VBox>
+            <VBox spacing="15.0">
                <children>
-                  <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+                  <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" styleClass="boxLightBlue" VBox.vgrow="ALWAYS">
                      <children>
-                        <Label text="Label" />
+                        <Label text="Reseñas de Equipos" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" spacing="15.0" styleClass="boxLightBlue" VBox.vgrow="ALWAYS">
+                     <children>
+                        <MFXTextField fx:id="txtNameSearch" floatMode="BORDER" floatingText="Buscar por nombre" maxWidth="1.7976931348623157E308" onKeyReleased="#OnKeyReleasedNameSearch" HBox.hgrow="ALWAYS" />
+                        <MFXComboBox fx:id="cmbSportSearch" floatMode="BORDER" floatingText="Deporte" onAction="#OnActionCmbSportSearch">
+                           <HBox.margin>
+                              <Insets left="25.0" />
+                           </HBox.margin>
+                        </MFXComboBox>
                      </children>
                      <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
                      </padding>
                   </HBox>
-                  <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
-                  <ScrollPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                  <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                     <children>
+                        <TableView fx:id="tbvTeams" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#OnMouseClikedTbvTeam" styleClass="TableViewLightdBlue" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                           </padding>
+                           <columns>
+                              <TableColumn fx:id="tclTeam" prefWidth="503.0" text="Nombre" />
+                              <TableColumn fx:id="tclTeamSportType" prefWidth="503.0" text="Deporte" />
+                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" maxWidth="1.7976931348623157E308" spacing="40.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <MFXButton fx:id="btnCancel" onAction="#OnActionBtnCancel" text="Cancelar" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </VBox>
+         </content>
+      </Tab>
+      <Tab fx:id="tabReview" text="Reseñas">
+         <content>
+            <VBox spacing="15.0" styleClass="StoreBackground">
+               <children>
+                  <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="100.0" styleClass="boxLightBlue" VBox.vgrow="ALWAYS">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label fx:id="labReviewTeamName" text="label" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <ImageView fx:id="imgTeamScore" fitHeight="40.0" fitWidth="182.0" layoutX="291.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                     </padding>
+                  </HBox>
+                  <HBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" spacing="30.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <HBox maxWidth="1.7976931348623157E308" spacing="15.0" styleClass="boxLightBlue" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="Reseña:" HBox.hgrow="ALWAYS" />
+                              <TextArea fx:id="txtReview" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="117.0" HBox.hgrow="ALWAYS" />
+                           </children>
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                        </HBox>
+                        <VBox alignment="TOP_CENTER" spacing="25.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" spacing="15.0" styleClass="boxLightBlue">
+                                 <children>
+                                    <Label text="Puntuación:" VBox.vgrow="ALWAYS" />
+                                    <MFXSlider fx:id="sldTeamReviewScore" decimalPrecision="1" max="5.0" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                              </VBox>
+                              <MFXButton fx:id="btnAccept" onAction="#OnActionBtnAccept" text="Guardar reseña" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="17.0" prefWidth="154.0" styleClass="boxLightBlue" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label fx:id="labNumberReview" text="label" />
+                     </children>
+                  </HBox>
+                  <ScrollPane fx:id="scrollPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="vboxReview" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="100.0" spacing="20.0" />
+                     </content>
+                  </ScrollPane>
                </children>
                <padding>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
