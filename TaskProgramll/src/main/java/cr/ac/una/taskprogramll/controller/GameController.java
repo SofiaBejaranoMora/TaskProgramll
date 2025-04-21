@@ -103,21 +103,25 @@ public class GameController extends Controller implements Initializable {
                 mgvBall.setVisible(true);
                 ncpRoot.setOnMouseDragged(null);
                 ncpRoot.setOnMouseReleased(null);
+
             });
         }
     }
     
     @FXML
-    private void onMouseReleasedMgvCoin(MouseEvent event) {
-        Bounds firstTeamBounds = mgvFirstTeam.localToScene(mgvFirstTeam.getBoundsInLocal());
+    private void onMousePressedMgvCoin(MouseEvent event) {
+
+        ncpRoot.setOnMousePressed((pressEvent) -> {
+                   Bounds firstTeamBounds = mgvFirstTeam.localToScene(mgvFirstTeam.getBoundsInLocal());
         Bounds secondTeamBounds = mgvSecondTeam.localToScene(mgvSecondTeam.getBoundsInLocal());
-         if (firstTeamBounds.contains(event.getSceneX(), event.getSceneY())) {
-             drawAnimatic(1);
-         } else if (secondTeamBounds.contains(event.getSceneX(), event.getSceneY())) {
-             drawAnimatic(2);
-         }
+        if (firstTeamBounds.contains(pressEvent.getSceneX(), pressEvent.getSceneY())) {
+                drawAnimatic(1);
+            } else if (secondTeamBounds.contains(pressEvent.getSceneX(), pressEvent.getSceneY())) {
+                drawAnimatic(2);
+            }
+        });
     }
-    
+
     @FXML
     private void onActionBtnOut(ActionEvent event) {
         if (!isFinished) {
@@ -225,6 +229,7 @@ public class GameController extends Controller implements Initializable {
     }
     
     private void drawAnimatic(int team) {
+        System.out.println("Entró en draw");
         Scale scale = new Scale();
         mgvCoin.getTransforms().clear();
         mgvCoin.getTransforms().add(scale);
@@ -251,7 +256,7 @@ public class GameController extends Controller implements Initializable {
             } else {
                 determinateWinner(2, 2);
             }
-        });
+        });       
     }
 
     private void afterGame() {

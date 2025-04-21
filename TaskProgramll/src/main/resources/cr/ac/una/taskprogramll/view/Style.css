@@ -132,6 +132,18 @@
     -fx-opacity: 1;
 }
 
+.mfx-text-field {
+    -mfx-main: #00cc99;
+    -fx-prompt-text-fill: #0099cc;
+    -mfx-float-mode: BORDER;
+    -fx-font-size: 12px;
+    -fx-min-height: 20px;
+    -fx-pref-height: 20px;
+    -fx-max-heigth: 20px;
+    -fx-text-fill: black;
+    -fx-alignment: CENTER; 
+}
+
 .mfx-button:hover{
     -fx-background-color: -fx-rose-base-color;
     -fx-scale-x: 1.1;

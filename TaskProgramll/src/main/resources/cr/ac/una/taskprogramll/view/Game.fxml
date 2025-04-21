@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Label?>
@@ -34,11 +36,21 @@
                   <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                   <StackPane prefHeight="150.0" prefWidth="200.0">
                      <children>
-                        <ImageView fx:id="mgvFirstTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                           <viewport>
-                              <Rectangle2D />
-                           </viewport>
-                        </ImageView>
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label fx:id="lblFirstTeam" text="Label">
+                                 <styleClass>
+                                    <String fx:value="SmallLabel" />
+                                    <String fx:value="hbox-cute" />
+                                 </styleClass>
+                              </Label>
+                              <ImageView fx:id="mgvFirstTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </children>
+                        </VBox>
                         <ImageView id="StarIcon" fx:id="mgvWinFirstTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" translateX="-30.0" translateY="-30.0" />
                      </children>
                   </StackPane>
@@ -47,7 +59,17 @@
                   <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                   <StackPane prefHeight="150.0" prefWidth="200.0">
                      <children>
-                        <ImageView fx:id="mgvSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label fx:id="lblSecondTeam" text="Label">
+                                 <styleClass>
+                                    <String fx:value="SmallLabel" />
+                                    <String fx:value="hbox-cute" />
+                                 </styleClass>
+                              </Label>
+                              <ImageView fx:id="mgvSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </VBox>
                         <ImageView id="StarIcon" fx:id="mgvWinSecondTeam" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="StarIcon" translateX="-30.0" translateY="-30.0" />
                      </children>
                   </StackPane>
@@ -85,9 +107,14 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
       </VBox>
-      <StackPane fx:id="stpDraw" prefHeight="150.0" prefWidth="150.0" translateX="225.0" translateY="100.0" visible="false">
+      <StackPane fx:id="stpDraw" prefHeight="150.0" prefWidth="150.0" translateX="220.0" translateY="100.0" visible="false">
          <children>
-            <ImageView fx:id="mgvCoin" fitHeight="150.0" fitWidth="150.0" onMouseReleased="#onMouseReleasedMgvCoin" pickOnBounds="true" preserveRatio="true" />
+            <VBox fx:id="txfNumberTeam" accessibleText="Número del Equipo" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" StackPane.alignment="CENTER">
+               <children>
+                  <MFXTextField alignment="CENTER" minWidth="-Infinity" prefWidth="125.0" promptText="Número del Equipo" stylesheets="@Style.css" />
+                  <ImageView fx:id="mgvCoin" fitHeight="150.0" fitWidth="150.0" onMousePressed="#onMousePressedMgvCoin" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </VBox>
          </children>
       </StackPane>
    </children>
