@@ -132,7 +132,7 @@
     -fx-opacity: 1;
 }
 
-.mfx-text-field {
+/*.mfx-text-field {
     -mfx-main: #9999ff;
     -fx-prompt-text-fill: #333333;
     -mfx-float-mode: BORDER;
@@ -142,7 +142,7 @@
     -fx-max-heigth: 20px;
     -fx-text-fill: black;
     -fx-alignment: CENTER; 
-}
+}*/
 
 .mfx-button:hover{
     -fx-background-color: -fx-rose-base-color;

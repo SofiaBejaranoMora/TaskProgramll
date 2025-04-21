@@ -8,6 +8,7 @@ import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.ResourceUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -25,7 +26,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -53,6 +53,10 @@ public class GameController extends Controller implements Initializable {
     @FXML
     private Label lblSecondTeam;
     @FXML
+    private Label lblNameFirstTeam;
+    @FXML
+    private Label lblNameSecondTeam;
+    @FXML
     private ImageView mgvFirstTeam;
     @FXML
     private ImageView mgvBall;
@@ -73,7 +77,7 @@ public class GameController extends Controller implements Initializable {
     @FXML
     private StackPane stpDraw;
     @FXML
-    private VBox txfNumberTeam;
+    private MFXTextField txfNumberTeam;
     
     @FXML
     void onDragDetectedMgvBall(MouseEvent event) {
@@ -143,15 +147,44 @@ public class GameController extends Controller implements Initializable {
         btnFastFinish.setVisible(false);
         afterGame();
     }
-    
-    private void chargeImages() {
-        mgvWinFirstTeam.setVisible(false);
-        mgvWinSecondTeam.setVisible(false);
-        mgvBall.setImage(new Image(ResourceUtil.getImagePath(currentSport.getId())));
-        mgvFirstTeam.setImage(new Image(ResourceUtil.getImagePath(firstTeam.getId())));
-        mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(secondTeam.getId())));
+      
+    @FXML
+    private void drawAnimatic(int digitTeam, int undigitTeam) {
+        System.out.println("Entró en draw");
+        Scale scale = new Scale();
+        mgvCoin.getTransforms().clear();
+        mgvCoin.getTransforms().add(scale);
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(130), event -> {
+            mgvCoin.setImage(new Image(ResourceUtil.getCoinPath(coinNumber)));
+            if (coinNumber == 14) {
+                coinNumber = 1;
+            } else {
+                coinNumber++;
+            }
+        }),
+                new KeyFrame(Duration.millis(1.0), new KeyValue(scale.xProperty(), 1.2), new KeyValue(scale.yProperty(), 1.2)),
+                new KeyFrame(Duration.millis(0.5), new KeyValue(scale.xProperty(), 1.0), new KeyValue(scale.yProperty(), 1.0))
+        );
+
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+        ncpRoot.setOnMouseReleased(event -> {
+        if (coinNumber < 5 && coinNumber > 11) {
+            timeline.stop();
+            determinateWinner(digitTeam, 2);
+            stpDraw.setVisible(false);
+            txfNumberTeam.setText("");
+        } else {
+            timeline.stop();
+            determinateWinner(undigitTeam, 2);
+            stpDraw.setVisible(false);
+            txfNumberTeam.setText("");
+        }
+    }); 
+        ncpRoot.setFocusTraversable(true);
     }
-    
+
     private String timerFormat(int totalSeconds) {
         return String.format("%02d:%02d", (totalSeconds / 60), (totalSeconds % 60));
     }
@@ -169,7 +202,29 @@ public class GameController extends Controller implements Initializable {
         }));
         currentTime.setCycleCount(timeLimit);
     }
+
+    private void setupNameTeam() {
+        txfNumberTeam.textProperty().addListener((obs, oldText, newText) -> {
+            if (String.valueOf(firstTeam.getName()).equals(newText) || String.valueOf(secondTeam.getName()).equals(newText)) {
+                        if (firstTeam.getName().equals(txfNumberTeam.textProperty().getName())) {
+                            drawAnimatic(1, 2);
+        } else  {
+                drawAnimatic(2, 1);
+            }} else {
+                System.out.println("Dar mensaje");
+            }});
+    }
     
+    private void chargeImages() {
+        mgvWinFirstTeam.setVisible(false);
+        mgvWinSecondTeam.setVisible(false);
+        mgvBall.setImage(new Image(ResourceUtil.getImagePath(currentSport.getId())));
+        mgvFirstTeam.setImage(new Image(ResourceUtil.getImagePath(firstTeam.getId())));
+        mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(secondTeam.getId())));
+        lblNameFirstTeam.setText(firstTeam.getName());
+        lblNameSecondTeam.setText(secondTeam.getName());
+    }
+  
     private void counterPoints(MouseEvent releaseEvent) {
         Bounds firstTeamBounds = mgvFirstTeam.localToScene(mgvFirstTeam.getBoundsInLocal());
         Bounds secondTeamBounds = mgvSecondTeam.localToScene(mgvSecondTeam.getBoundsInLocal());
@@ -216,37 +271,6 @@ public class GameController extends Controller implements Initializable {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
-    
-    private void drawAnimatic(int team) {
-        System.out.println("Entró en draw");
-        Scale scale = new Scale();
-        mgvCoin.getTransforms().clear();
-        mgvCoin.getTransforms().add(scale);
-
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), event -> {
-            mgvCoin.setImage(new Image(ResourceUtil.getCoinPath(coinNumber)));
-            if (coinNumber == 14) {
-                coinNumber = 1;
-            } else {
-                coinNumber++;
-            }
-        }),
-                new KeyFrame(Duration.millis(500), new KeyValue(scale.xProperty(), 1.5), new KeyValue(scale.yProperty(), 1.5)),
-                new KeyFrame(Duration.millis(1000), new KeyValue(scale.xProperty(), 1.0), new KeyValue(scale.yProperty(), 1.0))
-        );
-
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
-        stpDraw.setOnMouseReleased(null);
-        stpDraw.setOnMouseReleased(event -> {
-            timeline.stop();
-            if (coinNumber < 5 && coinNumber > 11) {
-                determinateWinner(team, 2);
-            } else {
-                determinateWinner(2, 2);
-            }
-        });       
-    }
 
     private void afterGame() {
         if (counterGoalsFirstTeam > counterGoalsSecondTeam) {
@@ -287,6 +311,7 @@ public class GameController extends Controller implements Initializable {
         this.timeLimit = currentTourney.getTime();
         this.currentSport = currentTourney.searchSportType();
         AppContext.getInstance().delete("CurrentTourney");
+        setupNameTeam();
     }    
 
     @Override
