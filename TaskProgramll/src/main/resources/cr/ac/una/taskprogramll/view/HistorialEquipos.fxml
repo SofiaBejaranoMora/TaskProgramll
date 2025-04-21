@@ -179,7 +179,7 @@
                                                             <content>
                                                                 <VBox spacing="5.0">
                                                                     <children>
-                                                                        <Canvas fx:id="pointsPerMatchCanvas" height="200.0" />
+                                                                        <Canvas fx:id="pointsPerMatchCanvas" height="200.0" width="300.0" />
                                                                         <VBox fx:id="pointsPerTourneyLegend" spacing="5.0" styleClass="hbox-cute" stylesheets="@Style.css" />
                                                                     </children>
                                                                 </VBox>
@@ -193,8 +193,7 @@
                                                         </Label>
                                                         <ScrollPane fitToHeight="true" pannable="true">
                                                             <content>
-                                                                <Canvas fx:id="globalRankingCanvas" height="200.0" />
-                                                            </content>
+                                                                <Canvas fx:id="globalRankingCanvas" height="200.0" width="300.0" />                                                            </content>
                                                         </ScrollPane>
                                                     </children>
                                                 </VBox>
@@ -222,7 +221,7 @@
                                                         </Label>
                                                         <ScrollPane fitToHeight="true" pannable="true">
                                                             <content>
-                                                                <Canvas fx:id="tourneyPointsPerMatchCanvas" height="200.0" />
+                                                                <Canvas fx:id="tourneyPointsPerMatchCanvas" height="200.0" width="300.0" />
                                                             </content>
                                                         </ScrollPane>
                                                     </children>
