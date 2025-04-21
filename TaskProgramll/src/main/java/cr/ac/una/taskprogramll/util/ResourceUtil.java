@@ -36,4 +36,18 @@ public class ResourceUtil {
             return null;
         }
     }
+    
+    public static String getSkinPath(int skinNumber){
+        try {
+            String path = BASE_PATH + "skinName/" + skinNumber + ".png";
+                if (ResourceUtil.class.getResource(path) == null) {
+                    System.err.println("No se encontró la imagen: " + path);
+                    return null;
+                }
+                return ResourceUtil.class.getResource(path).toExternalForm();
+           } catch (Exception e) {
+            System.err.println("Error cargando imagen " + skinNumber + ": " + e.getMessage());
+            return null;
+           }
+    }
 }

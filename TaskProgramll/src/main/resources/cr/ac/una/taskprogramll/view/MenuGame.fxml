@@ -9,45 +9,67 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
+<?import java.net.URL?>
 
 <AnchorPane fx:id="rootPane" minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cr.ac.una.taskprogramll.controller.MenuGameController">
+    <stylesheets>
+        <URL value="@Style.css" />
+    </stylesheets>
     <VBox fx:id="mapContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <HBox fx:id="row1" maxHeight="Infinity" minHeight="200.0" VBox.vgrow="ALWAYS">
             <VBox fx:id="registro" alignment="CENTER" maxWidth="200.0" minWidth="150.0" HBox.hgrow="SOMETIMES">
-                <Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Registro" />
-                <Rectangle fx:id="registroHitbox" fill="TRANSPARENT" height="120.0" layoutX="15.0" layoutY="40.0" stroke="RED" strokeType="INSIDE" strokeWidth="2.0" width="120.0" />
+                <Label fx:id="registroLabel" text="Registro" styleClass="building-label" />
+                <StackPane layoutX="15.0" layoutY="40.0">
+                    <Rectangle fx:id="registroHitbox" height="182.0" width="211.0" fill="transparent" />
+                    <ImageView fx:id="registroImage" fitHeight="164.0" fitWidth="225.0" preserveRatio="true" />
+                </StackPane>
             </VBox>
-            <Pane fx:id="path1" style="-fx-background-color: #a5d6a7;" HBox.hgrow="ALWAYS" />
+            <Pane fx:id="path1" HBox.hgrow="ALWAYS" />
             <VBox fx:id="arbol1" alignment="CENTER" maxWidth="200.0" minWidth="150.0" HBox.hgrow="SOMETIMES">
-                <Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Árbol" />
-                <Circle fx:id="arbolHitbox1" fill="TRANSPARENT" layoutX="75.0" layoutY="100.0" radius="50.0" stroke="RED" strokeType="INSIDE" strokeWidth="2.0" />
+                <Label fx:id="arbolLabel" text="Árbol" styleClass="building-label" />
+                <StackPane layoutX="75.0" layoutY="100.0">
+                    <Circle fx:id="arbolHitbox1" radius="93.0" fill="transparent" />
+                    <ImageView fx:id="arbolImage" fitHeight="133.0" fitWidth="202.0" preserveRatio="true" />
+                </StackPane>
             </VBox>
         </HBox>
         <HBox fx:id="row2" maxHeight="Infinity" minHeight="200.0" VBox.vgrow="ALWAYS">
             <VBox fx:id="mantenimiento" alignment="CENTER" maxWidth="200.0" minWidth="150.0" HBox.hgrow="SOMETIMES">
-                <Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Mantenimiento" />
-                <Rectangle fx:id="mantenimientoHitbox" fill="TRANSPARENT" height="120.0" layoutX="15.0" layoutY="40.0" stroke="RED" strokeType="INSIDE" strokeWidth="2.0" width="120.0" />
+                <Label fx:id="mantenimientoLabel" text="Mantenimiento" styleClass="building-label" />
+                <StackPane layoutX="15.0" layoutY="40.0">
+                    <Rectangle fx:id="mantenimientoHitbox" height="228.0" width="217.0" fill="transparent" />
+                    <ImageView fx:id="mantenimientoImage" fitHeight="229.0" fitWidth="228.0" preserveRatio="true" />
+                </StackPane>
             </VBox>
-            <Pane fx:id="mainPath" style="-fx-background-color: #c8e6c9;" HBox.hgrow="ALWAYS" />
+            <Pane fx:id="mainPath" HBox.hgrow="ALWAYS" />
             <VBox fx:id="torneos" alignment="CENTER" maxWidth="200.0" minWidth="150.0" HBox.hgrow="SOMETIMES">
-                <Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Torneos" />
-                <Rectangle fx:id="torneosHitbox" fill="TRANSPARENT" height="120.0" layoutX="15.0" layoutY="40.0" stroke="RED" strokeType="INSIDE" strokeWidth="2.0" width="120.0" />
+                <Label fx:id="torneosLabel" text="Torneos" styleClass="building-label" />
+                <StackPane layoutX="15.0" layoutY="40.0">
+                    <Rectangle fx:id="torneosHitbox" height="153.0" width="291.0" fill="transparent" />
+                    <ImageView fx:id="torneosImage" fitHeight="143.0" fitWidth="316.0" preserveRatio="true" />
+                </StackPane>
             </VBox>
         </HBox>
         <HBox fx:id="row3" maxHeight="Infinity" minHeight="200.0" VBox.vgrow="ALWAYS">
             <VBox fx:id="biblioteca" alignment="CENTER" maxWidth="200.0" minWidth="150.0" HBox.hgrow="SOMETIMES">
-                <Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Biblioteca" />
-                <Rectangle fx:id="bibliotecaHitbox" fill="TRANSPARENT" height="120.0" layoutX="15.0" layoutY="40.0" stroke="RED" strokeType="INSIDE" strokeWidth="2.0" width="120.0" />
+                <Label fx:id="bibliotecaLabel" text="Reseñas" styleClass="building-label" />
+                <StackPane layoutX="15.0" layoutY="40.0">
+                    <Rectangle fx:id="bibliotecaHitbox" height="201.0" width="221.0" fill="transparent" />
+                    <ImageView fx:id="bibliotecaImage" fitHeight="211.0" fitWidth="246.0" preserveRatio="true" />
+                </StackPane>
             </VBox>
-            <Pane fx:id="path2" style="-fx-background-color: #a5d6a7;" HBox.hgrow="ALWAYS" />
+            <Pane fx:id="path2" HBox.hgrow="ALWAYS" />
             <VBox fx:id="cafeteria" alignment="CENTER" maxWidth="200.0" minWidth="150.0" HBox.hgrow="SOMETIMES">
-                <Label style="-fx-font-weight: bold; -fx-text-fill: white;" text="Cafetería" />
-                <Rectangle fx:id="cafeteriaHitbox" fill="TRANSPARENT" height="140.0" layoutX="5.0" layoutY="30.0" stroke="RED" strokeType="INSIDE" strokeWidth="2.0" width="140.0" />
+                <Label fx:id="cafeteriaLabel" text="GameHub" styleClass="building-label" />
+                <StackPane layoutX="5.0" layoutY="30.0">
+                    <Rectangle fx:id="cafeteriaHitbox" height="212.0" width="255.0" fill="transparent" />
+                    <ImageView fx:id="cafeteriaImage" fitHeight="212.0" fitWidth="209.0" preserveRatio="true" />
+                </StackPane>
             </VBox>
         </HBox>
     </VBox>
-    <StackPane fx:id="personaje" minHeight="30.0" minWidth="30.0" prefHeight="30.0" prefWidth="30.0">
-        <ImageView fx:id="personajeImage" fitHeight="30.0" fitWidth="30.0" preserveRatio="true" />
+    <StackPane fx:id="personaje" minHeight="30.0" minWidth="30.0" prefHeight="57.0" prefWidth="57.0">
+        <ImageView fx:id="personajeImage" fitHeight="56.0" fitWidth="57.0" preserveRatio="true" />
     </StackPane>
-    <Label fx:id="mensaje" layoutX="20.0" layoutY="20.0" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;" />
+    <Label fx:id="mensaje" layoutX="20.0" layoutY="20.0" styleClass="message-label" />
 </AnchorPane>

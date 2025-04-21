@@ -346,3 +346,14 @@
     -fx-opacity: 0.85;
     -fx-effect: dropshadow(gaussian, rgba(89, 67, 104, 0.15), 6, 0.2, 0, 2);
 }
+
+.building-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.message-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e7d32;
+}

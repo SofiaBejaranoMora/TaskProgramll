@@ -14,7 +14,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -31,13 +30,31 @@ public class MenuGameController extends Controller implements Initializable {
     @FXML private Rectangle registroHitbox, mantenimientoHitbox, torneosHitbox;
     @FXML private Circle arbolHitbox1;
     @FXML private Rectangle bibliotecaHitbox, cafeteriaHitbox;
+    @FXML private ImageView registroImage, mantenimientoImage, torneosImage;
+    @FXML private ImageView arbolImage, bibliotecaImage, cafeteriaImage;
+    @FXML private Label registroLabel, arbolLabel, mantenimientoLabel, torneosLabel, bibliotecaLabel, cafeteriaLabel;
 
     private final double velocidad = 5.0;
-    private final double personajeRadius = 15.0;
+    private final double personajeRadius = 28.5; // Ajustado para coincidir con el tamaño 57x56 del personaje
+    private final double PROXIMITY_MARGIN = 20.0; // Margen adicional para detectar proximidad
     private Map<Direction, Image[]> sprites;
     private boolean isMoving;
     private boolean stepToggle;
     private Direction lastDirection = Direction.DOWN;
+    private String currentHoverBuilding; // Para rastrear qué edificio está en hover por colisión
+    private String currentMouseHoverBuilding; // Para rastrear qué edificio está en hover por mouse
+    private final double HOVER_SCALE = 1.1; // Escala del 10% más grande para el efecto de hover
+
+    private static final Object[][] BUILDING_CONFIG = {
+        { "registroHitbox", "registroImage", "registroLabel", 1111 },
+        { "mantenimientoHitbox", "mantenimientoImage", "mantenimientoLabel", 7777 },
+        { "torneosHitbox", "torneosImage", "torneosLabel", 1948 },
+        { "bibliotecaHitbox", "bibliotecaImage", "bibliotecaLabel", 3333 },
+        { "cafeteriaHitbox", "cafeteriaImage", "cafeteriaLabel", 2222 },
+        { "arbolHitbox1", "arbolImage", "arbolLabel", 9999 }
+    };
+
+    private static final int BACKGROUND_IMAGE_ID = 5555; // Cambia este ID por el de tu imagen de fondo
 
     @Override
     public void initialize() {
@@ -64,23 +81,45 @@ public class MenuGameController extends Controller implements Initializable {
         }
     }
 
-    private static final Object[][] BUILDING_CONFIG = {
-        { "registroHitbox", 1948, 100.0, 100.0 },
-        { "mantenimientoHitbox", 1948, 100.0, 100.0 },
-        { "torneosHitbox", 1948, 100.0, 100.0 },
-        { "bibliotecaHitbox", 1948, 100.0, 100.0 },
-        { "cafeteriaHitbox", 1948, 120.0, 120.0 },
-        { "arbolHitbox1", 1948, 80.0, 80.0 }
-    };
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        loadBackground();
         loadSprites();
         loadBuildings();
+        setupMouseHoverEffects();
         setupResponsiveness();
         setupKeyboard();
         positionCharacter();
         checkHitboxes();
+    }
+
+    private void loadBackground() {
+        String path = ResourceUtil.getSkinPath(BACKGROUND_IMAGE_ID);
+        if (path != null) {
+            System.out.println("Cargando fondo desde: " + path);
+            try {
+                String backgroundStyle = String.format(
+                    "-fx-background-image: url('%s'); -fx-background-size: cover; -fx-background-repeat: no-repeat;",
+                    path
+                );
+                rootPane.setStyle(backgroundStyle);
+            } catch (Exception e) {
+                System.out.println("Error al cargar la imagen de fondo " + BACKGROUND_IMAGE_ID + ".png: " + e.getMessage());
+            }
+        } else {
+            System.out.println("No se encontró la imagen de fondo: /cr/ac/una/taskprogramll/resources/skinName/" + BACKGROUND_IMAGE_ID + ".png");
+            try {
+                String manualPath = getClass().getResource("/cr/ac/una/taskprogramll/resources/skinName/" + BACKGROUND_IMAGE_ID + ".png").toExternalForm();
+                System.out.println("Intentando cargar fondo manualmente desde: " + manualPath);
+                String backgroundStyle = String.format(
+                    "-fx-background-image: url('%s'); -fx-background-size: cover; -fx-background-repeat: no-repeat;",
+                    manualPath
+                );
+                rootPane.setStyle(backgroundStyle);
+            } catch (Exception e) {
+                System.out.println("Error al cargar la imagen de fondo manualmente: " + e.getMessage());
+            }
+        }
     }
 
     private void loadSprites() {
@@ -92,7 +131,6 @@ public class MenuGameController extends Controller implements Initializable {
             images[2] = loadImage(set.stepLeftId, "sprite " + set.stepLeftId + ".png");
             sprites.put(Direction.valueOf(set.name()), images);
         }
-        // Inicializar personaje con quieto abajo
         Image stillDown = sprites.get(Direction.DOWN)[0];
         if (stillDown != null) {
             personajeImage.setImage(stillDown);
@@ -103,35 +141,91 @@ public class MenuGameController extends Controller implements Initializable {
     }
 
     private Image loadImage(int id, String errorMsg) {
-        String path = ResourceUtil.getImagePath(id);
+        String path = ResourceUtil.getSkinPath(id);
         if (path != null) {
+            System.out.println("Cargando imagen desde: " + path);
             try {
-                return new Image(path);
+                Image image = new Image(path);
+                if (image.isError()) {
+                    System.out.println("Error: La imagen " + errorMsg + " no se pudo cargar (imagen corrupta o no válida)");
+                    return null;
+                }
+                return image;
             } catch (Exception e) {
                 System.out.println("Error al cargar " + errorMsg + ": " + e.getMessage());
             }
         } else {
-            System.out.println("No se encontró la imagen: /cr/ac/una/taskprogramll/resources/" + id + ".png");
+            System.out.println("No se encontró la imagen: /cr/ac/una/taskprogramll/resources/skinName/" + id + ".png");
+            try {
+                String manualPath = getClass().getResource("/cr/ac/una/taskprogramll/resources/skinName/" + id + ".png").toExternalForm();
+                System.out.println("Intentando cargar imagen manualmente desde: " + manualPath);
+                Image image = new Image(manualPath);
+                if (image.isError()) {
+                    System.out.println("Error: La imagen " + errorMsg + " no se pudo cargar manualmente (imagen corrupta o no válida)");
+                    return null;
+                }
+                return image;
+            } catch (Exception e) {
+                System.out.println("Error al cargar la imagen manualmente: " + e.getMessage());
+            }
         }
         return null;
     }
 
     private void loadBuildings() {
         for (Object[] config : BUILDING_CONFIG) {
-            String id = (String) config[0];
-            int imageId = (Integer) config[1];
-            double width = (Double) config[2];
-            double height = (Double) config[3];
+            String imageViewId = (String) config[1];
+            int imageId = (Integer) config[3];
 
-            Shape hitbox = getHitboxById(id);
-            if (hitbox != null) {
-                Image image = loadImage(imageId, "imagen " + imageId + ".png para " + id);
+            ImageView imageView = getImageViewById(imageViewId);
+            if (imageView != null) {
+                Image image = loadImage(imageId, "imagen " + imageId + ".png para " + imageViewId);
                 if (image != null) {
-                    double offset = id.equals("arbolHitbox1") ? -15 : 10;
-                    hitbox.setFill(new ImagePattern(image, offset, offset, width, height, false));
+                    imageView.setImage(image);
+                    System.out.println("Imagen cargada correctamente para " + imageViewId);
+                } else {
+                    System.out.println("No se pudo cargar la imagen para " + imageViewId + ". Verifica que " + imageId + ".png esté en resources/skinName/");
+                    imageView.setStyle("-fx-background-color: #ff0000;");
                 }
+            } else {
+                System.out.println("ImageView no encontrado para " + imageViewId);
             }
         }
+    }
+
+    private void setupMouseHoverEffects() {
+        for (Object[] config : BUILDING_CONFIG) {
+            String imageViewId = (String) config[1];
+            ImageView imageView = getImageViewById(imageViewId);
+            if (imageView != null) {
+                imageView.setOnMouseEntered(event -> {
+                    System.out.println("Mouse entró en " + imageViewId);
+                    if (currentHoverBuilding == null) { // Solo aplica hover por mouse si no hay hover por colisión
+                        currentMouseHoverBuilding = imageViewId;
+                        applyHoverEffect(imageView, null);
+                    }
+                });
+                imageView.setOnMouseExited(event -> {
+                    System.out.println("Mouse salió de " + imageViewId);
+                    if (!imageViewId.equals(currentHoverBuilding)) {
+                        resetHoverEffect(imageView, null);
+                    }
+                    currentMouseHoverBuilding = null;
+                });
+            }
+        }
+    }
+
+    private ImageView getImageViewById(String id) {
+        return switch (id) {
+            case "registroImage" -> registroImage;
+            case "mantenimientoImage" -> mantenimientoImage;
+            case "torneosImage" -> torneosImage;
+            case "bibliotecaImage" -> bibliotecaImage;
+            case "cafeteriaImage" -> cafeteriaImage;
+            case "arbolImage" -> arbolImage;
+            default -> null;
+        };
     }
 
     private Shape getHitboxById(String id) {
@@ -146,25 +240,48 @@ public class MenuGameController extends Controller implements Initializable {
         };
     }
 
+    private Label getLabelById(String id) {
+        return switch (id) {
+            case "registroLabel" -> registroLabel;
+            case "mantenimientoLabel" -> mantenimientoLabel;
+            case "torneosLabel" -> torneosLabel;
+            case "bibliotecaLabel" -> bibliotecaLabel;
+            case "cafeteriaLabel" -> cafeteriaLabel;
+            case "arbolLabel" -> arbolLabel;
+            default -> null;
+        };
+    }
+
     private void setupResponsiveness() {
         rootPane.widthProperty().addListener((obs, oldVal, newVal) -> adjustCharacterPosition());
         rootPane.heightProperty().addListener((obs, oldVal, newVal) -> adjustCharacterPosition());
     }
 
     private void positionCharacter() {
-        double centerX = rootPane.getWidth() * POSICION_INICIAL_X;
-        double centerY = rootPane.getHeight() * POSICION_INICIAL_Y;
-        // Ajustar para que layoutX, layoutY representen la esquina superior izquierda
+        double centerX = rootPane.getWidth() * 0.75;
+        double centerY = rootPane.getHeight() * 0.5;
         double layoutX = centerX - personajeRadius;
         double layoutY = centerY - personajeRadius;
-        while (collidesWithObstacle(centerX, centerY)) {
-            centerX += 20;
-            centerY += 20;
+
+        int attempts = 0;
+        while (collidesWithObstacle(centerX, centerY) && attempts < 10) {
+            centerX += 50;
+            centerY += 50;
+            layoutX = centerX - personajeRadius;
+            layoutY = centerY - personajeRadius;
+            attempts++;
+        }
+
+        if (attempts >= 10) {
+            centerX = rootPane.getWidth() * 0.75;
+            centerY = rootPane.getHeight() * 0.5;
             layoutX = centerX - personajeRadius;
             layoutY = centerY - personajeRadius;
         }
+
         personaje.setLayoutX(layoutX);
         personaje.setLayoutY(layoutY);
+        System.out.println("Personaje posicionado en: x=" + layoutX + ", y=" + layoutY);
     }
 
     private void adjustCharacterPosition() {
@@ -176,14 +293,17 @@ public class MenuGameController extends Controller implements Initializable {
         double newCenterY = rootPane.getHeight() * relY;
         double newLayoutX = newCenterX - personajeRadius;
         double newLayoutY = newCenterY - personajeRadius;
+
         if (!isWithinMap(newCenterX, newCenterY) || collidesWithObstacle(newCenterX, newCenterY)) {
-            newCenterX = rootPane.getWidth() * POSICION_INICIAL_X;
-            newCenterY = rootPane.getHeight() * POSICION_INICIAL_Y;
+            newCenterX = rootPane.getWidth() * 0.75;
+            newCenterY = rootPane.getHeight() * 0.5;
             newLayoutX = newCenterX - personajeRadius;
             newLayoutY = newCenterY - personajeRadius;
         }
+
         personaje.setLayoutX(newLayoutX);
         personaje.setLayoutY(newLayoutY);
+        System.out.println("Personaje ajustado a: x=" + newLayoutX + ", y=" + newLayoutY);
     }
 
     private void setupKeyboard() {
@@ -212,8 +332,10 @@ public class MenuGameController extends Controller implements Initializable {
     }
 
     private boolean isWithinMap(double x, double y) {
-        return x >= personajeRadius && x <= rootPane.getWidth() - personajeRadius &&
-               y >= personajeRadius && y <= rootPane.getHeight() - personajeRadius;
+        boolean within = x >= personajeRadius && x <= rootPane.getWidth() - personajeRadius &&
+                        y >= personajeRadius && y <= rootPane.getHeight() - personajeRadius;
+        System.out.println("Verificando si está dentro del mapa: x=" + x + ", y=" + y + ", resultado=" + within);
+        return within;
     }
 
     private boolean collidesWithObstacle(double x, double y) {
@@ -277,6 +399,7 @@ public class MenuGameController extends Controller implements Initializable {
         if (isWithinMap(newCenterX, newCenterY) && !collidesWithObstacle(newCenterX, newCenterY)) {
             personaje.setLayoutX(newLayoutX);
             personaje.setLayoutY(newLayoutY);
+            System.out.println("Moviendo personaje a: x=" + newLayoutX + ", y=" + newLayoutY);
             checkProximity();
         } else {
             mensaje.setText("¡Movimiento bloqueado!");
@@ -307,27 +430,86 @@ public class MenuGameController extends Controller implements Initializable {
         mensaje.setText("");
         double centerX = personaje.getLayoutX() + personajeRadius;
         double centerY = personaje.getLayoutY() + personajeRadius;
+        String previousHoverBuilding = currentHoverBuilding;
+        currentHoverBuilding = null;
+
+        System.out.println("Verificando proximidad en: x=" + centerX + ", y=" + centerY);
+
         if (collidesWith(registroHitbox, centerX, centerY)) {
             mensaje.setText("Presiona SPACE para entrar al Registro");
+            currentHoverBuilding = "registroHitbox";
+            applyHoverEffect(registroImage, registroHitbox);
         } else if (collidesWith(mantenimientoHitbox, centerX, centerY)) {
             mensaje.setText("Presiona SPACE para entrar a Mantenimiento");
+            currentHoverBuilding = "mantenimientoHitbox";
+            applyHoverEffect(mantenimientoImage, mantenimientoHitbox);
         } else if (collidesWith(torneosHitbox, centerX, centerY)) {
             mensaje.setText("Presiona SPACE para entrar a Torneos");
+            currentHoverBuilding = "torneosHitbox";
+            applyHoverEffect(torneosImage, torneosHitbox);
         } else if (collidesWith(bibliotecaHitbox, centerX, centerY)) {
-            mensaje.setText("Presiona SPACE para entrar a la Biblioteca");
+            mensaje.setText("Presiona SPACE para entrar a Reseñas");
+            currentHoverBuilding = "bibliotecaHitbox";
+            applyHoverEffect(bibliotecaImage, bibliotecaHitbox);
         } else if (collidesWith(cafeteriaHitbox, centerX, centerY)) {
-            mensaje.setText("Presiona SPACE para entrar a la Cafetería");
+            mensaje.setText("Presiona SPACE para entrar al GameHub");
+            currentHoverBuilding = "cafeteriaHitbox";
+            applyHoverEffect(cafeteriaImage, cafeteriaHitbox);
         } else if (collidesWith(arbolHitbox1, centerX, centerY)) {
             mensaje.setText("No puedes interactuar con el árbol...");
+            currentHoverBuilding = "arbolHitbox1";
+            applyHoverEffect(arbolImage, arbolHitbox1);
+        }
+
+        if (previousHoverBuilding != null && !previousHoverBuilding.equals(currentHoverBuilding)) {
+            ImageView previousImageView = getImageViewById(previousHoverBuilding.replace("Hitbox", "Image"));
+            Shape previousHitbox = getHitboxById(previousHoverBuilding);
+            if (previousImageView != null) {
+                resetHoverEffect(previousImageView, previousHitbox);
+            }
+        }
+    }
+
+    private void applyHoverEffect(ImageView imageView, Shape hitbox) {
+        if (imageView != null) {
+            System.out.println("Aplicando hover a ImageView: " + imageView.getId());
+            imageView.setScaleX(HOVER_SCALE);
+            imageView.setScaleY(HOVER_SCALE);
+        }
+        if (hitbox != null) {
+            System.out.println("Aplicando hover a Hitbox: " + hitbox.getId());
+            hitbox.setScaleX(HOVER_SCALE);
+            hitbox.setScaleY(HOVER_SCALE);
+        }
+    }
+
+    private void resetHoverEffect(ImageView imageView, Shape hitbox) {
+        if (imageView != null) {
+            System.out.println("Restaurando tamaño de ImageView: " + imageView.getId());
+            imageView.setScaleX(1.0);
+            imageView.setScaleY(1.0);
+        }
+        if (hitbox != null) {
+            System.out.println("Restaurando tamaño de Hitbox: " + hitbox.getId());
+            hitbox.setScaleX(1.0);
+            hitbox.setScaleY(1.0);
         }
     }
 
     private boolean collidesWith(Shape hitbox, double x, double y) {
         if (hitbox == null) return false;
-        Circle tempPersonaje = new Circle(x, y, personajeRadius);
+        Circle tempPersonaje = new Circle(x, y, personajeRadius + PROXIMITY_MARGIN);
         Bounds personajeBounds = tempPersonaje.localToScene(tempPersonaje.getBoundsInLocal());
         Bounds hitboxBounds = hitbox.localToScene(hitbox.getBoundsInLocal());
-        return personajeBounds.intersects(hitboxBounds);
+        boolean collides = personajeBounds.intersects(hitboxBounds);
+        if (collides) {
+            System.out.println("Colisión detectada con hitbox: " + hitbox.getId() +
+                               " (personaje bounds: x=" + personajeBounds.getMinX() + ", y=" + personajeBounds.getMinY() +
+                               ", width=" + personajeBounds.getWidth() + ", height=" + personajeBounds.getHeight() +
+                               "; hitbox bounds: x=" + hitboxBounds.getMinX() + ", y=" + hitboxBounds.getMinY() +
+                               ", width=" + hitboxBounds.getWidth() + ", height=" + hitboxBounds.getHeight() + ")");
+        }
+        return collides;
     }
 
     private void checkInteraction() {
@@ -340,9 +522,9 @@ public class MenuGameController extends Controller implements Initializable {
         } else if (collidesWith(torneosHitbox, centerX, centerY)) {
             mensaje.setText("¡Estadio de Torneos - Listo para competir!");
         } else if (collidesWith(bibliotecaHitbox, centerX, centerY)) {
-            mensaje.setText("¡Bienvenido a la Biblioteca!");
+            mensaje.setText("¡Bienvenido a Reseñas!");
         } else if (collidesWith(cafeteriaHitbox, centerX, centerY)) {
-            mensaje.setText("¡Hora de un café en la Cafetería!");
+            mensaje.setText("¡Bienvenido al GameHub!");
         } else if (collidesWith(arbolHitbox1, centerX, centerY)) {
             mensaje.setText("Es solo un árbol... nada que hacer aquí.");
         }
