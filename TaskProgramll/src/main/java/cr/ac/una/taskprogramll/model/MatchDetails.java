@@ -1,8 +1,6 @@
 package cr.ac.una.taskprogramll.model;
 
-/**
- * * * @author ashly
- */
+/** * * * @author ashly */
 public class MatchDetails {
 
     private String nameFirstTeam;

@@ -112,6 +112,7 @@
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" StackPane.alignment="CENTER">
                <children>
                   <MFXTextField fx:id="txfNumberTeam" alignment="CENTER" minWidth="-Infinity" prefWidth="125.0" promptText="Número del Equipo" stylesheets="@Style.css" />
+                  <VBox prefHeight="20.0" prefWidth="20.0" />
                   <ImageView fx:id="mgvCoin" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </VBox>

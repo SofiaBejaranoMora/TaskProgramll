@@ -18,11 +18,25 @@ public class Tourney {
     private Game continueGame;
     private List<Team> teamList;
     private List<Team> loosersList;
+    private List<Team> round1;
+    private List<Team> round2;
+    private List<Team> round3;
+    private List<Team> round4;
+    private List<Team> round5;
+    private List<Team> round6;
+    private List<Team> winner;
 
     public Tourney() {
         this.teamList = new ArrayList<>();
         this.loosersList = new ArrayList<>();
         this.continueGame = new Game();
+        this.round1 = new ArrayList<>();
+        this.round2 = new ArrayList<>();
+        this.round3 = new ArrayList<>();
+        this.round4 = new ArrayList<>();
+        this.round5 = new ArrayList<>();
+        this.round6 = new ArrayList<>();
+        this.winner = new ArrayList<>();
     }
 
     public Tourney(int id, String name, int time, int sportType, List<Team> teamList) {
@@ -60,7 +74,14 @@ public class Tourney {
             }
         }
 
-        this.continueGame = new Game(new ArrayList<>());
+        this.continueGame = new Game();
+        this.round1 = new ArrayList<>();
+        this.round2 = new ArrayList<>();
+        this.round3 = new ArrayList<>();
+        this.round4 = new ArrayList<>();
+        this.round5 = new ArrayList<>();
+        this.round6 = new ArrayList<>();
+        this.winner = new ArrayList<>();
     }
 
     // Getters
@@ -92,6 +113,91 @@ public class Tourney {
         return new ArrayList<>(loosersList);
     }
 
+     public void setItems(List<Team> round1) {
+        this.round1 = round1;
+    }
+
+    public List<Team> getRound1() {
+        return round1;
+    }
+
+    public void setRound1(List<Team> round1) {
+        this.round1 = round1;
+    }
+
+    public List<Team> getRound2() {
+        return round2;
+    }
+
+    public void setRound2(List<Team> round2) {
+        this.round2 = round2;
+    }
+
+    public List<Team> getRound3() {
+        return round3;
+    }
+
+    public void setRound3(List<Team> round3) {
+        this.round3 = round3;
+    }
+
+    public List<Team> getRound4() {
+        return round4;
+    }
+
+    public void setRound4(List<Team> round4) {
+        this.round4 = round4;
+    }
+
+    public List<Team> getRound5() {
+        return round5;
+    }
+
+    public void setRound5(List<Team> round5) {
+        this.round5 = round5;
+    }
+
+    public List<Team> getRound6() {
+        return round6;
+    }
+
+    public void setRound6(List<Team> round6) {
+        this.round6 = round6;
+    }
+
+    public List<Team> getWinner() {
+        return winner;
+    }
+
+    public void setWinner(List<Team> winner) {
+        this.winner = winner;
+    }
+    
+    public void addToRound(Team passTeam, int numberRound) {
+        switch (numberRound) {
+            case 1 -> {
+                round2.add(passTeam);
+            }
+            case 2 -> {
+                round3.add(passTeam);
+            }
+            case 3 -> {
+                round4.add(passTeam);
+            }
+            case 4 -> {
+                round5.add(passTeam);
+            }
+            case 5 -> {
+                round6.add(passTeam);
+            }
+            case 6 -> {
+                winner.add(passTeam);
+            }
+            default ->
+                throw new AssertionError();
+        }
+    }
+    
     // Setters
     public void setId(int id) {
         this.id = id;

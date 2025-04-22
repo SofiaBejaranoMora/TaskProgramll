@@ -249,7 +249,7 @@ public class GameController extends Controller implements Initializable {
             controller.adjustingTable(firstTeam);
             firstTeam.setItemEncounterList(new MatchDetails(firstTeam.getName(), secondTeam.getName(), counterGoalsFirstTeam, counterGoalsSecondTeam));
             secondTeam.setItemEncounterList(new MatchDetails(secondTeam.getName(), firstTeam.getName(), counterGoalsSecondTeam, counterGoalsFirstTeam));
-            winnerAnimatic(mgvWinFirstTeam);
+              winnerAnimatic(mgvWinFirstTeam);
         } else {
             System.out.println("Ganador del partido: " + secondTeam.getName());
             mgvWinSecondTeam.setVisible(true);

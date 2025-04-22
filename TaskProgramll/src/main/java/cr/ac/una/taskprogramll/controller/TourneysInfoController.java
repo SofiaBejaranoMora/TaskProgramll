@@ -60,7 +60,7 @@ public class TourneysInfoController extends Controller implements Initializable 
         if ("Finalizado".equals(selectedTourney.returnState())) {
             System.out.println("Show certificate for " + selectedTourney.getName());
             try {
-                Desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/Certificates/" + selectedTourney.getContinueGame().getWinner().get(0) + "_" + selectedTourney.getName() + ".pdf"));
+                Desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/Certificates/" + selectedTourney.getWinner().get(0) + "_" + selectedTourney.getName() + ".pdf"));
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Error al abrir el certificado: " + e.getMessage());

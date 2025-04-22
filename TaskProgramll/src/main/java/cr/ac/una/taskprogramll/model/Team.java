@@ -39,7 +39,7 @@ public class Team {
         this.id = id;
         this.draw = 0;
         this.wins = 0;
-        this.encounterList = new ArrayList<>();
+        encounterList = new ArrayList<>();
         reviewList = new ArrayList<>();
     }
 
@@ -49,7 +49,7 @@ public class Team {
         this.draw = draw;
         this.wins = wins;
         this.id = id;
-        this.encounterList = new ArrayList<>();
+        encounterList = new ArrayList<>();
         reviewList = new ArrayList<>();
     }
 

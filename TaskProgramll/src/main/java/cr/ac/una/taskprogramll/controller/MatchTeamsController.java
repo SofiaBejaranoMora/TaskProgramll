@@ -27,6 +27,7 @@ import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -231,7 +232,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         Collections.shuffle(currentTeamList);
         currentTourney.getTeamList().clear();
         currentTourney.setTeamList(currentTeamList);
-        currentTourney.getContinueGame().setItems(currentTeamList);
+        currentTourney.setItems(currentTeamList);
         round1.setAll(currentTeamList);
         clmnRound1.setCellValueFactory(new PropertyValueFactory<>("name"));
         tblPlayersTable.setItems(round1);
@@ -303,7 +304,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         switch (currentRound) {
             case 1 -> {
                 round2.add(winnerTeam);
-                currentTourney.getContinueGame().addToRound(winnerTeam, currentRound);
+                currentTourney.addToRound(winnerTeam, currentRound);
                 System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la siguiente ronda.");
                 clmnRound2.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -321,7 +322,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             case 2 -> {
                 round3.add(winnerTeam);
-                currentTourney.getContinueGame().addToRound(winnerTeam, currentRound);
+                currentTourney.addToRound(winnerTeam, currentRound);
                 System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la siguiente ronda.");
                 clmnRound3.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -339,7 +340,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             case 3 -> {
                 round4.add(winnerTeam);
-                currentTourney.getContinueGame().addToRound(winnerTeam, currentRound);
+                currentTourney.addToRound(winnerTeam, currentRound);
                 System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la siguiente ronda.");
                 clmnRound4.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -357,7 +358,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             case 4 -> {
                 round5.add(winnerTeam);
-                currentTourney.getContinueGame().addToRound(winnerTeam, currentRound);
+                currentTourney.addToRound(winnerTeam, currentRound);
                 System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la siguiente ronda.");
                 clmnRound5.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -375,7 +376,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             case 5 -> {
                 round6.add(winnerTeam);
-                currentTourney.getContinueGame().addToRound(winnerTeam, currentRound); 
+                currentTourney.addToRound(winnerTeam, currentRound); 
                 System.out.println("Avanzó el equipo " + winnerTeam.getName() + " a la siguiente ronda.");
                 clmnRound6.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -393,7 +394,7 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             case 6 -> {
                 winner.add(winnerTeam);
-                currentTourney.getContinueGame().addToRound(winnerTeam, currentRound);
+                currentTourney.addToRound(winnerTeam, currentRound);
                 System.out.println("El ganador del torneo es " + winnerTeam.getName());
                 clmnFinal.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -468,92 +469,80 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
 
     private void loadColumns() {
-        round1.setAll(currentTourney.getContinueGame().getRound1());
-        clmnRound1.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= round1.size()) {
-                    setText(null);
-                } else {
-                    setText(round1.get(getIndex()).getName());
-                }
+        clmnRound1.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getRound1().size()) {
+                return new SimpleStringProperty(currentTourney.getRound1().get(index).getName());
             }
+            return null;
         });
-        round2.setAll(currentTourney.getContinueGame().getRound2());
-        clmnRound2.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= round2.size()) {
-                    setText(null);
-                } else {
-                    setText(round2.get(getIndex()).getName());
-                }
+
+        clmnRound2.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getRound2().size()) {
+                return new SimpleStringProperty(currentTourney.getRound2().get(index).getName());
             }
+            return null;
         });
-        round3.setAll(currentTourney.getContinueGame().getRound3());
-        clmnRound3.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= round3.size()) {
-                    setText(null);
-                } else {
-                    setText(round3.get(getIndex()).getName());
-                }
+
+        clmnRound3.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getRound3().size()) {
+                return new SimpleStringProperty(currentTourney.getRound3().get(index).getName());
             }
+            return null;
         });
-        round4.setAll(currentTourney.getContinueGame().getRound4());
-        clmnRound4.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= round4.size()) {
-                    setText(null);
-                } else {
-                    setText(round4.get(getIndex()).getName());
-                }
+        clmnRound4.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getRound4().size()) {
+                return new SimpleStringProperty(currentTourney.getRound4().get(index).getName());
             }
+            return null;
         });
-        round5.setAll(currentTourney.getContinueGame().getRound5());
-        clmnRound5.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= round5.size()) {
-                    setText(null);
-                } else {
-                    setText(round5.get(getIndex()).getName());
-                }
+
+        clmnRound5.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getRound5().size()) {
+                return new SimpleStringProperty(currentTourney.getRound5().get(index).getName());
             }
+            return null;
         });
-        round6.setAll(currentTourney.getContinueGame().getRound6());
-        clmnRound6.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= round6.size()) {
-                    setText(null);
-                } else {
-                    setText(round6.get(getIndex()).getName());
-                }
+
+        clmnRound6.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getRound6().size()) {
+                return new SimpleStringProperty(currentTourney.getRound6().get(index).getName());
             }
+            return null;
         });
-        winner.setAll(currentTourney.getContinueGame().getWinner());
-        clmnFinal.setCellFactory(column -> new TableCell<Team, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getIndex() >= winner.size()) {
-                    setText(null);
-                } else {
-                    setText(winner.get(getIndex()).getName());
-                }
+
+        clmnFinal.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getWinner().size()) {
+                return new SimpleStringProperty(currentTourney.getWinner().get(index).getName());
             }
+            return null;
         });
-    }
-    
+        clmnRound6.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getRound6().size()) {
+                return new SimpleStringProperty(currentTourney.getRound6().get(index).getName());
+            }
+            return null;
+        });
+
+        ObservableList<Team> combinedRounds = FXCollections.observableArrayList();
+        combinedRounds.addAll(currentTourney.getRound1());
+        combinedRounds.addAll(currentTourney.getRound2());
+        combinedRounds.addAll(currentTourney.getRound3());
+        combinedRounds.addAll(currentTourney.getRound4());
+        combinedRounds.addAll(currentTourney.getRound5());
+        combinedRounds.addAll(currentTourney.getRound6());
+        combinedRounds.addAll(currentTourney.getWinner());
+        tblPlayersTable.setItems(combinedRounds);
+        tblPlayersTable.refresh();
+}
+        
     private void startGameParameters() {
         globalSize = currentTeamList.size();
         currentTourney.getContinueGame().setGlobalSize(globalSize);
@@ -584,7 +573,7 @@ public class MatchTeamsController extends Controller implements Initializable {
 
     private void viewGameTable() {
         globalSize = currentTourney.getContinueGame().getGlobalSize();
-        organizedRound();        
+        organizedRound();
         loadColumns();
         btnCetificate.setVisible(true);
         btnStart.setManaged(false);

@@ -1,4 +1,3 @@
-
 package cr.ac.una.taskprogramll.controller;
 import javafx.application.Platform;
 
@@ -16,14 +15,10 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.TreeMap;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -347,14 +342,13 @@ public class HistorialEquiposController extends Controller implements Initializa
             List<Team> allTeamsInTourney = new ArrayList<>();
             allTeamsInTourney.addAll(tourney.getTeamList());
             allTeamsInTourney.addAll(tourney.getLoosersList());
-            Game game = tourney.getContinueGame();
-            allTeamsInTourney.addAll(game.getRound1());
-            allTeamsInTourney.addAll(game.getRound2());
-            allTeamsInTourney.addAll(game.getRound3());
-            allTeamsInTourney.addAll(game.getRound4());
-            allTeamsInTourney.addAll(game.getRound5());
-            allTeamsInTourney.addAll(game.getRound6());
-            allTeamsInTourney.addAll(game.getWinner());
+            allTeamsInTourney.addAll(tourney.getRound1());
+            allTeamsInTourney.addAll(tourney.getRound2());
+            allTeamsInTourney.addAll(tourney.getRound3());
+            allTeamsInTourney.addAll(tourney.getRound4());
+            allTeamsInTourney.addAll(tourney.getRound5());
+            allTeamsInTourney.addAll(tourney.getRound6());
+            allTeamsInTourney.addAll(tourney.getWinner());
 
             for (Team team : allTeamsInTourney) {
                 if (!existingTeams.contains(team)) {
@@ -522,14 +516,13 @@ public class HistorialEquiposController extends Controller implements Initializa
             List<Team> allTeamsInTourney = new ArrayList<>();
             allTeamsInTourney.addAll(tourney.getTeamList());
             allTeamsInTourney.addAll(tourney.getLoosersList());
-            Game game = tourney.getContinueGame();
-            allTeamsInTourney.addAll(game.getRound1());
-            allTeamsInTourney.addAll(game.getRound2());
-            allTeamsInTourney.addAll(game.getRound3());
-            allTeamsInTourney.addAll(game.getRound4());
-            allTeamsInTourney.addAll(game.getRound5());
-            allTeamsInTourney.addAll(game.getRound6());
-            allTeamsInTourney.addAll(game.getWinner());
+            allTeamsInTourney.addAll(tourney.getRound1());
+            allTeamsInTourney.addAll(tourney.getRound2());
+            allTeamsInTourney.addAll(tourney.getRound3());
+            allTeamsInTourney.addAll(tourney.getRound4());
+            allTeamsInTourney.addAll(tourney.getRound5());
+            allTeamsInTourney.addAll(tourney.getRound6());
+            allTeamsInTourney.addAll(tourney.getWinner());
 
             for (Team tourneyTeam : allTeamsInTourney) {
                 if (tourneyTeam.getId() == team.getId()) {
@@ -547,14 +540,13 @@ public class HistorialEquiposController extends Controller implements Initializa
             List<Team> allTeamsInTourney = new ArrayList<>();
             allTeamsInTourney.addAll(tourney.getTeamList());
             allTeamsInTourney.addAll(tourney.getLoosersList());
-            Game game = tourney.getContinueGame();
-            allTeamsInTourney.addAll(game.getRound1());
-            allTeamsInTourney.addAll(game.getRound2());
-            allTeamsInTourney.addAll(game.getRound3());
-            allTeamsInTourney.addAll(game.getRound4());
-            allTeamsInTourney.addAll(game.getRound5());
-            allTeamsInTourney.addAll(game.getRound6());
-            allTeamsInTourney.addAll(game.getWinner());
+            allTeamsInTourney.addAll(tourney.getRound1());
+            allTeamsInTourney.addAll(tourney.getRound2());
+            allTeamsInTourney.addAll(tourney.getRound3());
+            allTeamsInTourney.addAll(tourney.getRound4());
+            allTeamsInTourney.addAll(tourney.getRound5());
+            allTeamsInTourney.addAll(tourney.getRound6());
+            allTeamsInTourney.addAll(tourney.getWinner());
 
             for (Team tourneyTeam : allTeamsInTourney) {
                 if (tourneyTeam.getId() == team.getId()) {
@@ -597,14 +589,13 @@ public class HistorialEquiposController extends Controller implements Initializa
             List<Team> allTeamsInTourney = new ArrayList<>();
             allTeamsInTourney.addAll(tourney.getTeamList());
             allTeamsInTourney.addAll(tourney.getLoosersList());
-            Game game = tourney.getContinueGame();
-            allTeamsInTourney.addAll(game.getRound1());
-            allTeamsInTourney.addAll(game.getRound2());
-            allTeamsInTourney.addAll(game.getRound3());
-            allTeamsInTourney.addAll(game.getRound4());
-            allTeamsInTourney.addAll(game.getRound5());
-            allTeamsInTourney.addAll(game.getRound6());
-            allTeamsInTourney.addAll(game.getWinner());
+            allTeamsInTourney.addAll(tourney.getRound1());
+            allTeamsInTourney.addAll(tourney.getRound2());
+            allTeamsInTourney.addAll(tourney.getRound3());
+            allTeamsInTourney.addAll(tourney.getRound4());
+            allTeamsInTourney.addAll(tourney.getRound5());
+            allTeamsInTourney.addAll(tourney.getRound6());
+            allTeamsInTourney.addAll(tourney.getWinner());
 
             for (Team tourneyTeam : allTeamsInTourney) {
                 if (tourneyTeam.getId() == updatedTeam.getId()) { 
@@ -737,14 +728,13 @@ public class HistorialEquiposController extends Controller implements Initializa
             List<Team> allTeamsInTourney = new ArrayList<>();
             allTeamsInTourney.addAll(tourney.getTeamList());
             allTeamsInTourney.addAll(tourney.getLoosersList());
-            Game game = tourney.getContinueGame();
-            allTeamsInTourney.addAll(game.getRound1());
-            allTeamsInTourney.addAll(game.getRound2());
-            allTeamsInTourney.addAll(game.getRound3());
-            allTeamsInTourney.addAll(game.getRound4());
-            allTeamsInTourney.addAll(game.getRound5());
-            allTeamsInTourney.addAll(game.getRound6());
-            allTeamsInTourney.addAll(game.getWinner());
+            allTeamsInTourney.addAll(tourney.getRound1());
+            allTeamsInTourney.addAll(tourney.getRound2());
+            allTeamsInTourney.addAll(tourney.getRound3());
+            allTeamsInTourney.addAll(tourney.getRound4());
+            allTeamsInTourney.addAll(tourney.getRound5());
+            allTeamsInTourney.addAll(tourney.getRound6());
+            allTeamsInTourney.addAll(tourney.getWinner());
 
             for (Team tourneyTeam : allTeamsInTourney) {
                 if (tourneyTeam.getId() == updatedTeam.getId()) {
@@ -902,14 +892,13 @@ public class HistorialEquiposController extends Controller implements Initializa
             List<Team> allTeamsInTourney = new ArrayList<>();
             allTeamsInTourney.addAll(tourney.getTeamList());
             allTeamsInTourney.addAll(tourney.getLoosersList());
-            Game game = tourney.getContinueGame();
-            allTeamsInTourney.addAll(game.getRound1());
-            allTeamsInTourney.addAll(game.getRound2());
-            allTeamsInTourney.addAll(game.getRound3());
-            allTeamsInTourney.addAll(game.getRound4());
-            allTeamsInTourney.addAll(game.getRound5());
-            allTeamsInTourney.addAll(game.getRound6());
-            allTeamsInTourney.addAll(game.getWinner());
+            allTeamsInTourney.addAll(tourney.getRound1());
+            allTeamsInTourney.addAll(tourney.getRound2());
+            allTeamsInTourney.addAll(tourney.getRound3());
+            allTeamsInTourney.addAll(tourney.getRound4());
+            allTeamsInTourney.addAll(tourney.getRound5());
+            allTeamsInTourney.addAll(tourney.getRound6());
+            allTeamsInTourney.addAll(tourney.getWinner());
 
             if (allTeamsInTourney.stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                 tournamentsParticipated.add(tourney.getName());
@@ -923,14 +912,13 @@ public class HistorialEquiposController extends Controller implements Initializa
                 List<Team> teamsInTourney = new ArrayList<>();
                 teamsInTourney.addAll(tourney.getTeamList());
                 teamsInTourney.addAll(tourney.getLoosersList());
-                Game game = tourney.getContinueGame();
-                teamsInTourney.addAll(game.getRound1());
-                teamsInTourney.addAll(game.getRound2());
-                teamsInTourney.addAll(game.getRound3());
-                teamsInTourney.addAll(game.getRound4());
-                teamsInTourney.addAll(game.getRound5());
-                teamsInTourney.addAll(game.getRound6());
-                teamsInTourney.addAll(game.getWinner());
+                teamsInTourney.addAll(tourney.getRound1());
+                teamsInTourney.addAll(tourney.getRound2());
+                teamsInTourney.addAll(tourney.getRound3());
+                teamsInTourney.addAll(tourney.getRound4());
+                teamsInTourney.addAll(tourney.getRound5());
+                teamsInTourney.addAll(tourney.getRound6());
+                teamsInTourney.addAll(tourney.getWinner());
                 allTeamsInSport.addAll(teamsInTourney);
             }
         }
@@ -964,14 +952,13 @@ public class HistorialEquiposController extends Controller implements Initializa
             List<Team> allTeamsInTourney = new ArrayList<>();
             allTeamsInTourney.addAll(tourney.getTeamList());
             allTeamsInTourney.addAll(tourney.getLoosersList());
-            Game game = tourney.getContinueGame();
-            allTeamsInTourney.addAll(game.getRound1());
-            allTeamsInTourney.addAll(game.getRound2());
-            allTeamsInTourney.addAll(game.getRound3());
-            allTeamsInTourney.addAll(game.getRound4());
-            allTeamsInTourney.addAll(game.getRound5());
-            allTeamsInTourney.addAll(game.getRound6());
-            allTeamsInTourney.addAll(game.getWinner());
+            allTeamsInTourney.addAll(tourney.getRound1());
+            allTeamsInTourney.addAll(tourney.getRound2());
+            allTeamsInTourney.addAll(tourney.getRound3());
+            allTeamsInTourney.addAll(tourney.getRound4());
+            allTeamsInTourney.addAll(tourney.getRound5());
+            allTeamsInTourney.addAll(tourney.getRound6());
+            allTeamsInTourney.addAll(tourney.getWinner());
 
             for (Team tourneyTeam : allTeamsInTourney) {
                 if (tourneyTeam.getId() == updatedTeam.getId()) {
@@ -1048,28 +1035,27 @@ public class HistorialEquiposController extends Controller implements Initializa
                 List<MatchDetails> matches = updatedTeam.getEncounterList();
                 System.out.println("Partidos encontrados para " + updatedTeam.getName() + " en torneo " + tourney.getName() + ": " + matches);
 
-                Game game = tourney.getContinueGame();
                 int lastRoundParticipated = 0;
 
-                if (game.getRound1().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                if (tourney.getRound1().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                     lastRoundParticipated = 1;
                 }
-                if (game.getRound2().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                if (tourney.getRound2().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                     lastRoundParticipated = 2;
                 }
-                if (game.getRound3().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                if (tourney.getRound3().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                     lastRoundParticipated = 3;
                 }
-                if (game.getRound4().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                if (tourney.getRound4().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                     lastRoundParticipated = 4;
                 }
-                if (game.getRound5().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                if (tourney.getRound5().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                     lastRoundParticipated = 5;
                 }
-                if (game.getRound6().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                if (tourney.getRound6().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                     lastRoundParticipated = 6;
                 }
-                if (game.getWinner().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+                if (tourney.getWinner().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                     lastRoundParticipated = 7;
                 }
 
@@ -1197,26 +1183,25 @@ public class HistorialEquiposController extends Controller implements Initializa
 
         int lastRoundParticipated = 0;
         for (Tourney tourney : availableTourneys) {
-            Game game = tourney.getContinueGame();
-            if (game.getRound1().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+            if (tourney.getRound1().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                 lastRoundParticipated = Math.max(lastRoundParticipated, 1);
             }
-            if (game.getRound2().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+            if (tourney.getRound2().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                 lastRoundParticipated = Math.max(lastRoundParticipated, 2);
             }
-            if (game.getRound3().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+            if (tourney.getRound3().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                 lastRoundParticipated = Math.max(lastRoundParticipated, 3);
             }
-            if (game.getRound4().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+            if (tourney.getRound4().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                 lastRoundParticipated = Math.max(lastRoundParticipated, 4);
             }
-            if (game.getRound5().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+            if (tourney.getRound5().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                 lastRoundParticipated = Math.max(lastRoundParticipated, 5);
             }
-            if (game.getRound6().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+            if (tourney.getRound6().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                 lastRoundParticipated = Math.max(lastRoundParticipated, 6);
             }
-            if (game.getWinner().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
+            if (tourney.getWinner().stream().anyMatch(t -> t.getId() == updatedTeam.getId())) {
                 lastRoundParticipated = Math.max(lastRoundParticipated, 7);
             }
         }

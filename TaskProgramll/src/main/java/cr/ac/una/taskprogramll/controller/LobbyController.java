@@ -107,19 +107,6 @@ public class LobbyController extends Controller implements Initializable {
                     message.show(Alert.AlertType.INFORMATION, "Aviso", "No se puede ver el historial torneos porque aún no ha registrado ningún torneo. Por favor, registre al menos un torneo primero.");
                 }
                 break;
-            case "Historial de Equipos":
-                file = new File("Team.txt");
-                if ((file.exists()) && (file.length() > 0)) {
-                    String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
-                    if (!content.equals("[]") && !content.isEmpty()) {
-                        FlowController.getInstance().goViewInStage("HistorialEquipos", (Stage) cmbMenu.getScene().getWindow());
-                    } else {
-                        message.show(Alert.AlertType.INFORMATION, "Aviso", "No se puede ver el historial equipo porque aún no ha registrado ningún equipo. Por favor, registre al menos un equipo primero.");
-                    }
-                } else {
-                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No se puede ver el historial equipo porque aún no ha registrado ningún equipo. Por favor, registre al menos un equipo primero.");
-                }
-                break;
             default:
                 throw new AssertionError();
         }
