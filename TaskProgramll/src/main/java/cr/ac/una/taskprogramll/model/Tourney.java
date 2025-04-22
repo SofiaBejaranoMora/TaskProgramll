@@ -56,7 +56,7 @@ public class Tourney {
             }
         }
 
-        this.continueGame = new Game();
+        this.continueGame = new Game(new ArrayList<>());
     }
 
     // Getters

@@ -1,7 +1,7 @@
 package cr.ac.una.taskprogramll.controller;
 
 import cr.ac.una.taskprogramll.util.FlowController;
-import cr.ac.una.taskprogramll.util.ResourceUtil;
+import cr.ac.una.taskprogramll.util.ImagesUtil;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -96,7 +96,7 @@ public class MenuGameController extends Controller implements Initializable {
     }
 
     private void loadBackground() {
-        String path = ResourceUtil.getSkinPath(BACKGROUND_IMAGE_ID);
+        String path = ImagesUtil.getSkinPath(BACKGROUND_IMAGE_ID);
         if (path != null) {
             System.out.println("Cargando fondo desde: " + path);
             try {
@@ -142,7 +142,7 @@ public class MenuGameController extends Controller implements Initializable {
     }
 
     private Image loadImage(int id, String errorMsg) {
-        String path = ResourceUtil.getSkinPath(id);
+        String path = ImagesUtil.getSkinPath(id);
         if (path != null) {
             System.out.println("Cargando imagen desde: " + path);
             try {
