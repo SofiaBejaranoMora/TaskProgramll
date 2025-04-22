@@ -6,7 +6,7 @@ import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
 import cr.ac.una.taskprogramll.util.FlowController;
-import cr.ac.una.taskprogramll.util.ResourceUtil;
+import cr.ac.una.taskprogramll.util.ImagesUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import java.net.URL;
@@ -156,7 +156,7 @@ public class GameController extends Controller implements Initializable {
         mgvCoin.getTransforms().add(scale);
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(130), event -> {
-            mgvCoin.setImage(new Image(ResourceUtil.getCoinPath(coinNumber)));
+            mgvCoin.setImage(new Image(ImagesUtil.getCoinPath(coinNumber)));
             if (coinNumber == 14) {
                 coinNumber = 1;
             } else {
@@ -218,9 +218,9 @@ public class GameController extends Controller implements Initializable {
     private void chargeImages() {
         mgvWinFirstTeam.setVisible(false);
         mgvWinSecondTeam.setVisible(false);
-        mgvBall.setImage(new Image(ResourceUtil.getImagePath(currentSport.getId())));
-        mgvFirstTeam.setImage(new Image(ResourceUtil.getImagePath(firstTeam.getId())));
-        mgvSecondTeam.setImage(new Image(ResourceUtil.getImagePath(secondTeam.getId())));
+        mgvBall.setImage(new Image(ImagesUtil.getImagePath(currentSport.getId())));
+        mgvFirstTeam.setImage(new Image(ImagesUtil.getImagePath(firstTeam.getId())));
+        mgvSecondTeam.setImage(new Image(ImagesUtil.getImagePath(secondTeam.getId())));
         lblNameFirstTeam.setText(firstTeam.getName());
         lblNameSecondTeam.setText(secondTeam.getName());
     }
@@ -279,7 +279,7 @@ public class GameController extends Controller implements Initializable {
             determinateWinner(2, 3);
         } else {
             stpDraw.setVisible(true);
-            mgvCoin.setImage(new Image(ResourceUtil.getCoinPath(1)));
+            mgvCoin.setImage(new Image(ImagesUtil.getCoinPath(1)));
         }
     }
 

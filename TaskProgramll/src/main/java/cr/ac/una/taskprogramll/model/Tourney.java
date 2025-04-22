@@ -47,7 +47,6 @@ public class Tourney {
             this.sportTypeId = sportType;
         }
 
-        // Inicialización segura de listas
         this.teamList = new ArrayList<>();
         this.loosersList = new ArrayList<>();
 
@@ -60,7 +59,7 @@ public class Tourney {
             }
         }
 
-        this.continueGame = new Game();
+        this.continueGame = new Game(new ArrayList<>());
     }
 
     // Getters

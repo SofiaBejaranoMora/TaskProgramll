@@ -1,7 +1,7 @@
 package cr.ac.una.taskprogramll.util;
 
 /** * * @author Michelle Wittingham */
-public class ResourceUtil {
+public class ImagesUtil {
     
     private static final String BASE_PATH = "/cr/ac/una/taskprogramll/resources/";
     /**
@@ -12,11 +12,11 @@ public class ResourceUtil {
     public static String getImagePath(int id) {
         try {
             String path = BASE_PATH + id + ".png";
-            if (ResourceUtil.class.getResource(path) == null) {
+            if (ImagesUtil.class.getResource(path) == null) {
                 System.err.println("No se encontró la imagen: " + path);
                 return null;
             }
-            return ResourceUtil.class.getResource(path).toExternalForm();
+            return ImagesUtil.class.getResource(path).toExternalForm();
         } catch (Exception e) {
             System.err.println("Error cargando imagen " + id + ": " + e.getMessage());
             return null;
@@ -26,11 +26,11 @@ public class ResourceUtil {
     public static String getCoinPath(int coinNumber) {
         try {
             String path = BASE_PATH + "ProgramImages/" + coinNumber + ".png";
-            if (ResourceUtil.class.getResource(path) == null) {
+            if (ImagesUtil.class.getResource(path) == null) {
                 System.err.println("No se encontró la imagen: " + path);
                 return null;
             }
-            return ResourceUtil.class.getResource(path).toExternalForm();
+            return ImagesUtil.class.getResource(path).toExternalForm();
         } catch (Exception e) {
             System.err.println("Error cargando imagen " + coinNumber + ": " + e.getMessage());
             return null;
@@ -40,11 +40,11 @@ public class ResourceUtil {
     public static String getSkinPath(int skinNumber){
         try {
             String path = BASE_PATH + "skinName/" + skinNumber + ".png";
-                if (ResourceUtil.class.getResource(path) == null) {
+                if (ImagesUtil.class.getResource(path) == null) {
                     System.err.println("No se encontró la imagen: " + path);
                     return null;
                 }
-                return ResourceUtil.class.getResource(path).toExternalForm();
+                return ImagesUtil.class.getResource(path).toExternalForm();
            } catch (Exception e) {
             System.err.println("Error cargando imagen " + skinNumber + ": " + e.getMessage());
             return null;

@@ -13,10 +13,9 @@ import cr.ac.una.taskprogramll.model.FileManager;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
-import cr.ac.una.taskprogramll.util.Certificate;
 import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.Mensaje;
-import cr.ac.una.taskprogramll.util.ResourceUtil;
+import cr.ac.una.taskprogramll.util.ImagesUtil;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import java.awt.Desktop;
 import java.io.File;
@@ -108,16 +107,10 @@ public class MatchTeamsController extends Controller implements Initializable {
 
     @FXML
     private void onActionBtnBack(ActionEvent event) {
-        if (winner != null) {
-            ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
-            controller.initialPanelConditions();
-            FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
-        } else {
-            saveData();
-            ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
-            controller.initialPanelConditions();
-            FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
-        }
+        saveData();
+        ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
+        controller.initialPanelConditions();
+        FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
     }
 
     @FXML
@@ -125,6 +118,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         if (viewButton) {
             btnBack.setVisible(false);
             viewButton = false;
+            message.show(Alert.AlertType.WARNING, "Actividades del partido", "Aviso, tras esta ronda se habilitará un receso por si quiere disfrutar del lugar. ¡Vuelva cuando guste!");
         }
         AppContext.getInstance().set("CurrentTourney", currentTourney);
         GameController controller = (GameController) FlowController.getInstance().getController("Game");
@@ -163,27 +157,27 @@ public class MatchTeamsController extends Controller implements Initializable {
             PdfCanvas canva= new PdfCanvas(pdf.addNewPage());
             canva.addImage(backgroundImage, 0,0,pdfSize.getWidth(), false);
             
-            ImageData imageDataUser =ImageDataFactory.create(addresTeamPhotograsphs);
-            canva.addImage(imageDataUser,new Rectangle(420, 100, 115, 91), false);
+            ImageData teamData =ImageDataFactory.create(addresTeamPhotograsphs);
+            canva.addImage(teamData,new Rectangle(420, 100, 115, 91), false);
             
-            Paragraph paragraphName=new Paragraph("Nombre: "+winner.getName())
+            Paragraph paragraphName=new Paragraph("Nombre del equipo ganador en " + tourney + ": " + winner.getName())
                 .setFontSize(14)
                 .setMarginTop(97)
                 .setMarginLeft(35);
             
-            Paragraph paragraphAge=new Paragraph("Deporte: "+winner.getName())
+            Paragraph paragraphSport=new Paragraph("Deporte del torneo: " + currentTourney.getSportTypeId())
                 .setFontSize(14)
                 .setMarginTop(6)
                 .setMarginLeft(35);
             
-            Paragraph paragraphFolio=new Paragraph("Puntos: "+ winner.getPoints())
+            Paragraph paragraphPoints=new Paragraph("Puntos obtenidos en este torneo: " + winner.getPoints())
                 .setFontSize(14)
                 .setMarginTop(6)
                 .setMarginLeft(35);
             
             document.add(paragraphName);
-            document.add(paragraphAge);
-            document.add(paragraphFolio);
+            document.add(paragraphSport);
+            document.add(paragraphPoints);
             
             document.close();
         }
@@ -280,7 +274,6 @@ public class MatchTeamsController extends Controller implements Initializable {
             if (index == currentTeamList.size()) {
                 currentRound++;
                 btnBack.setVisible(true);
-                message.show(Alert.AlertType.WARNING, "Actividades del partido", "Aviso, tras esta ronda se habilitará un receso por si quiere disfrutar del lugar. ¡Vuelva cuando guste!");
                 viewButton = true;
                 currentTeamList = currentTourney.getTeamList();
                 index = currentTeamList.size() - 1;
@@ -293,7 +286,6 @@ public class MatchTeamsController extends Controller implements Initializable {
             if (index == -1) {
                 currentRound++;
                 btnBack.setVisible(true);
-                message.show(Alert.AlertType.WARNING, "Actividades del partido", "Aviso, tras esta ronda se habilitará un receso por si quiere disfrutar del lugar. ¡Vuelva cuando guste!");
                 viewButton = true;
                 currentTeamList = currentTourney.getTeamList();
                 index = 0;
@@ -426,13 +418,15 @@ public class MatchTeamsController extends Controller implements Initializable {
         }
     }
 
-        private void winnerAnimatic(ImageView starWinner) {
+    private void winnerAnimatic(ImageView starWinner) {
         Scale scale = new Scale();
         starWinner.getTransforms().add(scale);
         Timeline timeline = new Timeline();
         KeyFrame increase = new KeyFrame(Duration.millis(500), new KeyValue(scale.xProperty(), 1.5), new KeyValue(scale.yProperty(), 1.5));
         KeyFrame reduce = new KeyFrame(Duration.millis(1000), new KeyValue(scale.xProperty(), 1.0), new KeyValue(scale.yProperty(), 1.0));
-        timeline.getKeyFrames().addAll(increase, reduce);
+        KeyFrame firstHeartBit = new KeyFrame(Duration.millis(100), new KeyValue(scale.xProperty(), 1.3), new KeyValue(scale.yProperty(), 1.3));
+        KeyFrame secondHeartBit = new KeyFrame(Duration.millis(150), new KeyValue(scale.xProperty(), 1.2), new KeyValue(scale.yProperty(), 1.2));
+        timeline.getKeyFrames().addAll(increase, reduce, firstHeartBit, secondHeartBit);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
@@ -441,7 +435,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         btnStart.setVisible(false);
         btnStart.setManaged(false);
         stpWinnerTourney.setVisible(true);
-        mgvWinnerImage.setImage(new Image(ResourceUtil.getImagePath(winnerTeam.getId())));
+        mgvWinnerImage.setImage(new Image(ImagesUtil.getImagePath(winnerTeam.getId())));
         winnerAnimatic(mgvWinnerStar);
         lblWinnerName.setText(winnerTeam.getName());
         lblWinnerPoints.setText("Puntos obtenidos: " + winnerTeam.getPoints());
@@ -454,18 +448,19 @@ public class MatchTeamsController extends Controller implements Initializable {
         stpWinnerTourney.setVisible(false);
         AppContext.getInstance().set("SelectedTourney", null);
 
-        if (!isFinished){
+        if (!isFinished) {
             currentTourney.getContinueGame().setCurrentRound(currentRound);
-        if (currentRound % 2 != 0) { 
-            currentTourney.getContinueGame().setContinueIdFTeam(currentTeamList.get(index).getId());
-            currentTourney.getContinueGame().setContinueIdSTeam(currentTeamList.get(index + 1).getId());
-            currentTourney.getContinueGame().setContinueIndexTeam(index);    
-        }
-        else {
-            currentTourney.getContinueGame().setContinueIdFTeam(currentTeamList.get(index).getId());
-            currentTourney.getContinueGame().setContinueIdSTeam(currentTeamList.get(index - 1).getId());
-            currentTourney.getContinueGame().setContinueIndexTeam(index);
-        }
+            if (currentRound % 2 != 0) {
+                currentTourney.getContinueGame().setContinueIdFTeam(currentTeamList.get(index).getId());
+                currentTourney.getContinueGame().setContinueIdSTeam(currentTeamList.get(index + 1).getId());
+                currentTourney.getContinueGame().setContinueIndexTeam(index);
+                System.out.println("Datos guardados");
+            } else {
+                currentTourney.getContinueGame().setContinueIdFTeam(currentTeamList.get(index).getId());
+                currentTourney.getContinueGame().setContinueIdSTeam(currentTeamList.get(index - 1).getId());
+                currentTourney.getContinueGame().setContinueIndexTeam(index);
+                System.out.println("Datos guardados");
+            }
         } else {
             System.out.println("Juego terminado");
         }
