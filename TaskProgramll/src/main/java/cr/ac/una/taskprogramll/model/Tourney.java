@@ -33,21 +33,25 @@ public class Tourney {
             this.name = "";
         }
 
+        // Validación para time (no negativo)
         if (time < 0) {
             this.time = 0;
         } else {
             this.time = time;
         }
 
+        // Validación para sportTypeId (no negativo)
         if (sportType < 0) {
             this.sportTypeId = 0;
         } else {
             this.sportTypeId = sportType;
         }
 
+        // Inicialización segura de listas
         this.teamList = new ArrayList<>();
         this.loosersList = new ArrayList<>();
 
+        // Agregar equipos de manera segura
         if (teamList != null) {
             for (Team team : teamList) {
                 if (team != null) {
@@ -88,6 +92,7 @@ public class Tourney {
         return new ArrayList<>(loosersList);
     }
 
+    // Setters
     public void setId(int id) {
         this.id = id;
     }
@@ -110,23 +115,58 @@ public class Tourney {
         if (currentTeamList == null) {
             this.teamList = new ArrayList<>();
             try {
-                teamList=fileManager.deserialization("Team", Team.class);
+                fileManager.serialization(this.teamList, "Teams");
             } catch (Exception e) {
                 System.out.println("Error al serializar teamList (null): " + e.getMessage());
-                return;
             }
+            return;
         }
-        
-        for(int i=0; i<this.teamList.size(); i++){
-            for(int j=0; j<currentTeamList.size(); j++){
-                Team existingTeam=this.teamList.get(i);
-                Team currentTeam=currentTeamList.get(i);
-                if(existingTeam.getId()==currentTeam.getId()){
-                    this.teamList.set(j, currentTeam);
+        List<Team> newTeamList = new ArrayList<>();
+
+        for (Team newTeam : currentTeamList) {
+            if (newTeam == null || newTeam.getId() <= 0) {
+                continue;
+            }
+
+            boolean found = false;
+            for (int i = 0; i < this.teamList.size(); i++) {
+                Team existingTeam = this.teamList.get(i);
+                if (existingTeam != null && existingTeam.getId() > 0 && existingTeam.getId() == newTeam.getId()) {
+                    if(existingTeam.getId()!=newTeam.getId()){
+                    this.teamList.set(i, newTeam);
+                }
+                    found = true;
+                    break;
                 }
             }
+            if (!found) {
+                newTeamList.add(newTeam);
+            }
         }
-        
+        this.teamList.addAll(newTeamList);
+        this.teamList.removeIf(existingTeam
+                -> existingTeam != null
+                && existingTeam.getId() > 0
+                && currentTeamList.stream().noneMatch(newTeam
+                        -> newTeam != null
+                && newTeam.getId() > 0
+                && newTeam.getId() == existingTeam.getId()
+                )
+        );
+        this.teamList.removeIf(team -> team != null && loosersList.contains(team));
+        try {
+            fileManager.serialization(this.teamList, "Teams");
+        } catch (Exception e) {
+            System.out.println("Error al serializar teamList: " + e.getMessage());
+        }
+    }
+    public void addTeam(Team team) {
+        if (team == null) {
+            return;
+        }
+        if (!teamList.contains(team) && !loosersList.contains(team)) {
+            teamList.add(team);
+        }
     }
 
     public void removeTeam(Team team) {
