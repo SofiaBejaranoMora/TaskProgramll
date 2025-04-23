@@ -296,6 +296,18 @@
     -fx-background-color: #5DEAF1;
 }
 
+#tblPlayersTable {
+    -fx-opacity: 1; 
+}
+
+#tblPlayersTable .column-header-background {
+    -fx-opacity: 0;
+}
+
+#tblPlayersTable .table-row-cell {
+    -fx-background-color: transparent;
+}
+
 .PurpleBackground{
     -fx-background-color:
         radial-gradient(center 76.42% 75.00%, radius 100%, rgba(96, 71, 145, 1) 0%, rgba(96, 71, 145, 0) 100%),
@@ -304,10 +316,6 @@
         radial-gradient(center 92.76% 3.50%, radius 100%, rgba(96, 71, 145, 1) 0%, rgba(96, 71, 145, 0) 100%),
         radial-gradient(center 66.73% 69.96%, radius 100%, rgba(163, 114, 219, 1) 0%, rgba(163, 114, 219, 0) 100%),
         radial-gradient(center 39.16% 71.63%, radius 100%, rgba(218, 162, 252, 1) 0%, rgba(218, 162, 252, 0) 100%);
-}
-
-#tourneyHitbox {
-    -fx-fill: url("resources/stadium.png");
 }
 
 .scroll-pane {

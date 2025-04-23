@@ -42,6 +42,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
@@ -88,6 +89,8 @@ public class MatchTeamsController extends Controller implements Initializable {
     @FXML
     private TableColumn<Team, String> clmnFinal;
     @FXML
+    private TableColumn<Team, String> clmnOrganized;
+    @FXML
     private MFXButton btnBack;
     @FXML
     private MFXButton btnStart;
@@ -105,10 +108,13 @@ public class MatchTeamsController extends Controller implements Initializable {
     private Label lblWinnerPoints;
     @FXML
     private Label lblWinnerGoals;
+    @FXML
+    private AnchorPane ncpRoot;
 
     @FXML
     private void onActionBtnBack(ActionEvent event) {
         saveData();
+        AppContext.getInstance().delete("SelectedTourney");
         ViewTourneysController controller = (ViewTourneysController) FlowController.getInstance().getController("ViewTourneys");
         controller.initialPanelConditions();
         FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) btnBack.getScene().getWindow());
@@ -119,7 +125,6 @@ public class MatchTeamsController extends Controller implements Initializable {
         if (viewButton) {
             btnBack.setVisible(false);
             viewButton = false;
-            message.show(Alert.AlertType.WARNING, "Actividades del partido", "Aviso, tras esta ronda se habilitará un receso por si quiere disfrutar del lugar. ¡Vuelva cuando guste!");
         }
         AppContext.getInstance().set("CurrentTourney", currentTourney);
         GameController controller = (GameController) FlowController.getInstance().getController("Game");
@@ -210,21 +215,6 @@ public class MatchTeamsController extends Controller implements Initializable {
         for (TableColumn<Team, ?> column : tblPlayersTable.getColumns()) {
             column.setSortable(false);
         }
-    }
-
-    private void applyRowStyles(TableView<Team> tableView) {
-        tableView.setRowFactory(tv -> new TableRow<Team>() {
-            @Override
-            protected void updateItem(Team item, boolean empty) {
-                super.updateItem(item, empty);
-                if (!empty) {
-                    String style = (getIndex() % 4 < 2) ? "-fx-background-color: #6699ff; -fx-border-color: #660000; -fx-border-width: 1px;" : "-fx-background-color: #99ff66; -fx-border-color: #660066; -fx-border-width: 1px;";
-                    setStyle(style);
-                } else {
-                    setStyle("");
-                }
-            }
-        });
     }
 
     private void distributionOnTable() {
@@ -447,8 +437,15 @@ public class MatchTeamsController extends Controller implements Initializable {
     
     private void saveData() {
         stpWinnerTourney.setVisible(false);
-        AppContext.getInstance().set("SelectedTourney", null);
+        AppContext.getInstance().delete("SelectedTourney");
 
+        clmnRound1.setVisible(true);
+        clmnRound2.setVisible(true);
+        clmnRound3.setVisible(true);
+        clmnRound4.setVisible(true);
+        clmnRound5.setVisible(true);
+        clmnRound6.setVisible(true);
+        clmnFinal.setVisible(true);
         if (!isFinished) {
             currentTourney.getContinueGame().setCurrentRound(currentRound);
             if (currentRound % 2 != 0) {
@@ -469,14 +466,21 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
 
     private void loadColumns() {
-        clmnRound1.setCellValueFactory(cellData -> {
-            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
-            if (index < currentTourney.getRound1().size()) {
+        disableFilterOrSelection();
+        clmnOrganized.setCellValueFactory(cellData -> {
+            int index = tblPlayersTable.getItems().indexOf(cellData.getValue());
+            if (index >= 0 && index < currentTourney.getRound1().size()) {
                 return new SimpleStringProperty(currentTourney.getRound1().get(index).getName());
             }
             return null;
         });
-
+        clmnRound1.setCellValueFactory(cellData -> {
+            int index = tblPlayersTable.getItems().indexOf(cellData.getValue());
+            if (index >= 0 && index < currentTourney.getRound1().size()) {
+                return new SimpleStringProperty(currentTourney.getRound1().get(index).getName());
+            }
+            return null;
+        });
         clmnRound2.setCellValueFactory(cellData -> {
             int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
             if (index < currentTourney.getRound2().size()) {
@@ -484,7 +488,6 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             return null;
         });
-
         clmnRound3.setCellValueFactory(cellData -> {
             int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
             if (index < currentTourney.getRound3().size()) {
@@ -499,7 +502,6 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             return null;
         });
-
         clmnRound5.setCellValueFactory(cellData -> {
             int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
             if (index < currentTourney.getRound5().size()) {
@@ -507,7 +509,6 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             return null;
         });
-
         clmnRound6.setCellValueFactory(cellData -> {
             int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
             if (index < currentTourney.getRound6().size()) {
@@ -515,7 +516,6 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             return null;
         });
-
         clmnFinal.setCellValueFactory(cellData -> {
             int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
             if (index < currentTourney.getWinner().size()) {
@@ -523,15 +523,9 @@ public class MatchTeamsController extends Controller implements Initializable {
             }
             return null;
         });
-        clmnRound6.setCellValueFactory(cellData -> {
-            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
-            if (index < currentTourney.getRound6().size()) {
-                return new SimpleStringProperty(currentTourney.getRound6().get(index).getName());
-            }
-            return null;
-        });
 
         ObservableList<Team> combinedRounds = FXCollections.observableArrayList();
+        combinedRounds.addAll(new Team());
         combinedRounds.addAll(currentTourney.getRound1());
         combinedRounds.addAll(currentTourney.getRound2());
         combinedRounds.addAll(currentTourney.getRound3());
@@ -572,10 +566,11 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
 
     private void viewGameTable() {
+        isFinished = true;
         globalSize = currentTourney.getContinueGame().getGlobalSize();
+        System.out.println(discoverRounds());
         organizedRound();
         loadColumns();
-        btnCetificate.setVisible(true);
         btnStart.setManaged(false);
         btnStart.setVisible(false);
         btnBack.setVisible(true);
@@ -590,9 +585,12 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
     
     public void initializeFromAppContext() {
+        tblPlayersTable.getItems().clear();
+        tblPlayersTable.refresh();
         btnBack.setVisible(false);
         this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("SelectedTourney"));
         this.currentTeamList = currentTourney.getTeamList();
+        organizedRound();
         switch (currentTourney.returnState()) {
             case "Sin Empezar" ->
                 startGameParameters();
@@ -607,7 +605,6 @@ public class MatchTeamsController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        applyRowStyles(tblPlayersTable);
         file = new File("Tourney.txt");
         if ((file.exists()) && (file.length() > 0)) {
             tourneyList = fileManager.deserialization("Tourney", Tourney.class);

@@ -1,1 +1,1 @@
-[]
+[{"name":"Pengu","idSportType":6184,"draw":0,"wins":1,"goals":10,"points":13,"id":4891,"encounterList":[{"nameFirstTeam":"Pengu","nameSecondTeam":"Kermit","counterFirstTeamGoals":10,"counterSecondTeamGoals":6,"draw":false}],"reviewList":[]},{"name":"Elmolon","idSportType":6184,"draw":0,"wins":1,"goals":8,"points":11,"id":7295,"encounterList":[{"nameFirstTeam":"Elmolon","nameSecondTeam":"Miau","counterFirstTeamGoals":8,"counterSecondTeamGoals":6,"draw":false}],"reviewList":[]}]

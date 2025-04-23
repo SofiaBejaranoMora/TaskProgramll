@@ -24,6 +24,7 @@ public class TourneysInfoController extends Controller implements Initializable 
     private boolean isSuperiorInFront = true;
     private boolean isSlid = false;
     private Tourney selectedTourney;
+    private String rute=System.getProperty("user.dir")+"/src/main/resources/cr/ac/una/taskprogramll/resources/Certificates/";
     
     @FXML
     private MFXButton btnBack;
@@ -59,12 +60,12 @@ public class TourneysInfoController extends Controller implements Initializable 
     private void onActionBtnShowCertificate(ActionEvent event) {
         if ("Finalizado".equals(selectedTourney.returnState())) {
             System.out.println("Show certificate for " + selectedTourney.getName());
-            try {
-                Desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/cr/ac/una/taskprogramll/resources/Certificates/" + selectedTourney.getWinner().get(0) + "_" + selectedTourney.getName() + ".pdf"));
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Error al abrir el certificado: " + e.getMessage());
-            }
+        try {
+            Desktop.getDesktop().open(new File(rute + selectedTourney.getWinner().get(0).getName() + "_" + selectedTourney.getName() + ".pdf"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error al abrir el certificado: " + e.getMessage());
+        }
         } else {
             System.out.println("Aún no hay ganador...");
         } 

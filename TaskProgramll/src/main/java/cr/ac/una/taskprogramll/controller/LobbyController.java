@@ -39,7 +39,7 @@ public class LobbyController extends Controller implements Initializable {
     private MFXComboBox<String> cmbMenu;
 
     public void comboxInitializer() {
-        cmbMenu.getItems().addAll("Registro y Mantenimiento", "Reseñas de Equipos", "Crear Torneo", "Ver Torneos", "Mini Juego Menu", "Historial de Torneos", "Historial de Equipos");
+        cmbMenu.getItems().addAll("Registro y Mantenimiento", "Reseñas de Equipos", "Crear Torneo", "Ver Torneos", "Mini Juego Menu", "Historial de Equipos");
     }
 
     public void clean() {
@@ -94,17 +94,17 @@ public class LobbyController extends Controller implements Initializable {
             case "Mini Juego Menu":
                 FlowController.getInstance().goViewInStage("MenuGame", (Stage) cmbMenu.getScene().getWindow());
                 break;
-            case "Historial de Torneos":
-                file = new File("Tourney.txt");
+            case "Historial de Equipos":
+                file = new File("Team.txt");
                 if ((file.exists()) && (file.length() > 0)) {
-                     String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
+                    String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
                     if (!content.equals("[]") && !content.isEmpty()) {
-                        FlowController.getInstance().goViewInStage("TournamentHistory", (Stage) cmbMenu.getScene().getWindow());
+                        FlowController.getInstance().goViewInStage("HistorialEquipos", (Stage) cmbMenu.getScene().getWindow());
                     } else {
-                        message.show(Alert.AlertType.INFORMATION, "Aviso", "No se puede ver el historial torneos porque aún no ha registrado ningún torneo. Por favor, registre al menos un torneo primero.");
+                        message.show(Alert.AlertType.INFORMATION, "Aviso", "No se puede ver el historial equipo porque aún no ha registrado ningún equipo. Por favor, registre al menos un equipo primero.");
                     }
                 } else {
-                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No se puede ver el historial torneos porque aún no ha registrado ningún torneo. Por favor, registre al menos un torneo primero.");
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No se puede ver el historial equipo porque aún no ha registrado ningún equipo. Por favor, registre al menos un equipo primero.");
                 }
                 break;
             default:

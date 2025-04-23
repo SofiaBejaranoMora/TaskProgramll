@@ -121,6 +121,7 @@ public class GameController extends Controller implements Initializable {
             currentTime.pause();
             FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
         } else {
+            btnFastFinish.setVisible(false);
             resetGame();
             FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
         }
