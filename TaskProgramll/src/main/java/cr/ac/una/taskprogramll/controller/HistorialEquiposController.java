@@ -8,6 +8,7 @@ import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
+import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
@@ -45,6 +46,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 /**
@@ -130,6 +132,7 @@ public class HistorialEquiposController extends Controller implements Initializa
 
     @FXML
     private void onActionBtnBackMenu(ActionEvent event) {
+        FlowController.getInstance().goViewInStage("Lobby", (Stage) btnBackMenu.getScene().getWindow());
     }
 
     /**
