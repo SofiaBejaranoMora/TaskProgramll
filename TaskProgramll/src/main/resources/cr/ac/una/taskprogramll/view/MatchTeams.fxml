@@ -31,8 +31,8 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
                <styleClass>
-                  <String fx:value="TableViewLightdBlue" />
-                  <String fx:value="TableViewTransparent" />
+                  <String fx:value="table-row-cell" />
+                  <String fx:value="column-header-background" />
                </styleClass>
             </TableView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="NEVER">

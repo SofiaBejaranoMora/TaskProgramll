@@ -296,17 +296,7 @@
     -fx-background-color: #5DEAF1;
 }
 
-#tblPlayersTable {
-    -fx-opacity: 1; 
-}
 
-#tblPlayersTable .column-header-background {
-    -fx-opacity: 0;
-}
-
-#tblPlayersTable .table-row-cell {
-    -fx-background-color: transparent;
-}
 
 .PurpleBackground{
     -fx-background-color:
@@ -364,4 +354,16 @@
     -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-text-fill: #2e7d32;
+}
+
+#tblPlayersTable{
+    -fx-opacity: 1 
+}
+
+#tblPlayersTable.column-header-background {
+    -fx-opacity: 0; 
+}
+
+#tblPlayersTable.table-row-cell {
+    -fx-background-color: transparent;
 }

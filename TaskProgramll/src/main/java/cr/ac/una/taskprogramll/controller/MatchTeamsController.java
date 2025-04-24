@@ -21,6 +21,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -385,6 +386,8 @@ public class MatchTeamsController extends Controller implements Initializable {
             case 6 -> {
                 winner.add(winnerTeam);
                 currentTourney.addToRound(winnerTeam, currentRound);
+                currentTourney.moveTeamToLoosers(winnerTeam); 
+                currentTourney.setTeamList(new ArrayList<>()); 
                 System.out.println("El ganador del torneo es " + winnerTeam.getName());
                 clmnFinal.setCellFactory(column -> new TableCell<Team, String>() {
                     @Override
@@ -525,14 +528,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         });
 
         ObservableList<Team> combinedRounds = FXCollections.observableArrayList();
-        combinedRounds.addAll(new Team());
         combinedRounds.addAll(currentTourney.getRound1());
-        combinedRounds.addAll(currentTourney.getRound2());
-        combinedRounds.addAll(currentTourney.getRound3());
-        combinedRounds.addAll(currentTourney.getRound4());
-        combinedRounds.addAll(currentTourney.getRound5());
-        combinedRounds.addAll(currentTourney.getRound6());
-        combinedRounds.addAll(currentTourney.getWinner());
         tblPlayersTable.setItems(combinedRounds);
         tblPlayersTable.refresh();
 }
