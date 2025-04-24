@@ -29,6 +29,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * FXML Controller class
+ *
+ * @author Michelle Wittingham
+ */
+
 public class ViewTourneysController extends Controller implements Initializable {
 
     private final FileManager fileManager = new FileManager();
