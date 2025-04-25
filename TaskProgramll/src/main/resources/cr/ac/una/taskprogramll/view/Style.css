@@ -101,6 +101,7 @@
     -fx-image: url("../resources/ProgramImages/PixelStadium.png");
 }
 
+StadiumStandBackground,
 .StoreBackground,
 .BusStopBackground,
 .LobbyBackground,
@@ -138,10 +139,10 @@
     -mfx-main: #9999ff;
     -fx-prompt-text-fill: #333333;
     -mfx-float-mode: BORDER;
-    -fx-font-size: 12px;
-    -fx-min-height: 20px;
-    -fx-pref-height: 20px;
-    -fx-max-heigth: 20px;
+    -fx-font-size: 14px;
+    -fx-min-height: 35px;
+    -fx-pref-height: 35px;
+    -fx-max-heigth: 35px;
     -fx-text-fill: black;
     -fx-alignment: CENTER; 
 }
@@ -296,7 +297,28 @@
     -fx-background-color: #5DEAF1;
 }
 
+#tblPlayersTable {
+    -fx-background-color: #6666ff;
+    -fx-border-color: transparent;
+}
 
+#tblPlayersTable .column-header-background {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+#tblPlayersTable .table-row-cell {
+    -fx-background-color: transparent;
+}
+
+#tblPlayersTable .table-cell {
+    -fx-alignment: CENTER;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: 14px;
+    -fx-text-fill: #000000;
+    -fx-font-weight: bold;
+}
 
 .PurpleBackground{
     -fx-background-color:
@@ -354,16 +376,4 @@
     -fx-font-size: 16px;
     -fx-font-weight: bold;
     -fx-text-fill: #2e7d32;
-}
-
-#tblPlayersTable{
-    -fx-opacity: 1 
-}
-
-#tblPlayersTable.column-header-background {
-    -fx-opacity: 0; 
-}
-
-#tblPlayersTable.table-row-cell {
-    -fx-background-color: transparent;
 }

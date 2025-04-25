@@ -28,12 +28,16 @@ import java.util.ResourceBundle;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
@@ -45,6 +49,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -89,8 +95,6 @@ public class MatchTeamsController extends Controller implements Initializable {
     private TableColumn<Team, String> clmnRound6;
     @FXML
     private TableColumn<Team, String> clmnFinal;
-    @FXML
-    private TableColumn<Team, String> clmnOrganized;
     @FXML
     private MFXButton btnBack;
     @FXML
@@ -289,6 +293,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     }
     
     public void adjustingTable(Team winnerTeam) {
+        int lastRound = currentRound;
         if (currentTeamList.size() == 2) {
             currentRound = 6;
         }
@@ -304,11 +309,12 @@ public class MatchTeamsController extends Controller implements Initializable {
                         if (empty || getIndex() >= round2.size()) {
                             setText(null);
                         } else {
-                            setText(round2.get(getIndex()).getName());
+                            setText(round2.get(getIndex()).getName() + " " + winnerTeam.getGoals() + " goles");
+                            drawLine(winnerTeam.getName(), clmnRound1, clmnRound2);
                         }
                     }
                 });
-                tblPlayersTable.refresh();
+               tblPlayersTable.refresh();
                 verifyRound();
             }
             case 2 -> {
@@ -322,7 +328,8 @@ public class MatchTeamsController extends Controller implements Initializable {
                         if (empty || getIndex() >= round3.size()) {
                             setText(null);
                         } else {
-                            setText(round3.get(getIndex()).getName());
+                            setText(round3.get(getIndex()).getName() + " " + winnerTeam.getGoals() + " goles");
+                            drawLine(winnerTeam.getName(), clmnRound2, clmnRound3);
                         }
                     }
                 });
@@ -340,7 +347,8 @@ public class MatchTeamsController extends Controller implements Initializable {
                         if (empty || getIndex() >= round4.size()) {
                             setText(null); 
                         } else {
-                            setText(round4.get(getIndex()).getName());
+                            setText(round4.get(getIndex()).getName() + " " + winnerTeam.getGoals() + " goles");
+                            drawLine(winnerTeam.getName(), clmnRound3, clmnRound4);
                         }
                     }
                 });
@@ -358,7 +366,8 @@ public class MatchTeamsController extends Controller implements Initializable {
                         if (empty || getIndex() >= round5.size()) {
                             setText(null);
                         } else {
-                            setText(round5.get(getIndex()).getName());
+                            setText(round5.get(getIndex()).getName() + " " + winnerTeam.getGoals() + " goles");
+                            drawLine(winnerTeam.getName(), clmnRound4, clmnRound5);
                         }
                     }
                 });
@@ -376,7 +385,8 @@ public class MatchTeamsController extends Controller implements Initializable {
                         if (empty || getIndex() >= round6.size()) {
                             setText(null);
                         } else {
-                            setText(round6.get(getIndex()).getName());
+                            setText(round6.get(getIndex()).getName() + " " + winnerTeam.getGoals() +" goles");
+                            drawLine(winnerTeam.getName(), clmnRound5, clmnRound6);
                         }
                     }
                 });
@@ -396,7 +406,8 @@ public class MatchTeamsController extends Controller implements Initializable {
                         if (empty || getIndex() >= winner.size()) {
                             setText(null);
                         } else {
-                            setText(winner.get(getIndex()).getName());
+                            setText(winner.get(getIndex()).getName()  + " " + winnerTeam.getGoals() + " goles");
+                            drawLine(winnerTeam.getName(), discoverColumn(lastRound - 1), clmnFinal);
                         }
                     }
                 });
@@ -405,37 +416,144 @@ public class MatchTeamsController extends Controller implements Initializable {
                 btnBack.setVisible(true);
                 isFinished = true;
                 winnerAnimatic(winnerTeam);
-                currentTourney.moveTeamToLoosers(winnerTeam);
             }
-            default ->
-                throw new AssertionError("Ronda inválida: " + currentRound);
+            default -> throw new AssertionError("Ronda inválida: " + currentRound);
         }
     }
 
-    private void winnerAnimatic(ImageView starWinner) {
-        Scale scale = new Scale();
-        starWinner.getTransforms().add(scale);
-        Timeline timeline = new Timeline();
-        KeyFrame increase = new KeyFrame(Duration.millis(500), new KeyValue(scale.xProperty(), 1.5), new KeyValue(scale.yProperty(), 1.5));
-        KeyFrame reduce = new KeyFrame(Duration.millis(1000), new KeyValue(scale.xProperty(), 1.0), new KeyValue(scale.yProperty(), 1.0));
-        KeyFrame firstHeartBit = new KeyFrame(Duration.millis(100), new KeyValue(scale.xProperty(), 1.3), new KeyValue(scale.yProperty(), 1.3));
-        KeyFrame secondHeartBit = new KeyFrame(Duration.millis(150), new KeyValue(scale.xProperty(), 1.2), new KeyValue(scale.yProperty(), 1.2));
-        timeline.getKeyFrames().addAll(increase, reduce, firstHeartBit, secondHeartBit);
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+    private void drawLine(String teamName, TableColumn<?, ?> from, TableColumn<?, ?> to) {
+        Platform.runLater(() -> {
+            TableCell<?, ?> cell1 = getTableCellByText(teamName, from);
+            TableCell<?, ?> cell2 = getTableCellByText(teamName, to);
+
+            if (cell1 == null || cell2 == null) return;
+            Line line = new Line();
+            line.setStroke(Color.rgb(252, 129, 54));
+            line.setStrokeWidth(2);
+
+            line.startXProperty().bind(Bindings.createDoubleBinding(() -> {
+                Point2D startPointX = cell1.localToScene(cell1.getWidth() * 0.8, cell1.getHeight() / 2);
+                return ncpRoot.sceneToLocal(startPointX).getX();
+            }, cell1.layoutXProperty(), cell1.widthProperty(), cell1.heightProperty(), cell1.localToSceneTransformProperty()));
+            line.startYProperty().bind(Bindings.createDoubleBinding(() -> {
+                Point2D startPointY = cell1.localToScene(cell1.getWidth() * 0.8, cell1.getHeight() / 2);
+                return ncpRoot.sceneToLocal(startPointY).getY();
+            }, cell1.layoutYProperty(), cell1.widthProperty(), cell1.heightProperty(), cell1.localToSceneTransformProperty()));
+            line.endXProperty().bind(Bindings.createDoubleBinding(() -> {
+                Point2D finishPointX = cell2.localToScene(cell2.getWidth() * 0.2, cell2.getHeight() / 2);
+                return ncpRoot.sceneToLocal(finishPointX).getX();
+            }, cell2.layoutXProperty(), cell2.widthProperty(), cell2.heightProperty(), cell2.localToSceneTransformProperty()));
+            line.endYProperty().bind(Bindings.createDoubleBinding(() -> {
+                Point2D finishPointY = cell2.localToScene(cell2.getWidth() * 0.2, cell2.getHeight() / 2);
+                return ncpRoot.sceneToLocal(finishPointY).getY();
+            }, cell2.layoutYProperty(), cell2.widthProperty(), cell2.heightProperty(), cell2.localToSceneTransformProperty()));
+            ncpRoot.getChildren().add(line);
+            line.toFront();
+        });
+    }
+
+    private void reDrawPreviousLines() {
+        for (int i = 6; i >= 1; i--) {
+            List<Team> lastRound = currentTourney.getRoundsByNumber(i);
+            if (lastRound.isEmpty()) continue;
+            int emptySpaces = 0;
+            for (int j = i - 1 ; j >= 1; j--) {
+                List<Team> previousRound = currentTourney.getRoundsByNumber(j);
+                if (previousRound.isEmpty()) emptySpaces++;
+                else break;
+            }
+
+            for (Team team : lastRound) {
+                drawLine(team.getName(), discoverColumn(i - emptySpaces - 1), discoverColumn(i));
+            }
+        }
+    }
+
+    private TableColumn<Team, String> discoverColumn(int currentColumn) {
+        return switch (currentColumn) {
+            case 0 -> clmnRound1;
+            case 1 -> clmnRound2;
+            case 2 -> clmnRound3;
+            case 3 -> clmnRound4;
+            case 4 -> clmnRound5;
+            case 5 -> clmnRound6;
+            case 6 -> clmnFinal;
+            default -> null;
+        };
+    }
+
+    private TableCell<?, ?> getTableCellByText(String teamName, TableColumn<?, ?> currentColumn) {
+        for (Node n : tblPlayersTable.lookupAll(".table-row-cell")) {
+            if (n instanceof TableRow<?> row) {
+                for (Node cellNode : row.lookupAll(".table-cell")) {
+                    if (cellNode instanceof TableCell<?, ?> cell) { 
+                        if (cell.getTableColumn() == currentColumn && cell.getText().contains(teamName)) {
+                            return cell;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
     
-    private void winnerAnimatic(Team winnerTeam) {
-        btnStart.setVisible(false);
-        btnStart.setManaged(false);
-        stpWinnerTourney.setVisible(true);
-        mgvWinnerImage.setImage(new Image(ImagesUtil.getImagePath(winnerTeam.getId())));
-        winnerAnimatic(mgvWinnerStar);
-        lblWinnerName.setText(winnerTeam.getName());
-        lblWinnerPoints.setText("Puntos obtenidos: " + winnerTeam.getPoints());
-        lblWinnerGoals.setText("Goles realizados: " + winnerTeam.getGoals());
-        Certificate(winnerTeam, currentTourney.getName());
-        winnerCertificate = winnerTeam;
+    private void loadColumns() {
+        disableFilterOrSelection();
+        clmnRound1.setCellValueFactory(cellData -> {
+            int index = tblPlayersTable.getItems().indexOf(cellData.getValue());
+            if (index >= 0 && index < currentTourney.getRound1().size()) {
+                return new SimpleStringProperty(currentTourney.getRound1().get(index).getName());
+            }
+            return null;
+        });
+        clmnRound2.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getRound2().size()) {
+                return new SimpleStringProperty(currentTourney.getRound2().get(index).getName() + " " + currentTourney.getRound2().get(index).getGoals() + " goles");
+            }
+            return null;
+        });
+        clmnRound3.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getRound3().size()) {
+                return new SimpleStringProperty(currentTourney.getRound3().get(index).getName() + " " + currentTourney.getRound3().get(index).getGoals() + " goles");
+            }
+            return null;
+        });
+        clmnRound4.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getRound4().size()) {
+                return new SimpleStringProperty(currentTourney.getRound4().get(index).getName() + " " + currentTourney.getRound4().get(index).getGoals() + " goles");
+            }
+            return null;
+        });
+        clmnRound5.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getRound5().size()) {
+                return new SimpleStringProperty(currentTourney.getRound5().get(index).getName() + " " + currentTourney.getRound5().get(index).getGoals() + " goles");
+            }
+            return null;
+        });
+        clmnRound6.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getRound6().size()) {
+                return new SimpleStringProperty(currentTourney.getRound6().get(index).getName() + " " + currentTourney.getRound6().get(index).getGoals() + " goles");
+            }
+            return null;
+        });
+        clmnFinal.setCellValueFactory(cellData -> {
+            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
+            if (index < currentTourney.getWinner().size()) {
+                return new SimpleStringProperty(currentTourney.getWinner().get(index).getName() + " " + currentTourney.getWinner().get(index).getGoals() + " goles");
+            }
+            return null;
+        });
+
+        ObservableList<Team> combinedRounds = FXCollections.observableArrayList();
+        combinedRounds.addAll(currentTourney.getRound1());
+        tblPlayersTable.setItems(combinedRounds);
+        tblPlayersTable.refresh();
+        reDrawPreviousLines();
     }
     
     private void saveData() {
@@ -466,73 +584,34 @@ public class MatchTeamsController extends Controller implements Initializable {
             System.out.println("Juego terminado");
         }
         fileManager.serialization(tourneyList, "Tourney");
-    }
-
-    private void loadColumns() {
-        disableFilterOrSelection();
-        clmnOrganized.setCellValueFactory(cellData -> {
-            int index = tblPlayersTable.getItems().indexOf(cellData.getValue());
-            if (index >= 0 && index < currentTourney.getRound1().size()) {
-                return new SimpleStringProperty(currentTourney.getRound1().get(index).getName());
-            }
-            return null;
-        });
-        clmnRound1.setCellValueFactory(cellData -> {
-            int index = tblPlayersTable.getItems().indexOf(cellData.getValue());
-            if (index >= 0 && index < currentTourney.getRound1().size()) {
-                return new SimpleStringProperty(currentTourney.getRound1().get(index).getName());
-            }
-            return null;
-        });
-        clmnRound2.setCellValueFactory(cellData -> {
-            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
-            if (index < currentTourney.getRound2().size()) {
-                return new SimpleStringProperty(currentTourney.getRound2().get(index).getName());
-            }
-            return null;
-        });
-        clmnRound3.setCellValueFactory(cellData -> {
-            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
-            if (index < currentTourney.getRound3().size()) {
-                return new SimpleStringProperty(currentTourney.getRound3().get(index).getName());
-            }
-            return null;
-        });
-        clmnRound4.setCellValueFactory(cellData -> {
-            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
-            if (index < currentTourney.getRound4().size()) {
-                return new SimpleStringProperty(currentTourney.getRound4().get(index).getName());
-            }
-            return null;
-        });
-        clmnRound5.setCellValueFactory(cellData -> {
-            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
-            if (index < currentTourney.getRound5().size()) {
-                return new SimpleStringProperty(currentTourney.getRound5().get(index).getName());
-            }
-            return null;
-        });
-        clmnRound6.setCellValueFactory(cellData -> {
-            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
-            if (index < currentTourney.getRound6().size()) {
-                return new SimpleStringProperty(currentTourney.getRound6().get(index).getName());
-            }
-            return null;
-        });
-        clmnFinal.setCellValueFactory(cellData -> {
-            int index = cellData.getTableView().getItems().indexOf(cellData.getValue());
-            if (index < currentTourney.getWinner().size()) {
-                return new SimpleStringProperty(currentTourney.getWinner().get(index).getName());
-            }
-            return null;
-        });
-
-        ObservableList<Team> combinedRounds = FXCollections.observableArrayList();
-        combinedRounds.addAll(currentTourney.getRound1());
-        tblPlayersTable.setItems(combinedRounds);
-        tblPlayersTable.refresh();
-}
+    }   
         
+    private void winnerAnimatic(ImageView starWinner) {
+        Scale scale = new Scale();
+        starWinner.getTransforms().add(scale);
+        Timeline timeline = new Timeline();
+        KeyFrame increase = new KeyFrame(Duration.millis(500), new KeyValue(scale.xProperty(), 1.5), new KeyValue(scale.yProperty(), 1.5));
+        KeyFrame reduce = new KeyFrame(Duration.millis(1000), new KeyValue(scale.xProperty(), 1.0), new KeyValue(scale.yProperty(), 1.0));
+        KeyFrame firstHeartBit = new KeyFrame(Duration.millis(100), new KeyValue(scale.xProperty(), 1.3), new KeyValue(scale.yProperty(), 1.3));
+        KeyFrame secondHeartBit = new KeyFrame(Duration.millis(150), new KeyValue(scale.xProperty(), 1.2), new KeyValue(scale.yProperty(), 1.2));
+        timeline.getKeyFrames().addAll(increase, reduce, firstHeartBit, secondHeartBit);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+    
+    private void winnerAnimatic(Team winnerTeam) {
+        btnStart.setVisible(false);
+        btnStart.setManaged(false);
+        stpWinnerTourney.setVisible(true);
+        mgvWinnerImage.setImage(new Image(ImagesUtil.getImagePath(winnerTeam.getId())));
+        winnerAnimatic(mgvWinnerStar);
+        lblWinnerName.setText(winnerTeam.getName());
+        lblWinnerPoints.setText("Puntos obtenidos: " + winnerTeam.getPoints());
+        lblWinnerGoals.setText("Goles realizados: " + winnerTeam.getGoals());
+        Certificate(winnerTeam, currentTourney.getName());
+        winnerCertificate = winnerTeam;
+    }
+    
     private void startGameParameters() {
         globalSize = currentTeamList.size();
         currentTourney.getContinueGame().setGlobalSize(globalSize);
@@ -540,6 +619,36 @@ public class MatchTeamsController extends Controller implements Initializable {
         distributionOnTable();
     }
     
+    public void initializeFromAppContext() {
+        tblPlayersTable.getItems().clear();
+        tblPlayersTable.refresh();
+        btnBack.setVisible(false);
+        this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("SelectedTourney"));
+        this.currentTeamList = currentTourney.getTeamList();
+        organizedRound();
+        switch (currentTourney.returnState()) {
+            case "Sin Empezar" ->
+                startGameParameters();
+            case "En Proceso" ->
+                continueGameParameters();
+            case "Finalizado" ->
+                viewGameTable();
+            default ->
+                continueGameParameters();
+        }
+    }
+    
+    private void viewGameTable() {
+        isFinished = true;
+        globalSize = currentTourney.getContinueGame().getGlobalSize();
+        System.out.println(discoverRounds());
+        organizedRound();
+        loadColumns();
+        btnStart.setManaged(false);
+        btnStart.setVisible(false);
+        btnBack.setVisible(true);
+    }
+
     private void continueGameParameters() {
         organizedRound();        
         loadColumns();
@@ -561,17 +670,6 @@ public class MatchTeamsController extends Controller implements Initializable {
         }
     }
 
-    private void viewGameTable() {
-        isFinished = true;
-        globalSize = currentTourney.getContinueGame().getGlobalSize();
-        System.out.println(discoverRounds());
-        organizedRound();
-        loadColumns();
-        btnStart.setManaged(false);
-        btnStart.setVisible(false);
-        btnBack.setVisible(true);
-    }
-
     public Tourney searchTourney(Tourney selectedTourney) {
         for(Tourney tourney:tourneyList){
             if (tourney.getId() == selectedTourney.getId())
@@ -579,26 +677,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         }
         return null;
     }
-    
-    public void initializeFromAppContext() {
-        tblPlayersTable.getItems().clear();
-        tblPlayersTable.refresh();
-        btnBack.setVisible(false);
-        this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("SelectedTourney"));
-        this.currentTeamList = currentTourney.getTeamList();
-        organizedRound();
-        switch (currentTourney.returnState()) {
-            case "Sin Empezar" ->
-                startGameParameters();
-            case "En Proceso" ->
-                continueGameParameters();
-            case "Finalizado" ->
-                viewGameTable();
-            default ->
-                continueGameParameters();
-        }
-    }
-
+ 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         file = new File("Tourney.txt");

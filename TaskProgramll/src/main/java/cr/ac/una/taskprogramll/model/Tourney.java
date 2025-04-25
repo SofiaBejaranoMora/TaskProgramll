@@ -375,5 +375,17 @@ public class Tourney {
         int position = ranking.size() - ranking.indexOf(team);
         return "Posición: " + position;
     }
-   
+
+    public List<Team> getRoundsByNumber(int number) {
+        return switch (number) {
+            case 0 -> this.round1;
+            case 1 -> this.round2;
+            case 2 -> this.round3;
+            case 3 -> this.round4;
+            case 4 -> this.round5;
+            case 5 -> this.round6;
+            case 6 -> this.winner;
+            default -> null;
+        };
+    }
 }
