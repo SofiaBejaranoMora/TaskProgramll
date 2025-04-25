@@ -67,7 +67,6 @@ public class ViewTourneysController extends Controller implements Initializable 
     private void goPlay(ActionEvent event) {
         Tourney selectedTourney = tourneysTable.getSelectionModel().getSelectedItem();
         if (selectedTourney != null) {
-            // Lógica para jugar/continuar torneo
             AppContext.getInstance().set("SelectedTourney", selectedTourney);
             MatchTeamsController controller = (MatchTeamsController) FlowController.getInstance().getController("MatchTeams");
             controller.initializeFromAppContext();
@@ -80,7 +79,6 @@ public class ViewTourneysController extends Controller implements Initializable 
     private void showInfo(ActionEvent event) {
         Tourney selectedTourney = tourneysTable.getSelectionModel().getSelectedItem();
         if (selectedTourney != null) {
-            // Guardar el torneo seleccionado en el contexto de la aplicación
             AppContext.getInstance().set("SelectedTourney", selectedTourney);
             TourneysInfoController controller = (TourneysInfoController) FlowController.getInstance().getController("TourneysInfo");
             controller.initialPanelConditions();
@@ -112,11 +110,9 @@ public class ViewTourneysController extends Controller implements Initializable 
             boolean state = !torneosList.isEmpty();
             tourneysTable.setVisible(state);
 
-            // Forzar actualización de la interfaz
             Platform.runLater(() -> {
                 tourneysTable.refresh();
                 if (state) {
-                    // Seleccionar el primer elemento automáticamente
                     tourneysTable.getSelectionModel().selectFirst();
                 }
             });
@@ -168,7 +164,11 @@ public class ViewTourneysController extends Controller implements Initializable 
             try {
                 sports = fileManager.deserialization("Sport", Sport.class);
                 AppContext.getInstance().set("sports", sports);
-                System.out.println("Deportes cargados desde Sport.txt: " + (sports != null ? sports.size() : 0));
+                if (sports != null) {
+                    System.out.println("Deportes cargados desde Sport.txt: " + sports.size());
+                } else {
+                    System.out.println("Deportes cargados desde Sport.txt: 0");
+                }
             } catch (Exception e) {
                 System.err.println("Error al deserializar deportes: " + e.getMessage());
                 e.printStackTrace();
@@ -229,7 +229,6 @@ public class ViewTourneysController extends Controller implements Initializable 
                 return new SimpleStringProperty(tourney.returnState());
             });
 
-            // Inicialmente deshabilitados
             btnPlay.setDisable(true);
             btnInfo.setDisable(true);
             tourneysTable.setVisible(false);

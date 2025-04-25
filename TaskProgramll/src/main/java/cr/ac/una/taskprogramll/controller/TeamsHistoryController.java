@@ -808,13 +808,10 @@ public class TeamsHistoryController extends Controller implements Initializable 
     }
     
     private void tourneyGoalsPerRoundGraphic() {
-        GraphicsContext gcTourneyPoints = tourneyPointsPerMatchCanvas.getGraphicsContext2D();
-        gcTourneyPoints.clearRect(0, 0, tourneyPointsPerMatchCanvas.getWidth(), tourneyPointsPerMatchCanvas.getHeight());
+        GraphicsContext gcTourneyPoints = initializeGraphicsContext();
 
         if (updatedTeam == null) {
-            System.out.println("updatedTeam es null, no se pueden calcular goles por ronda.");
-            gcTourneyPoints.setFill(Color.BLACK);
-            gcTourneyPoints.fillText("Selecciona un equipo", 20, 100);
+            displayNoTeamSelectedMessage(gcTourneyPoints);
             return;
         }
 
@@ -822,94 +819,107 @@ public class TeamsHistoryController extends Controller implements Initializable 
         List<List<Integer>> roundsPerTourney = new ArrayList<>();
         List<List<Integer>> goalsPerRoundPerTourney = new ArrayList<>();
 
+        populateTourneyData(tourneyNames, roundsPerTourney, goalsPerRoundPerTourney);
+
+        if (tourneyNames.isEmpty()) {
+            displayNoTourneyDataMessage(gcTourneyPoints);
+            return;
+        }
+
+        renderTourneyGoals(gcTourneyPoints, tourneyNames, roundsPerTourney, goalsPerRoundPerTourney);
+        adjustCanvasDimensions(tourneyNames, roundsPerTourney);
+    }
+
+    private GraphicsContext initializeGraphicsContext() {
+        GraphicsContext gc = tourneyPointsPerMatchCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, tourneyPointsPerMatchCanvas.getWidth(), tourneyPointsPerMatchCanvas.getHeight());
+        return gc;
+    }
+
+    private void displayNoTeamSelectedMessage(GraphicsContext gc) {
+        gc.setFill(Color.BLACK);
+        gc.fillText("Selecciona un equipo", 20, 100);
+    }
+
+    private void populateTourneyData(List<String> tourneyNames, List<List<Integer>> roundsPerTourney, List<List<Integer>> goalsPerRoundPerTourney) {
         for (Tourney tourney : availableTourneys) {
-            List<Team> allTeamsInTourney = new ArrayList<>();
-            allTeamsInTourney.addAll(tourney.getTeamList());
-            allTeamsInTourney.addAll(tourney.getLoosersList());
-            allTeamsInTourney.addAll(tourney.getRound1());
-            allTeamsInTourney.addAll(tourney.getRound2());
-            allTeamsInTourney.addAll(tourney.getRound3());
-            allTeamsInTourney.addAll(tourney.getRound4());
-            allTeamsInTourney.addAll(tourney.getRound5());
-            allTeamsInTourney.addAll(tourney.getRound6());
-            allTeamsInTourney.addAll(tourney.getWinner());
+            List<Team> allTeamsInTourney = gatherAllTeams(tourney);
 
             for (Team tourneyTeam : allTeamsInTourney) {
                 if (tourneyTeam.getId() == updatedTeam.getId()) {
-                    List<Integer> rounds = new ArrayList<>();
-                    List<Integer> goalsPerRound = new ArrayList<>();
-                    List<MatchDetails> matches = tourneyTeam.getEncounterList();
-                    System.out.println("Partidos encontrados para " + tourneyTeam.getName() + " en torneo " + tourney.getName() + ": " + (matches != null ? matches.size() : 0));
-                    if (matches != null) {
-                        int matchIndex = 0;
-                        int matchesPerRound = tourney.getTeamList().size() / 2;
-                        if (matchesPerRound <= 0) {
-                            matchesPerRound = 1;
-                        }
-
-                        int currentRound = 1;
-                        int goalsInCurrentRound = 0;
-                        for (MatchDetails match : matches) {
-                            String opponentName = match.getNameFirstTeam().equals(tourneyTeam.getName()) ? match.getNameSecondTeam() : match.getNameFirstTeam();
-                            boolean opponentInTourney = allTeamsInTourney.stream().anyMatch(t -> t.getName().equals(opponentName));
-                            if (!opponentInTourney) {
-                                continue;
-                            }
-
-                            int teamGoals = 0;
-                            if (match.getNameFirstTeam().equals(tourneyTeam.getName())) {
-                                teamGoals = match.getCounterFirstTeamGoals();
-                            } else {
-                                continue;
-                            }
-
-                            int matchRound = (matchIndex / matchesPerRound) + 1;
-                            if (matchRound != currentRound) {
-                                rounds.add(currentRound);
-                                goalsPerRound.add(goalsInCurrentRound);
-                                System.out.println("Torneo: " + tourney.getName() + ", Ronda " + currentRound + ", Goles: " + goalsInCurrentRound);
-                                goalsInCurrentRound = 0;
-                                currentRound = matchRound;
-                            }
-                            goalsInCurrentRound += teamGoals;
-                            matchIndex++;
-                        }
-                        if (goalsInCurrentRound > 0 || matchIndex > 0) {
-                            rounds.add(currentRound);
-                            goalsPerRound.add(goalsInCurrentRound);
-                            System.out.println("Torneo: " + tourney.getName() + ", Ronda " + currentRound + ", Goles: " + goalsInCurrentRound);
-                        }
-                    }
-                    tourneyNames.add(tourney.getName());
-                    roundsPerTourney.add(rounds);
-                    goalsPerRoundPerTourney.add(goalsPerRound);
+                    processTourneyTeam(tourney, tourneyTeam, tourneyNames, roundsPerTourney, goalsPerRoundPerTourney, allTeamsInTourney);
                     break;
                 }
             }
         }
+    }
 
-        if (tourneyNames.isEmpty()) {
-            System.out.println("No se encontraron torneos para el equipo " + updatedTeam.getName());
-            gcTourneyPoints.setFill(Color.BLACK);
-            gcTourneyPoints.fillText("No hay datos de torneos", 20, 100);
-            return;
+    private List<Team> gatherAllTeams(Tourney tourney) {
+        List<Team> allTeams = new ArrayList<>();
+        allTeams.addAll(tourney.getTeamList());
+        allTeams.addAll(tourney.getLoosersList());
+        allTeams.addAll(tourney.getRound1());
+        allTeams.addAll(tourney.getRound2());
+        allTeams.addAll(tourney.getRound3());
+        allTeams.addAll(tourney.getRound4());
+        allTeams.addAll(tourney.getRound5());
+        allTeams.addAll(tourney.getRound6());
+        allTeams.addAll(tourney.getWinner());
+        return allTeams;
+    }
+
+    private void processTourneyTeam(Tourney tourney, Team tourneyTeam, List<String> tourneyNames, List<List<Integer>> roundsPerTourney, List<List<Integer>> goalsPerRoundPerTourney, List<Team> allTeamsInTourney) {
+        List<Integer> rounds = new ArrayList<>();
+        List<Integer> goalsPerRound = new ArrayList<>();
+
+        List<MatchDetails> matches = tourneyTeam.getEncounterList();
+        int matchesPerRound = Math.max(tourney.getTeamList().size() / 2, 1);
+
+        if (matches != null) {
+            computeGoalsPerRound(matches, tourneyTeam, allTeamsInTourney, rounds, goalsPerRound, matchesPerRound);
         }
 
-        double barWidthRound = 30;
-        int totalBars = 0;
-        for (List<Integer> rounds : roundsPerTourney) {
-            totalBars += rounds.size();
-        }
+        tourneyNames.add(tourney.getName());
+        roundsPerTourney.add(rounds);
+        goalsPerRoundPerTourney.add(goalsPerRound);
+    }
 
-        double maxGoals = 1;
-        for (List<Integer> goalsPerRound : goalsPerRoundPerTourney) {
-            for (int goals : goalsPerRound) {
-                if (goals > maxGoals) {
-                    maxGoals = goals;
-                }
+    private void computeGoalsPerRound(List<MatchDetails> matches, Team tourneyTeam, List<Team> allTeamsInTourney, List<Integer> rounds, List<Integer> goalsPerRound, int matchesPerRound) {
+        int matchIndex = 0, currentRound = 1, goalsInCurrentRound = 0;
+
+        for (MatchDetails match : matches) {
+            String opponentName = match.getNameFirstTeam().equals(tourneyTeam.getName()) ? match.getNameSecondTeam() : match.getNameFirstTeam();
+            if (allTeamsInTourney.stream().noneMatch(t -> t.getName().equals(opponentName))) {
+                continue;
             }
+
+            int teamGoals = match.getNameFirstTeam().equals(tourneyTeam.getName()) ? match.getCounterFirstTeamGoals() : 0;
+            int matchRound = (matchIndex / matchesPerRound) + 1;
+
+            if (matchRound != currentRound) {
+                rounds.add(currentRound);
+                goalsPerRound.add(goalsInCurrentRound);
+                goalsInCurrentRound = 0;
+                currentRound = matchRound;
+            }
+            goalsInCurrentRound += teamGoals;
+            matchIndex++;
         }
-        maxGoals = Math.max(maxGoals, 1);
+
+        if (goalsInCurrentRound > 0 || matchIndex > 0) {
+            rounds.add(currentRound);
+            goalsPerRound.add(goalsInCurrentRound);
+        }
+    }
+
+    private void displayNoTourneyDataMessage(GraphicsContext gc) {
+        gc.setFill(Color.BLACK);
+        gc.fillText("No hay datos de torneos", 20, 100);
+    }
+
+    private void renderTourneyGoals(GraphicsContext gc, List<String> tourneyNames, List<List<Integer>> roundsPerTourney, List<List<Integer>> goalsPerRoundPerTourney) {
+        double barWidthRound = 30;
+        double maxGoals = findMaxGoals(goalsPerRoundPerTourney);
         double scaleGoals = 150.0 / maxGoals;
 
         int barIndex = 0;
@@ -920,35 +930,43 @@ public class TeamsHistoryController extends Controller implements Initializable 
 
             double startX = 20 + barIndex * (barWidthRound + 10);
             for (int j = 0; j < rounds.size(); j++) {
-                int goals = goalsPerRound.get(j);
-                double barHeight = goals * scaleGoals;
-
-                if (barHeight < 5) {
-                    barHeight = 5;
-                }
-
-                gcTourneyPoints.setFill(Color.GREEN);
-                double x = 20 + barIndex * (barWidthRound + 10);
-                double y = tourneyPointsPerMatchCanvas.getHeight() - barHeight - 30;
-                gcTourneyPoints.fillRect(x, y, barWidthRound, barHeight);
-
-                gcTourneyPoints.setFill(Color.BLACK);
-                gcTourneyPoints.fillText(String.valueOf(goals), x + barWidthRound / 2 - 10, y - 10);
-
-                System.out.println("Barra " + (barIndex + 1) + ": x=" + x + ", y=" + y + ", ancho=" + barWidthRound + ", alto=" + barHeight);
-
-                barIndex++;
+                drawBar(gc, goalsPerRound.get(j), barWidthRound, scaleGoals, barIndex++);
             }
-            double endX = 20 + (barIndex - 1) * (barWidthRound + 10);
-
-            gcTourneyPoints.setFill(Color.BLACK);
-            double titleX = startX + (endX - startX) / 2 - (tourneyName.length() * 3);
-            gcTourneyPoints.fillText(tourneyName, titleX, tourneyPointsPerMatchCanvas.getHeight() - 5);
-
+            drawTourneyName(gc, tourneyName, startX, barIndex, barWidthRound);
             barIndex++;
         }
+    }
 
-        tourneyPointsPerMatchCanvas.setWidth(Math.max(300, 20 + (totalBars + tourneyNames.size()) * (barWidthRound + 10)));
+    private double findMaxGoals(List<List<Integer>> goalsPerRoundPerTourney) {
+        return goalsPerRoundPerTourney.stream()
+                .flatMapToInt(list -> list.stream().mapToInt(Integer::intValue))
+                .max()
+                .orElse(1);
+    }
+
+    private void drawBar(GraphicsContext gc, int goals, double barWidthRound, double scaleGoals, int barIndex) {
+        double barHeight = Math.max(goals * scaleGoals, 5);
+        double x = 20 + barIndex * (barWidthRound + 10);
+        double y = tourneyPointsPerMatchCanvas.getHeight() - barHeight - 30;
+
+        gc.setFill(Color.GREEN);
+        gc.fillRect(x, y, barWidthRound, barHeight);
+
+        gc.setFill(Color.BLACK);
+        gc.fillText(String.valueOf(goals), x + barWidthRound / 2 - 10, y - 10);
+    }
+
+    private void drawTourneyName(GraphicsContext gc, String tourneyName, double startX, int barIndex, double barWidthRound) {
+        double endX = 20 + (barIndex - 1) * (barWidthRound + 10);
+        double titleX = startX + (endX - startX) / 2 - (tourneyName.length() * 3);
+
+        gc.setFill(Color.BLACK);
+        gc.fillText(tourneyName, titleX, tourneyPointsPerMatchCanvas.getHeight() - 5);
+    }
+
+    private void adjustCanvasDimensions(List<String> tourneyNames, List<List<Integer>> roundsPerTourney) {
+        int totalBars = roundsPerTourney.stream().mapToInt(List::size).sum();
+        tourneyPointsPerMatchCanvas.setWidth(Math.max(300, 20 + (totalBars + tourneyNames.size()) * 40));
         tourneyPointsPerMatchCanvas.setHeight(230);
 
         Platform.runLater(() -> {
