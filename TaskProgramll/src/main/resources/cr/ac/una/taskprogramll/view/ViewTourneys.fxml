@@ -21,7 +21,7 @@
             </HBox>
             <VBox fx:id="imgTrophey" alignment="CENTER">
                <children>
-                  <ImageView fitHeight="107.0" fitWidth="109.0" pickOnBounds="true" preserveRatio="true" styleClass="TrophyIcon" />
+                  <ImageView fitHeight="130.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" styleClass="TrophyIcon" />
                </children>
             </VBox>
             <HBox alignment="CENTER" prefHeight="50.0" spacing="40.0" styleClass="boxRose">
