@@ -1,4 +1,3 @@
-
 package cr.ac.una.taskprogramll.controller;
 
 import cr.ac.una.taskprogramll.model.FileManager;
@@ -6,7 +5,6 @@ import cr.ac.una.taskprogramll.model.Sport;
 import cr.ac.una.taskprogramll.model.Team;
 import cr.ac.una.taskprogramll.model.Tourney;
 import cr.ac.una.taskprogramll.util.AppContext;
-import cr.ac.una.taskprogramll.util.FlowController;
 import cr.ac.una.taskprogramll.util.Mensaje;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
@@ -114,13 +112,14 @@ public class MassRemovalController extends Controller implements Initializable {
     @FXML
     private void OnActionBtnCancel(ActionEvent event) {
         clean();
+        InitializeController();
     }
 
     @FXML
     private void OnActionBtnDelete(ActionEvent event) {
         if ((!tbvDeleteTeam.getItems().isEmpty()) || (!tbvDeleteTourney.getItems().isEmpty())) {
             if (isTourney) {
-                tourneyDeleteList.clear();
+                tourneyOriginalList.removeAll(tourneyDeleteList);
                 fileManeger.serialization(tourneyOriginalList, "Tourney");
             } else {
                 for (Team teamDelete : teamDeleteList) {
@@ -133,6 +132,7 @@ public class MassRemovalController extends Controller implements Initializable {
                 fileManeger.serialization(teamOriginalList, "Team");
             }
             clean();
+            InitializeController();
         } else {
             if (isTourney) {
                 message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay torneos en la tabla de eliminación. Por favor, seleccione al menos un torneo primero.");
@@ -146,8 +146,11 @@ public class MassRemovalController extends Controller implements Initializable {
     private void OnMouseClikedTbvTeam(MouseEvent event) {
         selectedTeam = tbvTeam.getSelectionModel().getSelectedItem();
         if ((selectedTeam != null) && (teamList.contains(selectedTeam))) {
+            teamOriginalList.size();
             teamDeleteList.add(selectedTeam);
+            teamOriginalList.size();
             teamList.remove(selectedTeam);
+            teamOriginalList.size();
             TableInitialize();
         }
     }
@@ -156,8 +159,11 @@ public class MassRemovalController extends Controller implements Initializable {
     private void OnMouseClikedTbvDeleteTeam(MouseEvent event) {
         selectedTeam = tbvDeleteTeam.getSelectionModel().getSelectedItem();
         if ((selectedTeam != null) && (teamDeleteList.contains(selectedTeam))) {
+            teamOriginalList.size();
             teamList.add(selectedTeam);
+            teamOriginalList.size();
             teamDeleteList.remove(selectedTeam);
+            teamOriginalList.size();
             OnActionCmbSportSearch(null);
             OnKeyReleasedNameSearch(null);
             TableInitialize();
@@ -174,6 +180,7 @@ public class MassRemovalController extends Controller implements Initializable {
         }
     }
 
+    @FXML
     private void OnMouseClikedTbvDeleteTourney(MouseEvent event) {
         selectedTourney = tbvDeleteTourney.getSelectionModel().getSelectedItem();
         if ((selectedTourney != null) && (tourneyDeleteList.contains(selectedTourney))) {
@@ -332,12 +339,12 @@ public class MassRemovalController extends Controller implements Initializable {
         file = new File("Team.txt");
         if ((file.exists()) && (file.length() > 0)) {
             teamOriginalList = fileManeger.deserialization("Team", Team.class);
-            teamList = teamOriginalList;
+            teamList.addAll(teamOriginalList);
         }
         file = new File("Tourney.txt");
         if ((file.exists()) && (file.length() > 0)) {
             tourneyOriginalList = fileManeger.deserialization("Tourney", Tourney.class);
-            tourneyList = tourneyOriginalList;
+            tourneyList.addAll(tourneyOriginalList);
         }
         TableInitialize();
     }
@@ -356,16 +363,16 @@ public class MassRemovalController extends Controller implements Initializable {
         tourneyDeleteList.clear();
         tourneyList.clear();
         tourneyOriginalList.clear();
-        InitializeController();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        InitializeController();
     }
 
     @Override
     public void initialize() {
+        clean();
         InitializeController();
     }
+
 }

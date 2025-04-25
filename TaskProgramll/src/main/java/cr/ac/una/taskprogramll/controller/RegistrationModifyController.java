@@ -175,6 +175,7 @@ public class RegistrationModifyController extends Controller implements Initiali
             SaveImage(newSport.getId());
             fileManeger.serialization(sportList, "Sport");
             ClearPanel();
+            Boolean dwadasd=(Boolean)AppContext.getInstance().get("neededTeamBoolean");
             if ((Boolean) AppContext.getInstance().get("neededTeamBoolean")) {
                 AppContext.getInstance().set("selectedTeam", (Team) AppContext.getInstance().get("neededTeam"));
                 AppContext.getInstance().set("isSport", false);
@@ -215,7 +216,7 @@ public class RegistrationModifyController extends Controller implements Initiali
             name = newSport.getName();
             if ((sportList.remove(newSport)) && ((!file.exists()) || (file.delete()))) {
                 fileManeger.serialization(sportList, "Sport");
-                message.show(Alert.AlertType.CONFIRMATION, "Confirmacion", "El deporte " + name + " se elimino con exito.");
+                message.show(Alert.AlertType.INFORMATION, "Confirmacion", "El deporte " + name + " se elimino con exito.");
                 ClearPanel();
                 FlowController.getInstance().goView("Maintenance");
             } else {
@@ -231,7 +232,7 @@ public class RegistrationModifyController extends Controller implements Initiali
         name = newTeam.getName();
         if ((teamList.remove(newTeam)) && ((!file.exists()) || (file.delete()))) {
             fileManeger.serialization(teamList, "Team");
-            message.show(Alert.AlertType.CONFIRMATION, "Confirmacion", "El equipo " + name + " se elimino con exito.");
+            message.show(Alert.AlertType.INFORMATION, "Confirmacion", "El equipo " + name + " se elimino con exito.");
             ClearPanel();
             FlowController.getInstance().goView("Maintenance");
         } else {

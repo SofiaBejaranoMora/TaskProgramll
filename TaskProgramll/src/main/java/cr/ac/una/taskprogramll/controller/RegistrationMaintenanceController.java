@@ -54,6 +54,7 @@ public class RegistrationMaintenanceController extends Controller implements Ini
         if (existImage) {
             AppContext.getInstance().set("isSport", true);
             AppContext.getInstance().set("isMaintenace", false);
+            AppContext.getInstance().set("isTeam", false);
             AppContext.getInstance().set("isTourney", false);
             AppContext.getInstance().set("Title", "Registro de " + btnRegistrationSport.getText());
             FlowController.getInstance().goView("RegistrationModify");
@@ -73,6 +74,7 @@ public class RegistrationMaintenanceController extends Controller implements Ini
                 if (!content.equals("[]") && !content.isEmpty()) {
                     AppContext.getInstance().set("isSport", false);
                     AppContext.getInstance().set("isMaintenace", false);
+                    AppContext.getInstance().set("isTeam", true);
                     AppContext.getInstance().set("isTourney", false);
                     AppContext.getInstance().set("Title", "Registro de " + btnRegistrationTeam.getText());
                     FlowController.getInstance().goView("RegistrationModify");
@@ -98,6 +100,7 @@ public class RegistrationMaintenanceController extends Controller implements Ini
                 if (!content.equals("[]") && !content.isEmpty()) {
                     AppContext.getInstance().set("isSport", true);
                     AppContext.getInstance().set("isMaintenace", true);
+                    AppContext.getInstance().set("isTeam", false);
                     AppContext.getInstance().set("isTourney", false);
                     AppContext.getInstance().set("Title", "Mantenimiento de " + btnMaintenanceSport.getText());
                     FlowController.getInstance().goView("Maintenance");
@@ -121,6 +124,7 @@ public class RegistrationMaintenanceController extends Controller implements Ini
             if ((file.exists()) && (file.length() > 0)) {
                 String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
                 if (!content.equals("[]") && !content.isEmpty()) {
+                    AppContext.getInstance().set("isTeam", true);
                     AppContext.getInstance().set("isSport", false);
                     AppContext.getInstance().set("isMaintenace", true);
                     AppContext.getInstance().set("isTourney", false);
@@ -148,14 +152,15 @@ public class RegistrationMaintenanceController extends Controller implements Ini
                 if (!content.equals("[]") && !content.isEmpty()) {
                     AppContext.getInstance().set("isSport", false);
                     AppContext.getInstance().set("isTourney", true);
+                    AppContext.getInstance().set("isTeam", false);
                     AppContext.getInstance().set("isMaintenace", true);
                     AppContext.getInstance().set("Title", "Mantenimiento de " + btnMaintenanceTourney.getText());
                     FlowController.getInstance().goView("Maintenance");
                 } else {
-                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay torneos registrados para realizar mantenimiento. Por favor, registre al menos un torneos primero.");
                 }
             } else {
-                message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para realizar mantenimiento. Por favor, registre al menos un equipo primero.");
+                message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay torneos registrados para realizar mantenimiento. Por favor, registre al menos un torneos primero.");
             }
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
@@ -165,6 +170,8 @@ public class RegistrationMaintenanceController extends Controller implements Ini
 
     @FXML
     private void OnActionBtnMassRemovalTeam(ActionEvent event) throws IOException {
+        existImage = (Boolean) AppContext.getInstance().get("ExistImage");
+        if (existImage) {
         file = new File("Team.txt");
         if ((file.exists()) && (file.length() > 0)) {
             String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
@@ -178,10 +185,15 @@ public class RegistrationMaintenanceController extends Controller implements Ini
         } else {
             message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para poder eliminar.");
         }
+        } else {
+            message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
+        }
     }
 
     @FXML
     private void OnActionBtnMassRemovalTourney(ActionEvent event) throws IOException {
+         existImage = (Boolean) AppContext.getInstance().get("ExistImage");
+        if (existImage) {
         file = new File("Tourney.txt");
         if ((file.exists()) && (file.length() > 0)) {
             String content = new String(Files.readAllBytes(Paths.get(file.getPath()))).trim();
@@ -190,10 +202,13 @@ public class RegistrationMaintenanceController extends Controller implements Ini
                 AppContext.getInstance().set("Title", "Eliminación Masiva De " + btnMassRemovalTourney.getText());
                 FlowController.getInstance().goView("MassRemoval");
             } else {
-                message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para poder eliminar.");
+                message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay torneos registrados para poder eliminar.");
             }
         } else {
-            message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay equipos registrados para poder eliminar.");
+            message.show(Alert.AlertType.INFORMATION, "Aviso", "No hay torneos registrados para poder eliminar.");
+        }
+        } else {
+            message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
         }
     }
 

@@ -46,6 +46,9 @@
                         <TableColumn fx:id="tclTeam" prefWidth="503.0" text="Nombre" />
                         <TableColumn fx:id="tclTeamSportType" prefWidth="503.0" text="Deporte" />
                      </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
                   </TableView>
                   <TableView fx:id="tbvSport" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="TableViewLightdBlue" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
                      <padding>
@@ -54,6 +57,9 @@
                      <columns>
                         <TableColumn fx:id="tclSport" prefWidth="503.0" text="Nombre" />
                      </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
                   </TableView>
                   <TableView fx:id="tbvTourney" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="TableViewLightdBlue" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
                      <padding>
@@ -63,6 +69,9 @@
                         <TableColumn fx:id="tclTourney" prefWidth="503.0" text="Nombre" />
                         <TableColumn fx:id="tclTourneySportType" prefWidth="503.0" text="Deporte" />
                      </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
                   </TableView>
                </children>
                <VBox.margin>

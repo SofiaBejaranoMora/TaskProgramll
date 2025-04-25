@@ -64,7 +64,7 @@ public class PhotographyController extends Controller implements Initializable {
 
     @FXML
     private void OnActionBtnCancel(ActionEvent event) {
-        bufferedImage=null;
+        bufferedImage = null;
         AppContext.getInstance().set("bufferedImageTeam", bufferedImage);
         close();
     }
@@ -106,13 +106,15 @@ public class PhotographyController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        checkedCamera = true;
         btnSavePhoto.setDisable(true);
         camera();
     }
 
     @Override
     public void initialize() {
-       btnSavePhoto.setDisable(true);
+        checkedCamera = true;
+        btnSavePhoto.setDisable(true);
         camera();
     }
 }

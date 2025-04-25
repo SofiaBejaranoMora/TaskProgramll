@@ -42,6 +42,7 @@ public class MaintenanceController extends Controller implements Initializable {
     private Tourney selectedTourney;
     private Boolean isSport = false;
     private Boolean isTourney = false;
+    private Boolean isTeam = false;
     private File file;
     private Mensaje message = new Mensaje();
 
@@ -82,6 +83,7 @@ public class MaintenanceController extends Controller implements Initializable {
         Team selectedTeam = tbvTeams.getSelectionModel().getSelectedItem();
         selectedTourney = tbvTourney.getSelectionModel().getSelectedItem();
         if (isSport) {
+            AppContext.getInstance().set("neededTeamBoolean", false);
             SportSelectedModify(selectedSport);
         } else if (isTourney) {
             selectedTourney = SearchTourneyModify(selectedTourney);
@@ -107,11 +109,20 @@ public class MaintenanceController extends Controller implements Initializable {
 
     @FXML
     private void OnActionBtnAccept(ActionEvent event) {
-        selectedTourney.setName(txtName.getText());
-        fileManeger.serialization(tourneyList, "Tourney");
-        EnabledModifyTourney(false);
-        Clean();
-        InitializeController();
+        String name = txtName.getText().trim();
+        if (!name.isEmpty()) {
+            tourneyList=fileManeger.deserialization("Tourney", Tourney.class);
+            selectedTourney = FindObject(selectedTourney, tourneyList);
+            selectedTourney.setName(txtName.getText());
+            fileManeger.serialization(tourneyList, "Tourney");
+            EnabledModifyTourney(false);
+            TableInitialize();
+            //InitializeController();
+            Clean();
+        } else {
+            message.show(Alert.AlertType.INFORMATION, "Aviso", "No se a registrado un nombre");
+        }
+
     }
 
     @FXML
@@ -151,7 +162,7 @@ public class MaintenanceController extends Controller implements Initializable {
             file = new File(selectedTeam.searchSportType().RuteImage());
             if (file.exists()) {
                 AppContext.getInstance().set("selectedTeam", selectedTeam);
-                AppContext.getInstance().set("neededTeam", false);
+                AppContext.getInstance().set("neededTeamBoolean", false);
                 FlowController.getInstance().goView("RegistrationModify");
             } else {
                 message.show(Alert.AlertType.WARNING, "Alerta", "El equipo no se puede modificar porque la imagen del balón del deporte "
@@ -254,6 +265,15 @@ public class MaintenanceController extends Controller implements Initializable {
         return null;
     }
 
+    public <T> T FindObject(T object, List<T> list) {
+        for (T item : list) {
+            if (item.equals(object)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     public void InitializeComboxSportType() {
         ObservableList<Sport> items = FXCollections.observableArrayList(sportList);
         items.add(new Sport("Todos", 0));
@@ -293,6 +313,9 @@ public class MaintenanceController extends Controller implements Initializable {
         tbvTourney.setVisible(enabled);
         tbvTourney.setManaged(enabled);
         tbvTourney.setDisable(!enabled);
+        txtName.setVisible(enabled);
+        txtName.setManaged(enabled);
+        txtName.setDisable(!enabled);
         EnabledBtnAccept(false);
     }
 
@@ -317,17 +340,26 @@ public class MaintenanceController extends Controller implements Initializable {
         } else if (isTourney) {
             ObservableList<Tourney> sportObservableList = FXCollections.observableArrayList(tourneyList);
             tbvTourney.setItems(sportObservableList);
+            tbvTourney.getColumns().remove(tclTourney);
+            tclTourney = new TableColumn<>("Nombre");
+            tbvTourney.getColumns().add(tclTourney);
             tclTourney.setCellValueFactory(new PropertyValueFactory<>("Name"));
+            tbvTourney.getColumns().remove(tclTourneySportType);
+            tclTourneySportType = new TableColumn<>("Deporte");
+            tbvTourney.getColumns().add(tclTourneySportType);
             tclTourneySportType.setCellValueFactory(cellData -> {
                 Sport sport = cellData.getValue().searchSportType();
                 return new SimpleStringProperty(sport.toString());
             });
             tclTourney.prefWidthProperty().bind(tbvTourney.widthProperty().multiply(0.50));
             tclTourneySportType.prefWidthProperty().bind(tbvTourney.widthProperty().multiply(0.50));
-        } else {
+        } else if (isTeam) {
             ObservableList<Team> sportObservableList = FXCollections.observableArrayList(teamList);
             tbvTeams.setItems(sportObservableList);
             tclTeam.setCellValueFactory(new PropertyValueFactory<>("Name"));
+            tbvTeams.getColumns().remove(tclTeamSportType);
+            tclTeamSportType = new TableColumn<>("Deporte");
+            tbvTeams.getColumns().add(tclTeamSportType);
             tclTeamSportType.setCellValueFactory(cellData -> {
                 Sport sport = cellData.getValue().searchSportType();
                 return new SimpleStringProperty(sport.toString());
@@ -349,9 +381,10 @@ public class MaintenanceController extends Controller implements Initializable {
         labTitle.setText((String) AppContext.getInstance().get("Title"));
         isSport = (Boolean) AppContext.getInstance().get("isSport");
         isTourney = (Boolean) AppContext.getInstance().get("isTourney");
+        isTeam = (Boolean) AppContext.getInstance().get("isTeam");
         EnabledSport(isSport);
         EnabledTourney(isTourney);
-        EnabledTeam(!isSport && !isTourney);
+        EnabledTeam(isTeam);
         EnabledcmbSport(!isSport);
         file = new File("Sport.txt");
         if ((file.exists()) && (file.length() > 0)) {

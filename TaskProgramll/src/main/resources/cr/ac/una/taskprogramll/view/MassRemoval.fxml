@@ -81,7 +81,7 @@
                               <TableColumn fx:id="tclDeleteTeamSportType" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" text="Deporte" />
                            </columns>
                         </TableView>
-                        <TableView fx:id="tbvDeleteTourney" layoutX="214.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#OnMouseClikedTbvDeleteTeam" styleClass="TableViewLightdBlue" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
+                        <TableView fx:id="tbvDeleteTourney" layoutX="214.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#OnMouseClikedTbvDeleteTourney" styleClass="TableViewLightdBlue" stylesheets="@Style.css" HBox.hgrow="ALWAYS">
                            <padding>
                               <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
                            </padding>
