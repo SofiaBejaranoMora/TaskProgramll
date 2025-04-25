@@ -19,6 +19,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 
+/**
+ * FXML Controller class
+ *
+ * @author Michelle Wittingham
+ */
+
 public class TourneysInfoController extends Controller implements Initializable {
     
     private boolean isSuperiorInFront = true;

@@ -28,6 +28,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
+/**
+ * FXML Controller class
+ *
+ * @author Michelle Wittingham
+ */
+
 public class CreateTourneyController extends Controller implements Initializable {
 
     private final FileManager fileManager = new FileManager();

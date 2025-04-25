@@ -181,14 +181,26 @@ public class HistorialEquiposController extends Controller implements Initializa
     }
 
     private void setupTableColumns() {
+        setupTeamColumns();
+        setupTourneyColumns();
+        setupTourneyStatsColumns();
+    }
+
+    private void setupTeamColumns() {
         TableColumn<Team, Integer> teamIdColumn = new TableColumn<>("ID");
         teamIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<Team, String> teamNameColumn = new TableColumn<>("Nombre");
         teamNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Team, Integer> teamPointsColumn = new TableColumn<>("Puntos");
         teamPointsColumn.setCellValueFactory(cellData -> {
             Team team = cellData.getValue();
             int globalPoints = calculateGlobalPoints(team);
             return javafx.beans.binding.Bindings.createObjectBinding(() -> globalPoints);
         });
+
+        TableColumn<Team, String> teamRankingColumn = new TableColumn<>("Ranking");
         teamRankingColumn.setCellValueFactory(cellData -> {
             Team team = cellData.getValue();
             List<Team> sortedTeams = new ArrayList<>(availableTeams);
@@ -196,31 +208,39 @@ public class HistorialEquiposController extends Controller implements Initializa
             int rank = sortedTeams.indexOf(team) + 1;
             return new SimpleStringProperty("Posición: " + rank);
         });
+
         teamTable.getColumns().clear();
         teamTable.getColumns().addAll(teamIdColumn, teamNameColumn, teamPointsColumn, teamRankingColumn);
+    }
 
+    private void setupTourneyColumns() {
         TableColumn<Tourney, Integer> tourneyIdColumn = new TableColumn<>("ID");
         tourneyIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<Tourney, String> tourneyNameColumn = new TableColumn<>("Nombre");
         tourneyNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Tourney, Integer> tourneyMinutesColumn = new TableColumn<>("Minutos");
         tourneyMinutesColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
+
+        TableColumn<Tourney, String> tourneySportColumn = new TableColumn<>("Deporte");
         tourneySportColumn.setCellValueFactory(cellData -> {
             Tourney tourney = cellData.getValue();
             Sport sport = sportList.stream()
                     .filter(s -> s.getId() == tourney.getSportTypeId())
                     .findFirst()
                     .orElse(null);
-            String sportName;
-            if (sport != null) {
-                sportName = sport.getName();
-            } else {
-                sportName = "Sin deporte";
-            }
+            String sportName = (sport != null) ? sport.getName() : "Sin deporte";
             return new SimpleStringProperty(sportName);
         });
+
+        TableColumn<Tourney, String> tourneyStateColumn = new TableColumn<>("Estado");
         tourneyStateColumn.setCellValueFactory(cellData -> {
             Tourney tourney = cellData.getValue();
             return new SimpleStringProperty(tourney.returnState());
         });
+
+        TableColumn<Tourney, String> tourneyPositionColumn = new TableColumn<>("Posición");
         tourneyPositionColumn.setCellValueFactory(cellData -> {
             Tourney tourney = cellData.getValue();
             if (selectedTeam == null) {
@@ -232,26 +252,45 @@ public class HistorialEquiposController extends Controller implements Initializa
             }
             return new SimpleStringProperty(tourney.returnTeamPosition(updatedTeam));
         });
+
         tourneyTable.getColumns().clear();
         tourneyTable.getColumns().addAll(tourneyIdColumn, tourneyNameColumn, tourneyMinutesColumn, tourneySportColumn, tourneyStateColumn, tourneyPositionColumn);
+    }
 
+    private void setupTourneyStatsColumns() {
         tourneyStatsNameColumn.setCellValueFactory(cellData -> cellData.getValue().tourneyNameProperty());
         tourneyStatsPointsColumn.setCellValueFactory(cellData -> cellData.getValue().pointsProperty().asObject());
         tourneyStatsGoalsColumn.setCellValueFactory(cellData -> cellData.getValue().goalsProperty().asObject());
         tourneyStatsRankingColumn.setCellValueFactory(cellData -> cellData.getValue().rankingProperty());
     }
-
+    
     private void loadData() {
+        ensureTeamsInitialized();
+        List<Team> teams = getTeamsFromAppContext();
+        handleTeamFileIfEmpty(teams);
+        removeDuplicateTeams(teams);
+        updateAvailableTeams(teams);
+        updateTeamTable();
+    }
+
+    private void ensureTeamsInitialized() {
         if (AppContext.getInstance().get("teams") == null) {
             AppContext.getInstance().set("teams", new ArrayList<Team>());
         }
-        @SuppressWarnings("unchecked")
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Team> getTeamsFromAppContext() {
         List<Team> teams = (List<Team>) AppContext.getInstance().get("teams");
         System.out.println("Equipos iniciales en AppContext: " + teams);
+        return teams;
+    }
 
+    private void handleTeamFileIfEmpty(List<Team> teams) {
         if (teams.isEmpty()) {
             File teamFile = new File("Team.txt");
             System.out.println("Ruta absoluta del archivo Team.txt: " + teamFile.getAbsolutePath());
+
             if (!teamFile.exists()) {
                 System.out.println("Archivo Team.txt no encontrado en: " + teamFile.getAbsolutePath());
                 message.show(Alert.AlertType.WARNING, "Archivo no encontrado", "Team.txt no existe en el directorio raíz.");
@@ -259,44 +298,56 @@ public class HistorialEquiposController extends Controller implements Initializa
                 System.out.println("Archivo Team.txt está vacío.");
                 message.show(Alert.AlertType.WARNING, "Archivo vacío", "Team.txt está vacío.");
             } else {
-                try {
-                    System.out.println("Deserializando Team.txt...");
-                    List<Team> deserializedTeams = fileManager.deserialization("Team", Team.class);
-                    if (deserializedTeams == null || deserializedTeams.isEmpty()) {
-                        System.out.println("Deserialización de Team.txt devolvió null o lista vacía.");
-                        message.show(Alert.AlertType.WARNING, "Sin datos", "No se encontraron equipos en Team.txt.");
-                    } else {
-                        Set<Team> uniqueTeams = new HashSet<>(deserializedTeams);
-                        teams.clear();
-                        teams.addAll(uniqueTeams);
-                        AppContext.getInstance().set("teams", teams);
-                        System.out.println("Equipos cargados y añadidos a AppContext (sin duplicados): " + teams);
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error al deserializar Team.txt: " + e.getMessage());
-                    e.printStackTrace();
-                    message.show(Alert.AlertType.ERROR, "Error al Cargar Equipos", "No se pudieron cargar los equipos: " + e.getMessage());
-                    return;
-                }
+                deserializeTeamFile(teamFile, teams);
             }
-        } else {
-            Set<Team> uniqueTeams = new HashSet<>(teams);
-            teams.clear();
-            teams.addAll(uniqueTeams);
-            AppContext.getInstance().set("teams", teams);
-            System.out.println("Equipos ya cargados en AppContext (sin duplicados): " + teams);
         }
+    }
 
+    private void deserializeTeamFile(File teamFile, List<Team> teams) {
+        try {
+            System.out.println("Deserializando Team.txt...");
+            List<Team> deserializedTeams = fileManager.deserialization("Team", Team.class);
+
+            if (deserializedTeams == null || deserializedTeams.isEmpty()) {
+                System.out.println("Deserialización de Team.txt devolvió null o lista vacía.");
+                message.show(Alert.AlertType.WARNING, "Sin datos", "No se encontraron equipos en Team.txt.");
+            } else {
+                Set<Team> uniqueTeams = new HashSet<>(deserializedTeams);
+                teams.clear();
+                teams.addAll(uniqueTeams);
+                AppContext.getInstance().set("teams", teams);
+                System.out.println("Equipos cargados y añadidos a AppContext (sin duplicados): " + teams);
+            }
+        } catch (Exception e) {
+            System.out.println("Error al deserializar Team.txt: " + e.getMessage());
+            e.printStackTrace();
+            message.show(Alert.AlertType.ERROR, "Error al Cargar Equipos", "No se pudieron cargar los equipos: " + e.getMessage());
+        }
+    }
+
+    private void removeDuplicateTeams(List<Team> teams) {
+        Set<Team> uniqueTeams = new HashSet<>(teams);
+        teams.clear();
+        teams.addAll(uniqueTeams);
+        AppContext.getInstance().set("teams", teams);
+        System.out.println("Equipos ya cargados en AppContext (sin duplicados): " + teams);
+    }
+
+    private void updateAvailableTeams(List<Team> teams) {
         availableTeams.clear();
         availableTeams.addAll(teams);
+    }
+
+    private void updateTeamTable() {
         teamTable.setItems(availableTeams);
         System.out.println("teamTable items después de cargar: " + teamTable.getItems());
+
         if (teamTable.getItems().isEmpty()) {
             System.out.println("No hay equipos para mostrar en teamTable.");
             message.show(Alert.AlertType.WARNING, "Lista vacía", "No hay equipos disponibles para mostrar.");
         }
     }
-
+    
     private void loadTourneys() {
         if (AppContext.getInstance().get("tourneys") == null) {
             AppContext.getInstance().set("tourneys", new ArrayList<Tourney>());
