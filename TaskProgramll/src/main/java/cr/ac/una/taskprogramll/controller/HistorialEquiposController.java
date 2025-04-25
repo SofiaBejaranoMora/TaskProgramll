@@ -631,7 +631,12 @@ public class HistorialEquiposController extends Controller implements Initializa
                     List<MatchDetails> matches = tourneyTeam.getEncounterList();
                     if (matches != null) {
                         for (MatchDetails match : matches) {
-                            String opponentName = match.getNameFirstTeam().equals(tourneyTeam.getName()) ? match.getNameSecondTeam() : match.getNameFirstTeam();
+                            String opponentName;
+                            if (match.getNameFirstTeam().equals(tourneyTeam.getName())) {
+                                opponentName = match.getNameSecondTeam();
+                            } else {
+                                opponentName = match.getNameFirstTeam();
+                            }
                             boolean opponentInTourney = allTeamsInTourney.stream().anyMatch(t -> t.getName().equals(opponentName));
                             if (!opponentInTourney) {
                                 continue;
