@@ -135,9 +135,7 @@ public class HistorialEquiposController extends Controller implements Initializa
         FlowController.getInstance().goViewInStage("Lobby", (Stage) btnBackMenu.getScene().getWindow());
     }
 
-    /**
-     * Clase auxiliar para la tabla de estadísticas por torneo
-     */
+    //Clase auxiliar para manejar estadisticas
     public static class TourneyStats {
 
         private final StringProperty tourneyName = new SimpleStringProperty();
@@ -175,7 +173,7 @@ public class HistorialEquiposController extends Controller implements Initializa
         loadTourneys();
         loadSports();
         setupTeamSelectionListener();
-        setupTourneySelectionListener(); // Añadir el listener para la selección de torneos
+        setupTourneySelectionListener(); 
         setupTeamFilterDisplay();
         setupFilters();
     }
@@ -230,7 +228,12 @@ public class HistorialEquiposController extends Controller implements Initializa
                     .filter(s -> s.getId() == tourney.getSportTypeId())
                     .findFirst()
                     .orElse(null);
-            String sportName = (sport != null) ? sport.getName() : "Sin deporte";
+            String sportName;
+            if (sport != null) {
+                sportName = sport.getName();
+            } else {
+                sportName = "Sin deporte";
+            }
             return new SimpleStringProperty(sportName);
         });
 
@@ -628,14 +631,12 @@ public class HistorialEquiposController extends Controller implements Initializa
                     List<MatchDetails> matches = tourneyTeam.getEncounterList();
                     if (matches != null) {
                         for (MatchDetails match : matches) {
-                            // Filtrar partidos que pertenecen a este torneo
                             String opponentName = match.getNameFirstTeam().equals(tourneyTeam.getName()) ? match.getNameSecondTeam() : match.getNameFirstTeam();
                             boolean opponentInTourney = allTeamsInTourney.stream().anyMatch(t -> t.getName().equals(opponentName));
                             if (!opponentInTourney) {
                                 continue;
                             }
 
-                            // Solo contar puntos si el equipo es firstTeam
                             if (match.getNameFirstTeam().equals(tourneyTeam.getName())) {
                                 int teamGoals = match.getCounterFirstTeamGoals();
                                 int opponentGoals = match.getCounterSecondTeamGoals();
@@ -685,14 +686,17 @@ public class HistorialEquiposController extends Controller implements Initializa
                     List<MatchDetails> matches = tourneyTeam.getEncounterList();
                     if (matches != null) {
                         for (MatchDetails match : matches) {
-                            // Filtrar partidos que pertenecen a este torneo
-                            String opponentName = match.getNameFirstTeam().equals(tourneyTeam.getName()) ? match.getNameSecondTeam() : match.getNameFirstTeam();
+                            String opponentName;
+                            if (match.getNameFirstTeam().equals(tourneyTeam.getName())) {
+                                opponentName = match.getNameSecondTeam();
+                            } else {
+                                opponentName = match.getNameFirstTeam();
+                            }
                             boolean opponentInTourney = allTeamsInTourney.stream().anyMatch(t -> t.getName().equals(opponentName));
                             if (!opponentInTourney) {
                                 continue;
                             }
 
-                            // Solo contar puntos si el equipo es firstTeam
                             if (match.getNameFirstTeam().equals(tourneyTeam.getName())) {
                                 int teamGoals = match.getCounterFirstTeamGoals();
                                 int opponentGoals = match.getCounterSecondTeamGoals();
@@ -713,7 +717,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             }
         }
 
-        // Calcular el máximo para la escala
         double barWidth = 50;
         double maxPoints = 1;
         for (int points : tourneyPointsList) {
@@ -1071,14 +1074,12 @@ public class HistorialEquiposController extends Controller implements Initializa
                     List<MatchDetails> matches = tourneyTeam.getEncounterList();
                     if (matches != null) {
                         for (MatchDetails match : matches) {
-                            // Filtrar partidos que pertenecen a este torneo
                             String opponentName = match.getNameFirstTeam().equals(tourneyTeam.getName()) ? match.getNameSecondTeam() : match.getNameFirstTeam();
                             boolean opponentInTourney = allTeamsInTourney.stream().anyMatch(t -> t.getName().equals(opponentName));
                             if (!opponentInTourney) {
                                 continue;
                             }
 
-                            // Solo contar si el equipo es firstTeam
                             if (match.getNameFirstTeam().equals(tourneyTeam.getName())) {
                                 int teamGoals = match.getCounterFirstTeamGoals();
                                 int opponentGoals = match.getCounterSecondTeamGoals();
@@ -1130,10 +1131,8 @@ public class HistorialEquiposController extends Controller implements Initializa
             return;
         }
 
-        // Obtener todos los equipos del torneo
         List<Team> allTeamsInTourney = getAllTeamsInTourney(tourney);
 
-        // Verificar si el equipo participa en el torneo
         boolean teamInTourney = allTeamsInTourney.stream().anyMatch(t -> t.getId() == updatedTeam.getId());
         if (!teamInTourney) {
             gcGoals.setFill(Color.BLACK);
@@ -1141,7 +1140,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             return;
         }
 
-        // Encontrar la versión actualizada del equipo en el torneo
         Team tourneyTeam = allTeamsInTourney.stream()
                 .filter(t -> t.getId() == updatedTeam.getId())
                 .findFirst()
@@ -1153,7 +1151,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             return;
         }
 
-        // Determinar el número de rondas en las que participó el equipo
         int lastRoundParticipated = determineLastRoundParticipated(tourney, tourneyTeam);
         if (lastRoundParticipated == 0) {
             gcGoals.setFill(Color.BLACK);
@@ -1161,7 +1158,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             return;
         }
 
-        // Obtener los partidos válidos y calcular los goles por ronda
         List<MatchDetails> matches = tourneyTeam.getEncounterList();
         List<Integer> goalsPerRoundList = new ArrayList<>();
         int totalGoals = 0;
@@ -1174,20 +1170,21 @@ public class HistorialEquiposController extends Controller implements Initializa
                 matchesPerRound = 1;
             }
 
-            // Inicializar rondas hasta lastRoundParticipated
             for (int i = 0; i < lastRoundParticipated; i++) {
                 goalsPerRoundList.add(0);
             }
 
             for (MatchDetails match : matches) {
-                // Filtrar partidos que no pertenecen al torneo
-                String opponentName = match.getNameFirstTeam().equals(tourneyTeam.getName()) ? match.getNameSecondTeam() : match.getNameFirstTeam();
-                boolean opponentInTourney = allTeamsInTourney.stream().anyMatch(t -> t.getName().equals(opponentName));
+                String opponentName;
+                if (match.getNameFirstTeam().equals(tourneyTeam.getName())) {
+                    opponentName = match.getNameSecondTeam();
+                } else {
+                    opponentName = match.getNameFirstTeam();
+                }                boolean opponentInTourney = allTeamsInTourney.stream().anyMatch(t -> t.getName().equals(opponentName));
                 if (!opponentInTourney) {
                     continue;
                 }
 
-                // Solo contar goles si el equipo es firstTeam
                 int teamGoals = 0;
                 if (match.getNameFirstTeam().equals(tourneyTeam.getName())) {
                     teamGoals = match.getCounterFirstTeamGoals();
@@ -1195,23 +1192,19 @@ public class HistorialEquiposController extends Controller implements Initializa
                     continue;
                 }
 
-                // Determinar la ronda del partido
                 int matchRound = Math.min((matchIndex / matchesPerRound) + 1, lastRoundParticipated);
                 goalsPerRoundList.set(matchRound - 1, goalsPerRoundList.get(matchRound - 1) + teamGoals);
                 totalGoals += teamGoals;
                 matchIndex++;
             }
 
-            // Contar rondas con goles
             numberOfRounds = (int) goalsPerRoundList.stream().filter(g -> g > 0).count();
             if (numberOfRounds == 0) {
-                numberOfRounds = 1; // Mínimo 1 ronda si hay partidos
+                numberOfRounds = 1; 
             }
         }
 
-        // Caso de deducción: no hay partidos válidos
         if (totalGoals == 0) {
-            // Deducir goles basados en la estructura del torneo
             numberOfRounds = tourney.getTeamList().size() == 2 ? 1 : lastRoundParticipated;
             goalsPerRoundList.clear();
             for (int i = 0; i < numberOfRounds; i++) {
@@ -1220,12 +1213,10 @@ public class HistorialEquiposController extends Controller implements Initializa
 
             boolean isWinner = tourney.getWinner().stream().anyMatch(t -> t.getId() == tourneyTeam.getId());
             if (isWinner && tourney.getTeamList().size() == 2) {
-                // Torneo de 2 equipos, 1 partido, asumimos 1 gol para la victoria
                 goalsPerRoundList.set(0, 1);
                 totalGoals = 1;
                 numberOfRounds = 1;
             } else {
-                // Para torneos más grandes, podríamos deducir más goles, pero necesitamos más datos
                 gcGoals.setFill(Color.BLACK);
                 gcGoals.fillText("No hay goles registrados en este torneo", width / 4, height / 2);
                 return;
@@ -1238,7 +1229,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             return;
         }
 
-        // Convertir la lista de goles por ronda a un arreglo para la gráfica
         int[] goalsPerRound = new int[numberOfRounds];
         int roundIndex = 0;
         for (int i = 0; i < goalsPerRoundList.size() && roundIndex < numberOfRounds; i++) {
@@ -1248,7 +1238,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             }
         }
 
-        // Dibujar la gráfica de queso
         double centerX = width / 2;
         double centerY = height / 3;
         double radius = Math.min(width, height) / 3;
@@ -1298,12 +1287,10 @@ public class HistorialEquiposController extends Controller implements Initializa
         System.out.println("Actualizando matchAccordion para el equipo: " + updatedTeam.getName()
                 + " (ID: " + updatedTeam.getId() + ") en torneo: " + selectedTourney.getName());
 
-        // Obtener todos los equipos del torneo
         List<Team> allTeamsInTourney = getAllTeamsInTourney(selectedTourney);
         System.out.println("Número de equipos en el torneo: " + allTeamsInTourney.size());
         allTeamsInTourney.forEach(team -> System.out.println("Equipo en torneo: " + team.getName() + " (ID: " + team.getId() + ")"));
 
-        // Verificar si el equipo participa en el torneo
         boolean teamInTourney = allTeamsInTourney.stream().anyMatch(t -> t.getId() == updatedTeam.getId());
         if (!teamInTourney) {
             System.out.println("El equipo " + updatedTeam.getName() + " no participa en el torneo " + selectedTourney.getName());
@@ -1313,19 +1300,16 @@ public class HistorialEquiposController extends Controller implements Initializa
             return;
         }
 
-        // Crear la estructura del acordeón
         TitledPane tourneyPane = new TitledPane();
         tourneyPane.setText(selectedTourney.getName());
         VBox tourneyContent = new VBox();
         Accordion roundsAccordion = new Accordion();
 
-        // Obtener y filtrar partidos del equipo en este torneo
         List<MatchDetails> matchesInTourney = getMatchesInTourney(updatedTeam, allTeamsInTourney);
         System.out.println("Partidos encontrados para " + updatedTeam.getName()
                 + " en torneo " + selectedTourney.getName() + ": " + matchesInTourney.size());
         matchesInTourney.forEach(match -> System.out.println("Partido directo: " + match));
 
-        // Si no encontramos partidos directamente, buscamos en los encounterList de los oponentes
         List<MatchDetails> inferredMatches = new ArrayList<>();
         if (matchesInTourney.isEmpty()) {
             inferredMatches = inferMatchesFromOpponents(updatedTeam, allTeamsInTourney);
@@ -1334,7 +1318,6 @@ public class HistorialEquiposController extends Controller implements Initializa
             inferredMatches.forEach(match -> System.out.println("Partido inferido: " + match));
         }
 
-        // Combinar partidos y evitar duplicados
         matchesInTourney.addAll(inferredMatches);
         matchesInTourney = matchesInTourney.stream()
                 .distinct()
@@ -1342,40 +1325,38 @@ public class HistorialEquiposController extends Controller implements Initializa
         System.out.println("Partidos totales después de combinar: " + matchesInTourney.size());
         matchesInTourney.forEach(match -> System.out.println("Partido combinado: " + match));
 
-        // Determinar última ronda participada y si es ganador/perdedor
         int lastRoundParticipated = determineLastRoundParticipated(selectedTourney, updatedTeam);
         System.out.println("Última ronda participada: " + lastRoundParticipated);
         boolean isWinner = selectedTourney.getWinner().stream().anyMatch(t -> t.getId() == updatedTeam.getId());
         boolean isLooser = selectedTourney.getLoosersList().stream().anyMatch(t -> t.getId() == updatedTeam.getId());
 
-        // Forzar un solo partido para torneos de 2 equipos
         if (allTeamsInTourney.size() == 2 && !matchesInTourney.isEmpty()) {
             matchesInTourney = matchesInTourney.subList(0, 1);
             System.out.println("Forzando un solo partido para torneo de 2 equipos: " + matchesInTourney.size());
         }
 
-        // Procesar partidos
         if (!matchesInTourney.isEmpty()) {
-            // Caso especial: torneo con solo un partido (como torneo de 2 equipos)
             if (allTeamsInTourney.size() == 2) {
                 VBox finalRoundContent = new VBox();
                 processMatch(matchesInTourney.get(0), finalRoundContent, updatedTeam, allTeamsInTourney);
 
-                String roundTitle = isWinner ? "Final (Ganador)" : "Final (Perdió)";
+                String roundTitle;
+                if (isWinner) {
+                    roundTitle = "Final (Ganador)";
+                } else {
+                    roundTitle = "Final (Perdió)";
+                }
                 System.out.println("Creando TitledPane: " + roundTitle);
                 roundsAccordion.getPanes().add(new TitledPane(roundTitle, finalRoundContent));
 
                 System.out.println("Caso especial manejado, evitando flujo de múltiples rondas.");
-                // No continuar al flujo de múltiples rondas
             } else {
-                // Para torneos con múltiples rondas
                 System.out.println("Entrando en flujo de múltiples rondas con " + lastRoundParticipated + " rondas");
                 List<VBox> roundContents = new ArrayList<>();
                 for (int i = 0; i < lastRoundParticipated; i++) {
                     roundContents.add(new VBox());
                 }
 
-                // Asignar partidos a rondas
                 int currentRound = 0;
                 for (MatchDetails match : matchesInTourney) {
                     if (currentRound >= lastRoundParticipated) {
@@ -1387,7 +1368,6 @@ public class HistorialEquiposController extends Controller implements Initializa
                     currentRound++;
                 }
 
-                // Crear paneles para cada ronda con partidos
                 for (int i = 0; i < roundContents.size(); i++) {
                     VBox roundContent = roundContents.get(i);
                     if (!roundContent.getChildren().isEmpty()) {
@@ -1402,11 +1382,9 @@ public class HistorialEquiposController extends Controller implements Initializa
             tourneyContent.getChildren().add(new Label("No hay partidos disponibles para este torneo"));
         }
 
-        // Depurar los TitledPane creados
         System.out.println("TitledPanes creados en roundsAccordion: " + roundsAccordion.getPanes().size());
         roundsAccordion.getPanes().forEach(pane -> System.out.println("TitledPane: " + pane.getText()));
 
-        // Configurar el contenido final
         if (roundsAccordion.getPanes().isEmpty()) {
             System.out.println("No se añadieron rondas al acordeón para el torneo " + selectedTourney.getName());
             tourneyContent.getChildren().add(new Label("No hay partidos disponibles para este torneo"));
@@ -1421,7 +1399,7 @@ public class HistorialEquiposController extends Controller implements Initializa
     
     private List<MatchDetails> inferMatchesFromOpponents(Team team, List<Team> allTeamsInTourney) {
         List<MatchDetails> inferredMatches = new ArrayList<>();
-        Set<String> matchSignatures = new HashSet<>(); // Para evitar duplicados
+        Set<String> matchSignatures = new HashSet<>(); 
 
         for (Team otherTeam : allTeamsInTourney) {
             if (otherTeam.getId() == team.getId()) {
@@ -1429,13 +1407,16 @@ public class HistorialEquiposController extends Controller implements Initializa
             }
             if (otherTeam.getEncounterList() != null) {
                 for (MatchDetails match : otherTeam.getEncounterList()) {
-                    String opponentName = match.getNameFirstTeam().equals(otherTeam.getName())
-                            ? match.getNameSecondTeam() : match.getNameFirstTeam();
+                    String opponentName;
+                    if (match.getNameFirstTeam().equals(otherTeam.getName())) {
+                        opponentName = match.getNameSecondTeam();
+                    } else {
+                        opponentName = match.getNameFirstTeam();
+                    }
                     if (opponentName != null && opponentName.trim().toLowerCase().equals(team.getName().trim().toLowerCase())) {
-                        // Crear una firma única para el partido
                         String matchSignature = match.getNameFirstTeam() + "-" + match.getNameSecondTeam() + "-"
                                 + match.getCounterFirstTeamGoals() + "-" + match.getCounterSecondTeamGoals();
-                        if (matchSignatures.add(matchSignature)) { // Solo añadir si no está duplicado
+                        if (matchSignatures.add(matchSignature)) { 
                             inferredMatches.add(match);
                             System.out.println("Partido inferido encontrado: " + team.getName() + " vs " + otherTeam.getName());
                         } else {
@@ -1448,7 +1429,6 @@ public class HistorialEquiposController extends Controller implements Initializa
         return inferredMatches;
     }
 
-// Método auxiliar para procesar un partido
     private void processMatch(MatchDetails match, VBox roundContent, Team updatedTeam, List<Team> allTeamsInTourney) {
         try {
             if (match == null) {
@@ -1456,15 +1436,40 @@ public class HistorialEquiposController extends Controller implements Initializa
                 return;
             }
 
-            String nameFirstTeam = match.getNameFirstTeam() != null ? match.getNameFirstTeam() : "Equipo 1 Desconocido";
-            String nameSecondTeam = match.getNameSecondTeam() != null ? match.getNameSecondTeam() : "Equipo 2 Desconocido";
+            String nameFirstTeam;
+            if (match.getNameFirstTeam() != null) {
+                nameFirstTeam = match.getNameFirstTeam();
+            } else {
+                nameFirstTeam = "Equipo 1 Desconocido";
+            }
 
-            String opponentName = nameFirstTeam.equals(updatedTeam.getName()) ? nameSecondTeam : nameFirstTeam;
+            String nameSecondTeam;
+            if (match.getNameSecondTeam() != null) {
+                nameSecondTeam = match.getNameSecondTeam();
+            } else {
+                nameSecondTeam = "Equipo 2 Desconocido";
+            }
 
-            int teamGoals = nameFirstTeam.equals(updatedTeam.getName())
-                    ? match.getCounterFirstTeamGoals() : match.getCounterSecondTeamGoals();
-            int opponentGoals = nameFirstTeam.equals(updatedTeam.getName())
-                    ? match.getCounterSecondTeamGoals() : match.getCounterFirstTeamGoals();
+            String opponentName;
+            if (nameFirstTeam.equals(updatedTeam.getName())) {
+                opponentName = nameSecondTeam;
+            } else {
+                opponentName = nameFirstTeam;
+            }
+
+            int teamGoals;
+            if (nameFirstTeam.equals(updatedTeam.getName())) {
+                teamGoals = match.getCounterFirstTeamGoals();
+            } else {
+                teamGoals = match.getCounterSecondTeamGoals();
+            }
+
+            int opponentGoals;
+            if (nameFirstTeam.equals(updatedTeam.getName())) {
+                opponentGoals = match.getCounterSecondTeamGoals();
+            } else {
+                opponentGoals = match.getCounterFirstTeamGoals();
+            }
 
             int teamPoints = teamGoals;
             int opponentPoints = opponentGoals;
@@ -1477,9 +1482,14 @@ public class HistorialEquiposController extends Controller implements Initializa
                 opponentPoints += 1;
             }
 
-            String result = teamGoals > opponentGoals ? "Resultado: " + updatedTeam.getName() + " Ganó"
-                    : teamGoals < opponentGoals ? "Resultado: " + updatedTeam.getName() + " Perdió"
-                            : "Resultado: Empate";
+            String result;
+            if (teamGoals > opponentGoals) {
+                result = "Resultado: " + updatedTeam.getName() + " Ganó";
+            } else if (teamGoals < opponentGoals) {
+                result = "Resultado: " + updatedTeam.getName() + " Perdió";
+            } else {
+                result = "Resultado: Empate";
+            }
 
             HBox matchDetails = new HBox(10);
             matchDetails.setAlignment(Pos.BOTTOM_LEFT);
@@ -1528,23 +1538,24 @@ public class HistorialEquiposController extends Controller implements Initializa
     }
     
     private void handleExceptionCase(Accordion roundsAccordion, List<Team> allTeamsInTourney, int lastRoundParticipated, boolean isWinner, boolean isLooser) {
-        // Encontrar al oponente (el otro equipo en el torneo)
         String opponentName = allTeamsInTourney.stream()
                 .filter(t -> t != null && t.getName() != null && !t.getName().equals(updatedTeam.getName()))
                 .map(Team::getName)
                 .findFirst()
                 .orElse("Desconocido");
 
-        // Deducir un solo partido (torneo de 2 equipos = 1 partido)
-        int numberOfMatches = 1; // Solo un partido, ya que es un torneo de 2 equipos
-        int teamGoalsTotal = 1; // Asumimos 1 gol para la victoria (resultado 1-0)
-        boolean isWinnerDeduced = isWinner; // Usamos el estado del torneo (Elmolon es el ganador)
+        int numberOfMatches = 1; 
+        int teamGoalsTotal = 1;
+        boolean isWinnerDeduced = isWinner;
 
-        // Mostrar el partido deducido
         int roundNumber = 1;
-        int teamGoals = teamGoalsTotal; // 1 gol
-        int opponentGoals = isWinnerDeduced ? 0 : teamGoals + 1; // Si ganó, oponente tiene 0; si perdió, oponente tiene más goles
-
+        int teamGoals = teamGoalsTotal; 
+        int opponentGoals;
+                if (isWinnerDeduced) {
+                    opponentGoals = 0;
+                } else {
+                    opponentGoals = teamGoals + 1; 
+                }
         int teamPoints = teamGoals;
         int opponentPoints = opponentGoals;
         if (teamGoals > opponentGoals) {
@@ -1558,12 +1569,33 @@ public class HistorialEquiposController extends Controller implements Initializa
             opponentPoints += 1;
         }
 
-        String result = teamGoals > opponentGoals ? "Ganó" : teamGoals < opponentGoals ? "Perdió" : "Empate";
-
-        // Crear los detalles del partido deducido
+        String result;
+        if (teamGoals > opponentGoals) {
+            result = "Ganó";
+        } else if (teamGoals < opponentGoals) {
+            result = "Perdió";
+        } else {
+            result = "Empate";
+        }
         HBox matchDetails = new HBox(10);
         matchDetails.setAlignment(Pos.BOTTOM_LEFT);
         VBox textDetails = new VBox(5);
+        Label empateLabel;
+        if (teamGoals == opponentGoals) {
+            empateLabel = new Label("Empate: Sí");
+        } else {
+            empateLabel = new Label("Empate: No");
+        }
+
+        Label resultadoLabel;
+        if (teamGoals > opponentGoals) {
+            resultadoLabel = new Label("Resultado: " + updatedTeam.getName() + " Ganó");
+        } else if (teamGoals < opponentGoals) {
+            resultadoLabel = new Label("Resultado: " + updatedTeam.getName() + " Perdió");
+        } else {
+            resultadoLabel = new Label("Resultado: " + updatedTeam.getName() + " Empate");
+        }
+
         textDetails.getChildren().addAll(
                 new Label(updatedTeam.getName() + " vs " + opponentName + " - " + teamGoals + " - " + opponentGoals + " (Deducido)"),
                 new Label("Contrincante: " + opponentName),
@@ -1571,11 +1603,10 @@ public class HistorialEquiposController extends Controller implements Initializa
                 new Label("Goles de " + opponentName + ": " + opponentGoals),
                 new Label("Puntos de " + updatedTeam.getName() + ": " + teamPoints),
                 new Label("Puntos de " + opponentName + ": " + opponentPoints),
-                new Label("Empate: " + (teamGoals == opponentGoals ? "Sí" : "No")),
-                new Label("Resultado: " + updatedTeam.getName() + " " + result)
+                empateLabel,
+                resultadoLabel
         );
 
-        // Crear el gráfico de goles
         Canvas goalsBarCanvas = new Canvas(200, 100);
         GraphicsContext gc = goalsBarCanvas.getGraphicsContext2D();
         double maxGoals = Math.max(teamGoals, opponentGoals);
@@ -1596,14 +1627,19 @@ public class HistorialEquiposController extends Controller implements Initializa
         HBox.setHgrow(spacer, Priority.ALWAYS);
         matchDetails.getChildren().addAll(textDetails, spacer, goalsBarCanvas);
 
-        // Crear el TitledPane para la ronda deducida
         VBox roundContent = new VBox(matchDetails);
-        String roundTitle = isWinnerDeduced ? "Final (Ganador)" : isLooser ? "Final (Perdió)" : "Final";
+        String roundTitle;
+        if (isWinnerDeduced) {
+            roundTitle = "Final (Ganador)";
+        } else if (isLooser) {
+            roundTitle = "Final (Perdió)";
+        } else {
+            roundTitle = "Final";
+        }
         TitledPane roundPane = new TitledPane(roundTitle, roundContent);
         roundsAccordion.getPanes().add(roundPane);
     }
 
-// Métodos auxiliares:
     private List<Team> getAllTeamsInTourney(Tourney tourney) {
         List<Team> allTeams = new ArrayList<>();
         allTeams.addAll(tourney.getTeamList());
@@ -1622,20 +1658,20 @@ private List<MatchDetails> getMatchesInTourney(Team team, List<Team> allTeamsInT
     List<MatchDetails> matchesInTourney = new ArrayList<>();
     if (team.getEncounterList() != null) {
         for (MatchDetails match : team.getEncounterList()) {
-            // Omitimos el filtrado por tourneyId hasta que esté implementado
-            // if (match.getTourneyId() != selectedTourney.getId()) {
-            //     continue;
-            // }
-            String opponentName = match.getNameFirstTeam().equals(team.getName())
-                    ? match.getNameSecondTeam()
-                    : match.getNameFirstTeam();
+         
+            String opponentName;
+            if (match.getNameFirstTeam().equals(team.getName())) {
+                opponentName = match.getNameSecondTeam();
+            } else {
+                opponentName = match.getNameFirstTeam();
+            }
 
-// Normalizamos nombres para evitar problemas de formato
-            final String normalizedOpponentName = opponentName != null
-                    ? opponentName.trim().toLowerCase()
-                    : "";
-
-// Usamos la variable finalizada para la expresión lambda
+            final String normalizedOpponentName;
+            if (opponentName != null) {
+                normalizedOpponentName = opponentName.trim().toLowerCase();
+            } else {
+                normalizedOpponentName = "";
+            }
             boolean opponentInTourney = allTeamsInTourney.stream()
                     .anyMatch(t -> t.getName() != null && t.getName().trim().toLowerCase().equals(normalizedOpponentName));
             if (opponentInTourney) {
@@ -1650,16 +1686,17 @@ private List<MatchDetails> getMatchesInTourney(Team team, List<Team> allTeamsInT
 }
 
     private int determineLastRoundParticipated(Tourney tourney, Team team) {
-        // Obtener todos los equipos del torneo
         List<Team> allTeamsInTourney = getAllTeamsInTourney(tourney);
         int numberOfTeams = allTeamsInTourney.size();
 
-        // Calcular el número máximo de rondas posibles (log2 del número de equipos, redondeado hacia arriba)
-        int maxRounds = numberOfTeams <= 1 ? 0 : (int) Math.ceil(Math.log(numberOfTeams) / Math.log(2));
-
+        int maxRounds;
+                if (numberOfTeams <= 1) {
+                    maxRounds = 0;
+                } else {
+                    maxRounds = (int) Math.ceil(Math.log(numberOfTeams) / Math.log(2));
+                }
         // Revisar las rondas en orden descendente
         if (tourney.getWinner().stream().anyMatch(t -> t.getId() == team.getId())) {
-            // El ganador participó hasta la última ronda posible
             return maxRounds;
         }
         if (tourney.getRound6().stream().anyMatch(t -> t.getId() == team.getId()) && maxRounds >= 6) {
