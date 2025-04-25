@@ -99,6 +99,7 @@ public class ReviewController extends Controller implements Initializable {
 
     @FXML
     private void OnMouseClickedLobbyIcon(MouseEvent event) {
+        Clean();
         FlowController.getInstance().goViewInStage("Lobby", (Stage) btnAccept.getScene().getWindow());
     }
 
