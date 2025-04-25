@@ -56,7 +56,7 @@ public class MenuGameController extends Controller implements Initializable {
         { "arbolHitbox1", "arbolImage", "arbolLabel", 9999 }
     };
 
-    private static final int BACKGROUND_IMAGE_ID = 5555; // Cambia este ID por el de tu imagen de fondo
+    private static final int BACKGROUND_IMAGE_ID = 5555; 
 
     @Override
     public void initialize() {
@@ -426,7 +426,11 @@ public class MenuGameController extends Controller implements Initializable {
         if (isMoving) {
             Image[] directionSprites = sprites.get(lastDirection);
             if (directionSprites != null && directionSprites[1] != null && directionSprites[2] != null) {
-                personajeImage.setImage(stepToggle ? directionSprites[1] : directionSprites[2]);
+                if (stepToggle) {
+                    personajeImage.setImage(directionSprites[1]);
+                } else {
+                    personajeImage.setImage(directionSprites[2]);
+                }
                 stepToggle = !stepToggle;
             }
         }
