@@ -163,6 +163,7 @@ public class RegistrationModifyController extends Controller implements Initiali
             SaveImage(newTeam.getId());
             fileManeger.serialization(teamList, "Team");
             ClearPanel();
+            AppContext.getInstance().set("ExistImage", true);
             FlowController.getInstance().goView("Maintenance");
         } else {
             TeamRegistration(name, type);
@@ -183,6 +184,7 @@ public class RegistrationModifyController extends Controller implements Initiali
                 AppContext.getInstance().set("Title", "Mantenimiento de Equipo");
                 InitializeController();
             } else {
+                AppContext.getInstance().set("ExistImage", true);
                 FlowController.getInstance().goView("Maintenance");
             }
         } else {
@@ -252,7 +254,7 @@ public class RegistrationModifyController extends Controller implements Initiali
     public Boolean HasTourney() {
         for (Tourney currentTeam : tourneyList) {
             if ((currentTeam.getSportTypeId() == newSport.getId())) {
-                return false;
+                return true;
             }
         }
         return false;

@@ -121,6 +121,7 @@ public class MassRemovalController extends Controller implements Initializable {
             if (isTourney) {
                 tourneyOriginalList.removeAll(tourneyDeleteList);
                 fileManeger.serialization(tourneyOriginalList, "Tourney");
+                message.show(Alert.AlertType.INFORMATION, "Confirmacion", "Se elimino los torneos con exito.");
             } else {
                 for (Team teamDelete : teamDeleteList) {
                     file = new File(teamDelete.RuteImage());
@@ -130,6 +131,7 @@ public class MassRemovalController extends Controller implements Initializable {
                     }
                 }
                 fileManeger.serialization(teamOriginalList, "Team");
+                message.show(Alert.AlertType.INFORMATION, "Confirmacion", "Se elimino los equipos con exito.");
             }
             clean();
             InitializeController();

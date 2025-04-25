@@ -61,7 +61,6 @@ public class RegistrationMaintenanceController extends Controller implements Ini
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
         }
-        EnabledButton(existImage);
     }
 
     @FXML
@@ -87,7 +86,6 @@ public class RegistrationMaintenanceController extends Controller implements Ini
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
         }
-        EnabledButton(existImage);
     }
 
     @FXML
@@ -113,7 +111,6 @@ public class RegistrationMaintenanceController extends Controller implements Ini
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
         }
-        EnabledButton(existImage);
     }
 
     @FXML
@@ -139,7 +136,6 @@ public class RegistrationMaintenanceController extends Controller implements Ini
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
         }
-        EnabledButton(existImage);
     }
 
     @FXML
@@ -165,7 +161,6 @@ public class RegistrationMaintenanceController extends Controller implements Ini
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
         }
-        EnabledButton(existImage);
     }
 
     @FXML
@@ -188,6 +183,7 @@ public class RegistrationMaintenanceController extends Controller implements Ini
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
         }
+        
     }
 
     @FXML
@@ -220,7 +216,7 @@ public class RegistrationMaintenanceController extends Controller implements Ini
         } else {
             message.show(Alert.AlertType.WARNING, "Advertencia", "No puede realizar ninguna acción porque aún no ha seleccionado una imagen. Por favor, coloque una imagen primero.");
         }
-        EnabledButton(existImage);
+        
     }
 
     public void EnabledButton(Boolean Enabled) {
@@ -229,6 +225,9 @@ public class RegistrationMaintenanceController extends Controller implements Ini
         btnMaintenanceTeam.setDisable(!Enabled);
         btnRegistrationSport.setDisable(!Enabled);
         btnRegistrationTeam.setDisable(!Enabled);
+        btnMaintenanceTourney.setDisable(!Enabled);
+        btnMassRemovalTeam.setDisable(!Enabled);
+        btnMassRemovalTourney.setDisable(!Enabled);
     }
 
     @Override
