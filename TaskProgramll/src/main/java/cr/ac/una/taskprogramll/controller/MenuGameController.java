@@ -37,15 +37,15 @@ public class MenuGameController extends Controller implements Initializable {
     @FXML private Label historialEquiposLabel, arbolLabel, gomainLabel, torneosLabel, bibliotecaLabel, cafeteriaLabel;
 
     private final double velocidad = 5.0;
-    private final double personajeRadius = 28.5; // Ajustado para coincidir con el tamaño 57x56 del personaje
-    private final double PROXIMITY_MARGIN = 20.0; // Margen adicional para detectar proximidad
+    private final double personajeRadius = 28.5;
+    private final double PROXIMITY_MARGIN = 20.0; 
     private Map<Direction, Image[]> sprites;
     private boolean isMoving;
     private boolean stepToggle;
     private Direction lastDirection = Direction.DOWN;
-    private String currentHoverBuilding; // Para rastrear qué edificio está en hover por colisión
-    private String currentMouseHoverBuilding; // Para rastrear qué edificio está en hover por mouse
-    private final double HOVER_SCALE = 1.1; // Escala del 10% más grande para el efecto de hover
+    private String currentHoverBuilding;
+    private String currentMouseHoverBuilding;
+    private final double HOVER_SCALE = 1.1; 
 
     private static final Object[][] BUILDING_CONFIG = {
         { "historialEquiposHitbox", "historialEquiposImage", "historialEquiposLabel", 1111 },
@@ -67,7 +67,7 @@ public class MenuGameController extends Controller implements Initializable {
     }
 
     private enum SpriteSet {
-        DOWN(1001, 1041, 1042),    // Quieto, paso derecho, paso izquierdo
+        DOWN(1001, 1041, 1042),   
         UP(1002, 1031, 1032),
         RIGHT(1003, 1021, 1022),
         LEFT(1004, 1011, 1012);
@@ -198,10 +198,9 @@ public class MenuGameController extends Controller implements Initializable {
             String imageViewId = (String) config[1];
             ImageView imageView = getImageViewById(imageViewId);
             if (imageView != null) {
-                // Configurar efectos de hover
                 imageView.setOnMouseEntered(event -> {
                     System.out.println("Mouse entró en " + imageViewId);
-                    if (currentHoverBuilding == null) { // Solo aplica hover por mouse si no hay hover por colisión
+                    if (currentHoverBuilding == null) { 
                         currentMouseHoverBuilding = imageViewId;
                         applyHoverEffect(imageView, null);
                     }
@@ -214,16 +213,15 @@ public class MenuGameController extends Controller implements Initializable {
                     currentMouseHoverBuilding = null;
                 });
 
-                // Configurar evento de clic para redirección (excepto para el árbol)
                 if (!imageViewId.equals("arbolImage")) {
                     imageView.setOnMouseClicked(event -> {
                         System.out.println("Clic en " + imageViewId);
                         switch (imageViewId) {
-                            case "historialEquiposImage" -> goHistorialEquipos();
+                            case "historialEquiposImage" -> goTeamsHistory();
                             case "gomainImage" -> goGomain();
-                            case "torneosImage" -> goTorneos();
-                            case "bibliotecaImage" -> goReseñas();
-                            case "cafeteriaImage" -> goGameHub();
+                            case "torneosImage" -> goTourneys();
+                            case "bibliotecaImage" -> goReviews();
+                            case "cafeteriaImage" -> goLobby();
                         }
                     });
                 }
@@ -531,38 +529,37 @@ public class MenuGameController extends Controller implements Initializable {
         double centerX = personaje.getLayoutX() + personajeRadius;
         double centerY = personaje.getLayoutY() + personajeRadius;
         if (collidesWith(historialEquiposHitbox, centerX, centerY)) {
-            goHistorialEquipos();
+            goTeamsHistory();
         } else if (collidesWith(gomainHitbox, centerX, centerY)) {
             goGomain();
         } else if (collidesWith(torneosHitbox, centerX, centerY)) {
-            goTorneos();
+            goTourneys();
         } else if (collidesWith(bibliotecaHitbox, centerX, centerY)) {
-            goReseñas();
+            goReviews();
         } else if (collidesWith(cafeteriaHitbox, centerX, centerY)) {
-            goGameHub();
+            goLobby();
         } else if (collidesWith(arbolHitbox1, centerX, centerY)) {
             mensaje.setText("Es solo un árbol... nada que hacer aquí.");
         }
     }
 
-    // Métodos de redirección para cada edificio
-    private void goHistorialEquipos() {
-        FlowController.getInstance().goViewInStage("HistorialEquipos", (Stage) rootPane.getScene().getWindow());
+    private void goTeamsHistory() {
+        FlowController.getInstance().goViewInStage("TeamsHistory", (Stage) rootPane.getScene().getWindow());
     }
 
     private void goGomain() {
         FlowController.getInstance().goMain();
     }
 
-    private void goTorneos() {
+    private void goTourneys() {
         FlowController.getInstance().goViewInStage("ViewTourneys", (Stage) rootPane.getScene().getWindow());
     }
 
-    private void goReseñas() {
+    private void goReviews() {
         FlowController.getInstance().goViewInStage("Review", (Stage) rootPane.getScene().getWindow());
     }
 
-    private void goGameHub() {
+    private void goLobby() {
         FlowController.getInstance().goViewInStage("Lobby", (Stage) rootPane.getScene().getWindow());
     }
 }

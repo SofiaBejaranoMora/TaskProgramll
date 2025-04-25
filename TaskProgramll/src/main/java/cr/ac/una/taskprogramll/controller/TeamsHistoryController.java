@@ -54,7 +54,7 @@ import javafx.util.StringConverter;
  *
  * @author Michelle Wittingham
  */
-public class HistorialEquiposController extends Controller implements Initializable {
+public class TeamsHistoryController extends Controller implements Initializable {
 
     @FXML
     private MFXTextField teamSearch;
