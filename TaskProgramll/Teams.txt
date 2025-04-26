@@ -1,1 +1,1 @@
-[{"name":"Miau","idSportType":6184,"draw":0,"wins":0,"goals":0,"points":0,"id":7524,"encounterList":[],"reviewList":[]},{"name":"Kermit","idSportType":6184,"draw":0,"wins":0,"goals":0,"points":0,"id":4025,"encounterList":[],"reviewList":[]},{"name":"Elmolon","idSportType":6184,"draw":0,"wins":0,"goals":0,"points":0,"id":7295,"encounterList":[],"reviewList":[]},{"name":"Pengu","idSportType":6184,"draw":0,"wins":0,"goals":0,"points":0,"id":4891,"encounterList":[],"reviewList":[]}]
+[]

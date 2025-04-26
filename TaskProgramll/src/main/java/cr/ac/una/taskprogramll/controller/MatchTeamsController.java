@@ -64,7 +64,7 @@ public class MatchTeamsController extends Controller implements Initializable {
     private Team winnerCertificate;
     private FileManager fileManager = new FileManager();
     private File file;
-    private Mensaje message;
+    private Mensaje message = new Mensaje();
     private Boolean viewButton = false;
     private Boolean isFinished = false;
     private int index = 0;
@@ -171,12 +171,12 @@ public class MatchTeamsController extends Controller implements Initializable {
             ImageData teamData =ImageDataFactory.create(addresTeamPhotograsphs);
             canva.addImage(teamData,new Rectangle(420, 100, 115, 91), false);
             
-            Paragraph paragraphName=new Paragraph("Nombre del equipo ganador en " + tourney + ": " + winner.getName())
+            Paragraph paragraphName=new Paragraph("Nombre del ganador en " + tourney + ": " + winner.getName())
                 .setFontSize(14)
                 .setMarginTop(97)
                 .setMarginLeft(35);
             
-            Paragraph paragraphSport=new Paragraph("Deporte del torneo: " + currentTourney.getSportTypeId())
+            Paragraph paragraphSport=new Paragraph("Deporte del torneo: " + currentTourney.searchSportType().getName())
                 .setFontSize(14)
                 .setMarginTop(6)
                 .setMarginLeft(35);
@@ -273,6 +273,9 @@ public class MatchTeamsController extends Controller implements Initializable {
                 viewButton = true;
                 currentTeamList = currentTourney.getTeamList();
                 index = currentTeamList.size() - 1;
+                if (viewButton && !isFinished) {
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "Tras este partido empezará el intermedio, sientase cómodo de explorar el estadio y sus alrededores. ¡Buen día!.");
+                }
             } else if (index == currentTeamList.size() - 1){
                 index --;
                 adjustingTable(currentTeamList.get(index + 1));
@@ -285,6 +288,9 @@ public class MatchTeamsController extends Controller implements Initializable {
                 viewButton = true;
                 currentTeamList = currentTourney.getTeamList();
                 index = 0;
+                if (viewButton && !isFinished) {
+                    message.show(Alert.AlertType.INFORMATION, "Aviso", "Tras este partido empezará el intermedio, sientase cómodo de explorar el estadio y sus alrededores. ¡Buen día!.");
+                }
             } else if (index == currentTeamList.size() + 1) {
                 index ++;
                 adjustingTable(currentTeamList.get(index - 1));
@@ -309,13 +315,13 @@ public class MatchTeamsController extends Controller implements Initializable {
                         if (empty || getIndex() >= round2.size()) {
                             setText(null);
                         } else {
-                            setText(round2.get(getIndex()).getName() + " " + winnerTeam.getGoals() + " goles");
+                            setText(round2.get(getIndex()).getName() + " " + round2.get(getIndex()).getGoals() + " goles");
                             drawLine(winnerTeam.getName(), clmnRound1, clmnRound2);
                         }
                     }
                 });
                tblPlayersTable.refresh();
-                verifyRound();
+               verifyRound();
             }
             case 2 -> {
                 round3.add(winnerTeam);
@@ -328,7 +334,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                         if (empty || getIndex() >= round3.size()) {
                             setText(null);
                         } else {
-                            setText(round3.get(getIndex()).getName() + " " + winnerTeam.getGoals() + " goles");
+                            setText(round3.get(getIndex()).getName() + " " + round3.get(getIndex()).getGoals() + " goles");
                             drawLine(winnerTeam.getName(), clmnRound2, clmnRound3);
                         }
                     }
@@ -347,7 +353,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                         if (empty || getIndex() >= round4.size()) {
                             setText(null); 
                         } else {
-                            setText(round4.get(getIndex()).getName() + " " + winnerTeam.getGoals() + " goles");
+                            setText(round4.get(getIndex()).getName() + " " + round4.get(getIndex()).getGoals() + " goles");
                             drawLine(winnerTeam.getName(), clmnRound3, clmnRound4);
                         }
                     }
@@ -366,7 +372,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                         if (empty || getIndex() >= round5.size()) {
                             setText(null);
                         } else {
-                            setText(round5.get(getIndex()).getName() + " " + winnerTeam.getGoals() + " goles");
+                            setText(round5.get(getIndex()).getName() + " " + round5.get(getIndex()).getGoals() + " goles");
                             drawLine(winnerTeam.getName(), clmnRound4, clmnRound5);
                         }
                     }
@@ -385,7 +391,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                         if (empty || getIndex() >= round6.size()) {
                             setText(null);
                         } else {
-                            setText(round6.get(getIndex()).getName() + " " + winnerTeam.getGoals() +" goles");
+                            setText(round6.get(getIndex()).getName() + " " + round6.get(getIndex()).getGoals() +" goles");
                             drawLine(winnerTeam.getName(), clmnRound5, clmnRound6);
                         }
                     }
@@ -406,7 +412,7 @@ public class MatchTeamsController extends Controller implements Initializable {
                         if (empty || getIndex() >= winner.size()) {
                             setText(null);
                         } else {
-                            setText(winner.get(getIndex()).getName()  + " " + winnerTeam.getGoals() + " goles");
+                            setText(winner.get(getIndex()).getName()  + " " + winner.get(getIndex()).getGoals() + " goles");
                             drawLine(winnerTeam.getName(), discoverColumn(lastRound - 1), clmnFinal);
                         }
                     }
@@ -618,26 +624,7 @@ public class MatchTeamsController extends Controller implements Initializable {
         organizedRound();
         distributionOnTable();
     }
-    
-    public void initializeFromAppContext() {
-        tblPlayersTable.getItems().clear();
-        tblPlayersTable.refresh();
-        btnBack.setVisible(false);
-        this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("SelectedTourney"));
-        this.currentTeamList = currentTourney.getTeamList();
-        organizedRound();
-        switch (currentTourney.returnState()) {
-            case "Sin Empezar" ->
-                startGameParameters();
-            case "En Proceso" ->
-                continueGameParameters();
-            case "Finalizado" ->
-                viewGameTable();
-            default ->
-                continueGameParameters();
-        }
-    }
-    
+
     private void viewGameTable() {
         isFinished = true;
         globalSize = currentTourney.getContinueGame().getGlobalSize();
@@ -677,7 +664,26 @@ public class MatchTeamsController extends Controller implements Initializable {
         }
         return null;
     }
- 
+     
+    public void initializeFromAppContext() {
+        tblPlayersTable.getItems().clear();
+        tblPlayersTable.refresh();
+        btnBack.setVisible(false);
+        this.currentTourney = searchTourney((Tourney) AppContext.getInstance().get("SelectedTourney"));
+        this.currentTeamList = currentTourney.getTeamList();
+        organizedRound();
+        switch (currentTourney.returnState()) {
+            case "Sin Empezar" ->
+                startGameParameters();
+            case "En Proceso" ->
+                continueGameParameters();
+            case "Finalizado" ->
+                viewGameTable();
+            default ->
+                continueGameParameters();
+        }
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         file = new File("Tourney.txt");
