@@ -130,7 +130,7 @@ public class MaintenanceController extends Controller implements Initializable {
         if (isTourney) {
             tourneyList.clear();
             tourneyList = ListLeakedTourney();
-        } else {
+        } else if (isTeam){
             teamList.clear();
             teamList = ListLeakedTeams();
         }
@@ -151,7 +151,7 @@ public class MaintenanceController extends Controller implements Initializable {
             sportList = fileManeger.deserialization("Sport", Sport.class);
         } else if (isTourney) {
             tourneyList = ListLeakedTourney();
-        } else {
+        } else if(isTeam) {
             teamList = ListLeakedTeams();
         }
         TableInitialize();
@@ -404,8 +404,6 @@ public class MaintenanceController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Clean();
-        InitializeController();
     }
 
     @Override
