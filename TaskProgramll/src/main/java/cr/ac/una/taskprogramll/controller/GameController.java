@@ -118,7 +118,10 @@ public class GameController extends Controller implements Initializable {
     @FXML
     private void onActionBtnOut(ActionEvent event) {
         if (!isFinished) {
-            currentTime.pause();
+            if(currentTime != null) {
+                currentTime.pause();
+                FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
+            } else 
             FlowController.getInstance().goViewInStage("MatchTeams", (Stage) btnOut.getScene().getWindow());
         } else {
             btnFastFinish.setVisible(false);
