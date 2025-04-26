@@ -478,8 +478,6 @@ public class RegistrationModifyController extends Controller implements Initiali
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        ClearPanel();
-        InitializeController();
     }
 
     @Override
