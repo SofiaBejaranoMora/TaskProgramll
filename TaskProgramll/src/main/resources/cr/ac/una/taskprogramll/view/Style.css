@@ -1,8 +1,9 @@
 *{
     -fx-lightBlue-base-color: #BBF6F9;
     -fx-lightBlue-transparent-base-color: rgb(187, 246, 249,0.85);
-    -fx-rose-base-color:#FFA5DB;
+    -fx-rose-base-color: #FFA5DB;
     -fx-rose-transparent-base-color:rgb(255, 165, 219,0.85);
+    -fx-purple-base-color: #9966ff;
 }
 
 .StoreBackground {
@@ -159,19 +160,13 @@ StadiumStandBackground,
     -fx-alignment: CENTER; 
 }
 
-.mfx-button:hover{
-    -fx-background-color: -fx-rose-base-color;
-    -fx-scale-x: 1.1;
-    -fx-scale-y: 1.1;
-}
-
 .mfx-button {
-    -fx-background-color: #FF72C7;
+    -fx-background-color: #9999ff;
     -mfx-button-type: RAISED;
 }
 
 .mfx-button:hover {
-    -fx-background-color: -fx-rose-base-color;
+    -fx-background-color:  -fx-purple-base-color;
     -fx-scale-x: 1.1;
     -fx-scale-y: 1.1;
 }
@@ -309,6 +304,7 @@ StadiumStandBackground,
 
 #tblPlayersTable .table-row-cell {
     -fx-background-color: transparent;
+    -fx-text-fill: white;
 }
 
 #tblPlayersTable .table-cell {
@@ -316,7 +312,6 @@ StadiumStandBackground,
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-font-size: 14px;
-    -fx-text-fill: #000000;
     -fx-font-weight: bold;
 }
 
